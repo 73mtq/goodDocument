@@ -1,0 +1,89 @@
+{
+  "_说明": "规范文档排版参数配置 —— 修改本文件后运行 `node generate.js` 即可重新生成。所有字号既可用中文名（小二/小三/小四/五号/小五…），也可用磅值数字（18/15/12/10.5/9）。CLI 可用 --set a.b=c 临时覆盖任意字段。",
+
+  "page": {
+    "size": "A4",
+    "margins": { "top": 2.5, "bottom": 2.5, "left": 3, "right": 2.5 },
+    "marginUnit": "cm",
+    "forceA4": true
+  },
+
+  "pageNumber": {
+    "enabled": true,
+    "align": "center",
+    "position": "bottom",
+    "size": "小五",
+    "font": "宋体",
+    "asciiFont": "Times New Roman"
+  },
+
+  "body": {
+    "font": "宋体",
+    "asciiFont": "Times New Roman",
+    "size": "小四",
+    "lineSpacing": 1.5,
+    "firstLineIndentChars": 2,
+    "align": "justify",
+    "spaceAfterPt": 0
+  },
+
+  "headings": {
+    "h1": { "font": "黑体", "asciiFont": "Times New Roman", "size": "小二", "lineSpacing": 1.5, "bold": true, "color": "000000", "spaceBeforePt": 18, "spaceAfterPt": 9, "align": "left" },
+    "h2": { "font": "黑体", "asciiFont": "Times New Roman", "size": "小三", "lineSpacing": 1.5, "bold": true, "color": "000000", "spaceBeforePt": 12, "spaceAfterPt": 6, "align": "left" },
+    "h3": { "font": "宋体", "asciiFont": "Times New Roman", "size": "小三", "lineSpacing": 1.5, "bold": true, "color": "000000", "spaceBeforePt": 12, "spaceAfterPt": 6, "align": "left" },
+    "h4": { "font": "宋体", "asciiFont": "Times New Roman", "size": "小四", "lineSpacing": 1.5, "bold": true, "color": "000000", "spaceBeforePt": 6, "spaceAfterPt": 6, "align": "left" }
+  },
+
+  "figure": {
+    "maxWidthCm": 15.5,
+    "maxHeightCm": 22,
+    "borderless": true,
+    "align": "center",
+    "captionPosition": "below",
+    "captionText": "宋体",
+    "captionSize": "五号",
+    "captionBold": true,
+    "captionAlign": "center",
+    "captionLineSpacing": 1.0,
+    "noteSize": "小五",
+    "noteAlign": "left",
+    "noteLineSpacing": 1.0,
+    "prefix": "图"
+  },
+
+  "table": {
+    "fullWidth": true,
+    "align": "center",
+    "captionPosition": "above",
+    "captionText": "宋体",
+    "captionSize": "五号",
+    "captionBold": true,
+    "captionAlign": "center",
+    "captionLineSpacing": 1.0,
+    "noteSize": "小五",
+    "noteAlign": "left",
+    "noteLineSpacing": 1.0,
+    "cellSize": "小四",
+    "cellAlign": "center",
+    "cellVAlign": "center",
+    "cellLineSpacing": 1.0,
+    "headerBold": true,
+    "borderColor": "000000",
+    "borderSize": 4,
+    "prefix": "表"
+  },
+
+  "references": {
+    "style": "GB/T 7714",
+    "font": "宋体",
+    "asciiFont": "Times New Roman",
+    "size": "小五",
+    "lineSpacing": 1.0,
+    "align": "justify",
+    "hangingIndentPt": 24
+  },
+
+  "output": {
+    "filename": "规范文档示例.docx"
+  }
+}

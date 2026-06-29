@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# PyInstaller
+build/
+dist/
+*.spec.bak
+
+# Node.js
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.Desktop.ini
+.DS_Store
+
+# Temporary / unpacked docx internals
+unpacked/
+
+# Output samples (generated, not source)
+# 规范文档示例.docx
+# 规范文档示例_v2.docx
