@@ -8,6 +8,7 @@ from docx import Document
 from docx.shared import Cm, Pt
 from docx.enum.text import WD_LINE_SPACING
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
+from docx.oxml.ns import qn
 
 from formatter import (
     resolve_size,
@@ -71,11 +72,15 @@ def normalize_docx(config, input_path, output_path, assets_dir=None):
         raise ValueError("输出文件不能覆盖输入文档，请选择不同的保存路径")
 
     doc = Document(input_path)
+    para_to_section, table_to_section = _build_body_section_maps(doc)
+    cover_sections = _collect_cover_section_indices(doc)
+
     _apply_page_settings(doc, config)
     _apply_document_styles(doc, config)
-    _normalize_paragraphs(doc, config)
-    _normalize_tables(doc, config)
+    _normalize_paragraphs(doc, config, para_to_section, cover_sections)
+    _normalize_tables(doc, config, table_to_section, cover_sections)
     _normalize_inline_images(doc, config)
+    _mark_toc_fields_dirty(doc)
 
     out_dir = os.path.dirname(os.path.abspath(output_path))
     if out_dir:
@@ -143,6 +148,99 @@ def _is_caption_para(text, prefixes):
     return False
 
 
+def _is_toc_style(para):
+    """检测段落样式是否为目录条目样式（toc 1/2/3...）。"""
+    try:
+        name = para.style.name or ""
+    except Exception:
+        return False
+    return name.lower().startswith("toc")
+
+
+def _section_has_page_number(section):
+    """检测 section 的页脚中是否已存在 PAGE 域。"""
+    for instr in section.footer._element.iter(qn("w:instrText")):
+        if instr.text and "PAGE" in instr.text:
+            return True
+    return False
+
+
+def _build_body_section_maps(doc):
+    """遍历 body 子元素，构建段落索引→section 索引、表格索引→section 索引映射。
+
+    OOXML 中，分节符以段落 pPr 内的 sectPr 标记该段为当前节的最后一段；
+    body 末尾的 sectPr 为最后一节的属性。
+    """
+    para_to_section = {}
+    table_to_section = {}
+    p_idx = t_idx = sec_idx = 0
+    for child in doc.element.body.iterchildren():
+        tag = child.tag.split("}", 1)[-1]
+        if tag == "p":
+            para_to_section[p_idx] = sec_idx
+            ppr = child.find(qn("w:pPr"))
+            if ppr is not None and ppr.find(qn("w:sectPr")) is not None:
+                sec_idx += 1
+            p_idx += 1
+        elif tag == "tbl":
+            table_to_section[t_idx] = sec_idx
+            t_idx += 1
+    return para_to_section, table_to_section
+
+
+def _collect_cover_section_indices(doc):
+    """返回封面/前置页 section 索引集合（需保留原版式）。
+
+    判定：从首个 section 起连续无页码的 section 视为封面/前置页，直到遇到首个
+    有页码的 section 为止；若全文均无页码，则不构成“封面/正文”区分，返回空集
+    （按普通文档处理，正常规范化全部内容）。
+    """
+    has_pn = [_section_has_page_number(sec) for sec in doc.sections]
+    if not any(has_pn):
+        return set()
+    cover = set()
+    for i, has in enumerate(has_pn):
+        if has:
+            break
+        cover.add(i)
+    return cover
+
+
+def _find_toc_title_index(doc):
+    """找到首个 TOC 条目段落，向前回溯最近的非空非 TOC 段落索引（即“目录”标题段）。"""
+    paragraphs = doc.paragraphs
+    first_toc = None
+    for i, p in enumerate(paragraphs):
+        if _is_toc_style(p):
+            first_toc = i
+            break
+    if first_toc is None:
+        return None
+    for j in range(first_toc - 1, -1, -1):
+        p = paragraphs[j]
+        if _is_toc_style(p):
+            continue
+        if _paragraph_text(p):
+            return j
+    return None
+
+
+def _mark_toc_fields_dirty(doc):
+    """将 TOC 域标记为 dirty，使 Word 打开时提示更新目录以同步页码与条目。"""
+    begin_stack = []
+    for el in doc.element.body.iter():
+        tag = el.tag.split("}", 1)[-1]
+        if tag == "fldChar":
+            ftype = el.get(qn("w:fldCharType"))
+            if ftype == "begin":
+                begin_stack.append(el)
+            elif ftype == "end" and begin_stack:
+                begin_stack.pop()
+        elif tag == "instrText":
+            if el.text and "TOC" in el.text and begin_stack:
+                begin_stack[-1].set(qn("w:dirty"), "true")
+
+
 def _apply_run_defaults(para, zh_font, en_font, size_pt, bold=None, color=None):
     runs = para.runs
     if not runs and para.text:
@@ -155,6 +253,7 @@ def _apply_page_settings(doc, cfg):
     page = cfg.get("page", {})
     margins = page.get("margins", {})
     pn = cfg.get("pageNumber", {})
+    only_existing = pn.get("onlyUpdateExisting", True)
 
     for sec in doc.sections:
         sec.page_width = Cm(21.0)
@@ -168,17 +267,22 @@ def _apply_page_settings(doc, cfg):
         if "right" in margins:
             sec.right_margin = Cm(margins["right"])
 
-        if pn.get("enabled", True):
-            footer = sec.footer
-            footer.is_linked_to_previous = False
-            p = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
-            p.clear()
-            p.alignment = resolve_align(pn.get("align", "center"))
-            set_para_spacing(p, line_spacing_mult=1.0, before_pt=0, after_pt=0)
-            set_zero_indent(p)
-            add_page_number_field(p, lambda r: set_run_font(
-                r, pn.get("font", "宋体"), pn.get("asciiFont", "Times New Roman"),
-                size_pt=resolve_size(pn.get("size", "小五"))))
+        if not pn.get("enabled", True):
+            continue
+        # 封面/前置页：无既有页码则跳过，保留原始页脚（不注入页码）
+        if only_existing and not _section_has_page_number(sec):
+            continue
+
+        footer = sec.footer
+        footer.is_linked_to_previous = False
+        p = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
+        p.clear()
+        p.alignment = resolve_align(pn.get("align", "center"))
+        set_para_spacing(p, line_spacing_mult=1.0, before_pt=0, after_pt=0)
+        set_zero_indent(p)
+        add_page_number_field(p, lambda r: set_run_font(
+            r, pn.get("font", "宋体"), pn.get("asciiFont", "Times New Roman"),
+            size_pt=resolve_size(pn.get("size", "小五"))))
 
 
 def _apply_document_styles(doc, cfg):
@@ -282,12 +386,24 @@ def _apply_reference_format(para, cfg):
     )
 
 
-def _normalize_paragraphs(doc, cfg):
+def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections):
     fig_prefix = cfg.get("figure", {}).get("prefix", "图")
     table_prefix = cfg.get("table", {}).get("prefix", "表")
     in_refs = False
+    toc_title_index = _find_toc_title_index(doc)
 
-    for para in doc.paragraphs:
+    for idx, para in enumerate(doc.paragraphs):
+        # 跳过目录条目段落，保留目录原格式（避免 TOC 文本被误判为标题）
+        if _is_toc_style(para):
+            continue
+        # 跳过“目录”标题段，保留原格式
+        if toc_title_index is not None and idx == toc_title_index:
+            continue
+        # 跳过封面/前置页 section 内的段落，保留封面版式
+        sec_idx = para_to_section.get(idx)
+        if sec_idx is not None and sec_idx in cover_sections:
+            continue
+
         text = _paragraph_text(para)
         if not text:
             set_zero_indent(para)
@@ -310,7 +426,7 @@ def _normalize_paragraphs(doc, cfg):
             _apply_body_format(para, cfg)
 
 
-def _normalize_tables(doc, cfg):
+def _normalize_tables(doc, cfg, table_to_section, cover_sections):
     t = cfg.get("table", {})
     cell_font = t.get("cellFont", cfg["body"].get("font", "宋体"))
     cell_en = t.get("cellAsciiFont", cfg["body"].get("asciiFont", "Times New Roman"))
@@ -318,7 +434,11 @@ def _normalize_tables(doc, cfg):
     cell_align = resolve_align(t.get("cellAlign", "center"))
     cell_valign = WD_ALIGN_VERTICAL.CENTER if t.get("cellVAlign", "center") == "center" else WD_ALIGN_VERTICAL.TOP
 
-    for tbl in doc.tables:
+    for t_idx, tbl in enumerate(doc.tables):
+        # 跳过封面/前置页 section 内的表格，保留封面表格原版式
+        sec_idx = table_to_section.get(t_idx)
+        if sec_idx is not None and sec_idx in cover_sections:
+            continue
         tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
         for r_idx, row in enumerate(tbl.rows):
             for cell in row.cells:

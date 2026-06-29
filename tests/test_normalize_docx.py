@@ -4,6 +4,11 @@ import unittest
 from pathlib import Path
 
 from docx import Document
+from docx.enum.section import WD_SECTION
+from docx.enum.style import WD_STYLE_TYPE
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
 
@@ -124,6 +129,194 @@ class NormalizeDocxTests(unittest.TestCase):
             self.assertEqual(info.heading_levels, (1, 2, 3, 4))
             self.assertAlmostEqual(normalized.sections[0].left_margin.cm, 2.2, places=1)
             self.assertEqual(normalized.paragraphs[0].style.name, "Heading 1")
+
+
+def _add_page_field(paragraph):
+    """在段落中插入 PAGE 域。"""
+    run = paragraph.add_run()
+    begin = OxmlElement("w:fldChar")
+    begin.set(qn("w:fldCharType"), "begin")
+    instr = OxmlElement("w:instrText")
+    instr.set(qn("xml:space"), "preserve")
+    instr.text = "PAGE"
+    end = OxmlElement("w:fldChar")
+    end.set(qn("w:fldCharType"), "end")
+    run._r.append(begin)
+    run._r.append(instr)
+    run._r.append(end)
+
+
+def _build_cover_toc_document(path):
+    """构造一份含封面（无页码 section）+ 目录条目 + 正文的测试文档。
+
+    结构：
+      section 0（封面/前置页，无页码）：封面标题、文档信息、封面表格、分节符
+      section 1（正文，有页码）：目录标题、TOC 条目（toc 1/2 样式）、一级标题、正文
+    """
+    doc = Document()
+    try:
+        doc.styles.add_style("toc 1", WD_STYLE_TYPE.PARAGRAPH)
+        doc.styles.add_style("toc 2", WD_STYLE_TYPE.PARAGRAPH)
+    except Exception:
+        pass
+
+    # 封面 section（section 0）
+    doc.add_paragraph("封面标题")
+    doc.add_paragraph("文档信息")
+    cover_tbl = doc.add_table(rows=2, cols=2)
+    cover_tbl.rows[0].cells[0].text = "项目"
+    cover_tbl.rows[0].cells[1].text = "编号"
+    cover_tbl.rows[1].cells[0].text = "名称"
+    cover_tbl.rows[1].cells[1].text = "示例"
+    doc.add_paragraph()  # 承载分节符的空段落
+    doc.add_section(WD_SECTION.NEW_PAGE)
+
+    # 正文 section（section 1）
+    doc.add_paragraph("目录")  # 目录标题
+    p_toc1 = doc.add_paragraph("1. 引言\t1")
+    try:
+        p_toc1.style = "toc 1"
+    except Exception:
+        pass
+    p_toc2 = doc.add_paragraph("1.1 目的\t1")
+    try:
+        p_toc2.style = "toc 2"
+    except Exception:
+        pass
+    doc.add_paragraph("一、引言")  # 一级标题
+    doc.add_paragraph("正文内容。")  # 正文
+
+    # 仅给正文 section 加页码，封面 section 不加
+    sec1 = doc.sections[1]
+    sec1.footer.is_linked_to_previous = False
+    footer_p = sec1.footer.paragraphs[0]
+    footer_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    _add_page_field(footer_p)
+
+    doc.save(path)
+    return doc
+
+
+class NormalizeCoverAndTocTests(unittest.TestCase):
+    """验证封面保留与目录错乱修复。"""
+
+    def test_normalize_preserves_cover_and_toc(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "with_cover.docx"
+            output = Path(tmp) / "with_cover_规范化.docx"
+            _build_cover_toc_document(source)
+
+            normalize_docx(cfg, source, output)
+            result = Document(output)
+
+            # 段落索引（add_section 会插入一个空段作为分节符载体）：
+            # 0 封面标题 / 1 文档信息 / 2 空段 / 3 分节符空段 / 4 目录 / 5 toc1 / 6 toc2 / 7 H1 / 8 正文
+            # 1) 目录标题保留原格式，未被套正文格式（正文会加 Pt(24) 首行缩进）
+            title_para = result.paragraphs[4]
+            self.assertEqual((title_para.text or "").strip(), "目录")
+            self.assertNotEqual(title_para.paragraph_format.first_line_indent, Pt(24))
+
+            # 2) TOC 条目样式保留，未被改成 Heading
+            toc1 = result.paragraphs[5]
+            toc2 = result.paragraphs[6]
+            self.assertTrue(toc1.style.name.lower().startswith("toc"))
+            self.assertTrue(toc2.style.name.lower().startswith("toc"))
+
+            # 3) 封面段落保留原格式，未被套正文格式
+            cover_para = result.paragraphs[1]
+            self.assertEqual((cover_para.text or "").strip(), "文档信息")
+            self.assertNotEqual(cover_para.paragraph_format.first_line_indent, Pt(24))
+
+            # 4) 封面 section 无页码，正文 section 有页码
+            self.assertNotIn("PAGE", result.sections[0].footer._element.xml)
+            self.assertIn("PAGE", result.sections[1].footer._element.xml)
+
+            # 5) 正文标题与正文段落正常规范化
+            h1_para = result.paragraphs[7]
+            self.assertEqual(h1_para.style.name, "Heading 1")
+            body_para = result.paragraphs[8]
+            self.assertEqual(body_para.alignment, 3)  # JUSTIFY
+            self.assertEqual(body_para.paragraph_format.first_line_indent, Pt(24))
+
+    def test_normalize_preserves_cover_table(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "with_cover.docx"
+            output = Path(tmp) / "with_cover_规范化.docx"
+            _build_cover_toc_document(source)
+
+            normalize_docx(cfg, source, output)
+            result = Document(output)
+
+            # 封面表格保留原版式：单元格段落对齐未被改为 center（正文表格默认会居中）
+            cover_cell = result.tables[0].rows[0].cells[0]
+            self.assertNotEqual(cover_cell.paragraphs[0].alignment, WD_ALIGN_PARAGRAPH.CENTER)
+
+    def test_mark_toc_fields_dirty(self):
+        from normalizer import _mark_toc_fields_dirty
+
+        doc = Document()
+        p = doc.add_paragraph()
+        r1 = p.add_run()
+        begin = OxmlElement("w:fldChar")
+        begin.set(qn("w:fldCharType"), "begin")
+        r1._r.append(begin)
+        r2 = p.add_run()
+        instr = OxmlElement("w:instrText")
+        instr.set(qn("xml:space"), "preserve")
+        instr.text = 'TOC \\o "1-3" \\h \\u '
+        r2._r.append(instr)
+        r3 = p.add_run()
+        sep = OxmlElement("w:fldChar")
+        sep.set(qn("w:fldCharType"), "separate")
+        r3._r.append(sep)
+        r4 = p.add_run()
+        end = OxmlElement("w:fldChar")
+        end.set(qn("w:fldCharType"), "end")
+        r4._r.append(end)
+
+        _mark_toc_fields_dirty(doc)
+        self.assertEqual(begin.get(qn("w:dirty")), "true")
+
+    def test_helpers_section_and_toc_detection(self):
+        from normalizer import (
+            _build_body_section_maps,
+            _collect_cover_section_indices,
+            _find_toc_title_index,
+            _is_toc_style,
+            _section_has_page_number,
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "with_cover.docx"
+            _build_cover_toc_document(path)
+            doc = Document(path)
+
+            # section 0 无页码（封面），section 1 有页码（正文）
+            self.assertFalse(_section_has_page_number(doc.sections[0]))
+            self.assertTrue(_section_has_page_number(doc.sections[1]))
+
+            cover = _collect_cover_section_indices(doc)
+            self.assertEqual(cover, {0})
+
+            para_to_section, table_to_section = _build_body_section_maps(doc)
+            # 封面段落属于 section 0，正文段落属于 section 1
+            self.assertEqual(para_to_section[0], 0)
+            self.assertEqual(para_to_section[4], 1)
+            # 封面表格属于 section 0
+            self.assertEqual(table_to_section[0], 0)
+
+            # 目录标题索引应为 4（首个 toc 条目 5 之前最近的非空非 toc 段）
+            self.assertEqual(_find_toc_title_index(doc), 4)
+
+            # toc 样式识别
+            self.assertTrue(_is_toc_style(doc.paragraphs[5]))
+            self.assertFalse(_is_toc_style(doc.paragraphs[7]))
 
 
 if __name__ == "__main__":

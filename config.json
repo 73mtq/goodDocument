@@ -14,7 +14,8 @@
     "position": "bottom",
     "size": "小五",
     "font": "宋体",
-    "asciiFont": "Times New Roman"
+    "asciiFont": "Times New Roman",
+    "onlyUpdateExisting": true
   },
 
   "body": {
