@@ -23,6 +23,7 @@ from paths import app_dir, assets_dir, bundled_dir, config_path, default_config_
 sys.path.insert(0, bundled_dir())
 from formatter import generate, build_sample_content  # noqa: E402
 from normalizer import inspect_docx, normalize_docx, NormalizeError  # noqa: E402
+from version import __version__
 
 
 # ------------------------------------------------------------------
@@ -46,7 +47,7 @@ FONT_EN_OPTIONS = ["Times New Roman", "Arial", "Calibri", "Cambria"]
 class App:
     def __init__(self, root):
         self.root = root
-        self.root.title("Word 文档规范化工具")
+        self.root.title(f"Word 文档规范化工具 v{__version__}")
         self.root.geometry("820x760")
         self.root.minsize(760, 620)
         self.cfg = {}
