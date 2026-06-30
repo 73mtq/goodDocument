@@ -1,4 +1,5 @@
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -423,6 +424,74 @@ class NormalizeErrorTests(unittest.TestCase):
         for cls in (InputNotFoundError, InvalidFileTypeError, CorruptDocxError,
                     OutputNotWritableError, SameInputOutputError):
             self.assertTrue(issubclass(cls, NormalizeError))
+
+
+class ValidatePathsTests(unittest.TestCase):
+    def test_raises_input_not_found(self):
+        from normalizer import _validate_paths, InputNotFoundError
+        with self.assertRaises(InputNotFoundError) as ctx:
+            _validate_paths("Z:/nonexistent-xyz-9999.docx", "Z:/out.docx")
+        self.assertIn("找不到文件", str(ctx.exception))
+
+    def test_raises_invalid_file_type(self):
+        from normalizer import _validate_paths, InvalidFileTypeError
+        with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, mode="w") as f:
+            f.write("hi")
+            p = f.name
+        try:
+            with self.assertRaises(InvalidFileTypeError) as ctx:
+                _validate_paths(p, p + ".out.docx")
+            self.assertIn("不是有效的 docx", str(ctx.exception))
+        finally:
+            os.remove(p)
+
+    def test_raises_same_input_output(self):
+        from normalizer import _validate_paths, SameInputOutputError
+        with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
+            p = f.name
+        try:
+            with self.assertRaises(SameInputOutputError):
+                _validate_paths(p, p)
+        finally:
+            os.remove(p)
+
+
+class BackupSourceTests(unittest.TestCase):
+    def test_creates_bak_file(self):
+        from normalizer import _backup_source
+        with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
+            f.write(b"x")
+            p = f.name
+        try:
+            bak = _backup_source(p)
+            self.assertIsNotNone(bak)
+            self.assertTrue(bak.endswith(".bak"))
+            self.assertTrue(os.path.exists(bak))
+        finally:
+            os.remove(p)
+            if bak and os.path.exists(bak):
+                os.remove(bak)
+
+    def test_uses_incremented_name_when_bak_exists(self):
+        from normalizer import _backup_source
+        with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
+            f.write(b"x")
+            p = f.name
+        bak1 = p + ".bak"
+        try:
+            open(bak1, "wb").close()
+            bak2 = _backup_source(p)
+            self.assertEqual(bak2, p + ".bak.1")
+        finally:
+            os.remove(p)
+            for b in (bak1, p + ".bak.1"):
+                if os.path.exists(b):
+                    os.remove(b)
+
+    def test_returns_none_on_missing_input(self):
+        from normalizer import _backup_source
+        result = _backup_source("Z:/nonexistent-xyz-qq-9999/doc.docx")
+        self.assertIsNone(result)
 
 
 if __name__ == "__main__":
