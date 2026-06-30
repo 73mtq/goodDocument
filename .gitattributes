@@ -1,0 +1,27 @@
+# 统一行尾（避免 Windows CRLF / Unix LF 混用导致的 diff 噪声）
+* text=auto eol=lf
+
+# Python 源码强制 LF（PEP 8 风格）
+*.py text eol=lf
+*.pyi text eol=lf
+
+# 明确标记二进制文件
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.docx binary
+*.zip binary
+*.pdf binary
+
+# Shell / 配置 / 文档
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+# 规范文档名（中文名）保持原始编码
+规范*.docx binary
