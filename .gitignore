@@ -24,6 +24,10 @@ Thumbs.db
 # Temporary / unpacked docx internals
 unpacked/
 
+# Local tooling state (OMC plans, sessions, notepads)
+.omc/
+.omo/
+
 # Output samples (generated, not source)
 # 规范文档示例.docx
 # 规范文档示例_v2.docx
