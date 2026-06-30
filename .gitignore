@@ -24,6 +24,10 @@ Thumbs.db
 # Temporary / unpacked docx internals
 unpacked/
 
+# Auto-generated backups by normalizer (docx + .bak/.bak.N)
+*.docx.bak
+*.docx.bak.*
+
 # Local tooling state (OMC plans, sessions, notepads)
 .omc/
 .omo/
