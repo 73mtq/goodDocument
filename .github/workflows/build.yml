@@ -1,0 +1,76 @@
+name: Build Windows EXE
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller python-docx
+
+      - name: Install Node.js dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: npm install
+        run: npm install
+
+      - name: Run tests
+        run: python -m pytest tests/ -v
+
+      - name: Build EXE
+        run: pyinstaller DocFormatter.spec --noconfirm --clean
+
+      - name: Verify EXE
+        run: |
+          if (Test-Path dist\DocFormatter.exe) {
+            Write-Host "OK: EXE built"
+            Get-Item dist\DocFormatter.exe | Select-Object LastWriteTime, Length
+          } else {
+            Write-Error "EXE not found"
+            exit 1
+          }
+
+      - name: Package with config
+        run: |
+          Copy-Item config.json dist\config.json -Force
+          if (Test-Path dist\config.json) {
+            Compress-Archive -Path dist\DocFormatter.exe, dist\config.json -DestinationPath DocFormatter-${{ github.ref_name }}.zip -Force
+          }
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DocFormatter-Windows
+          path: DocFormatter-*.zip
+          if-no-files-found: error
+
+      - name: Create Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: DocFormatter-*.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: false
