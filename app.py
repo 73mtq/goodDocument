@@ -13,7 +13,7 @@ import os
 import sys
 import traceback
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
+from tkinter import ttk, filedialog, messagebox, scrolledtext
 
 from config_model import load_config_file, save_config_file
 from paths import app_dir, assets_dir, bundled_dir, config_path, default_config_path, make_normalized_output_path
@@ -22,7 +22,7 @@ from paths import app_dir, assets_dir, bundled_dir, config_path, default_config_
 # 导入核心库
 sys.path.insert(0, bundled_dir())
 from formatter import generate, build_sample_content  # noqa: E402
-from normalizer import inspect_docx, normalize_docx  # noqa: E402
+from normalizer import inspect_docx, normalize_docx, NormalizeError  # noqa: E402
 
 
 # ------------------------------------------------------------------
@@ -119,15 +119,21 @@ class App:
         actions = ttk.Frame(box)
         actions.pack(fill="x")
         ttk.Button(actions, text="开始规范化", command=self._on_normalize, style="Primary.TButton").pack(side="right")
+        ttk.Button(actions, text="预览变更", command=self._on_preview).pack(side="right", padx=8)
         ttk.Button(actions, text="生成示例文档", command=self._on_generate).pack(side="right", padx=8)
         ttk.Button(actions, text="保存配置", command=self._on_save_cfg).pack(side="left")
         ttk.Button(actions, text="重置默认", command=self._on_reset).pack(side="left", padx=8)
 
     def _build_status(self, parent):
         status = ttk.LabelFrame(parent, text="状态", padding=10)
-        status.pack(fill="x", pady=12)
+        status.pack(fill="both", expand=True, pady=12)
         self._status = tk.StringVar(value="就绪：请选择一个 .docx 文档。")
         ttk.Label(status, textvariable=self._status, wraplength=720).pack(anchor="w")
+        self._status_text = scrolledtext.ScrolledText(
+            status, height=10, wrap="word", font=("Microsoft YaHei UI", 9)
+        )
+        self._status_text.pack(fill="both", expand=True, pady=(8, 0))
+        self._status_text.insert("end", "提示：选好输入文档后，点'预览变更'可先看规范化会改什么（不修改文件）。\n")
 
     def _build_advanced(self, parent):
         header = ttk.Frame(parent)
@@ -448,9 +454,65 @@ class App:
             self._status.set("已规范化: " + output_path)
             if messagebox.askyesno("完成", "文档已规范化：\n" + output_path + "\n\n是否打开所在文件夹？"):
                 open_folder(os.path.dirname(output_path) or ".", os.path.basename(output_path))
+        except NormalizeError as e:
+            self._status.set("规范化失败")
+            messagebox.showerror("规范化失败", str(e))
         except Exception as e:
             self._status.set("规范化失败")
             messagebox.showerror("规范化失败", str(e) + "\n\n" + traceback.format_exc())
+
+    def _on_preview(self):
+        """预览规范化会改什么（不写文件）。"""
+        self._collect()
+        self._save_config()
+        input_path = self._input_path.get().strip()
+
+        if not input_path:
+            messagebox.showwarning("缺少输入文档", "请先选择一个要规范化的 .docx 文档。")
+            self._status.set("等待输入文档")
+            return
+
+        # 预览不依赖 output 路径，自动用 _validate_paths 推断一个临时路径
+        output_path = self._output_path.get().strip() or make_normalized_output_path(input_path)
+
+        try:
+            self._status.set("正在预览…")
+            self.root.update()
+            result = normalize_docx(
+                self.cfg, input_path, output_path,
+                dry_run=True, return_result=True,
+            )
+            self._render_preview(result)
+            self._status.set("预览完成（未修改文件）")
+        except NormalizeError as e:
+            self._status.set("预览失败")
+            messagebox.showerror("预览失败", str(e))
+            self._append_status(f"[ERROR] {e.message}\n{e.hint or ''}\n")
+        except Exception as e:
+            self._status.set("预览失败")
+            messagebox.showerror("未预期错误", str(e) + "\n\n" + traceback.format_exc())
+
+    def _render_preview(self, result):
+        """把 NormalizeResult 渲染到状态文本框。"""
+        self._status_text.delete("1.0", "end")
+        self._status_text.insert("end", f"预览：{result.input_path}\n")
+        self._status_text.insert(
+            "end",
+            f"将处理：{result.paragraphs_processed} 段、{result.tables_processed} 个表、{result.images_processed} 张图\n",
+        )
+        if result.warnings:
+            self._status_text.insert("end", "\n警告：\n")
+            for w in result.warnings:
+                self._status_text.insert("end", f"  · {w}\n")
+        if result.changes:
+            self._status_text.insert("end", "\n变更：\n")
+            for c in result.changes:
+                self._status_text.insert("end", f"  · {c}\n")
+        self._status_text.insert("end", f"\n完成（dry-run，未修改文件）。耗时 {result.duration_ms}ms。\n")
+
+    def _append_status(self, line):
+        self._status_text.insert("end", line)
+        self._status_text.see("end")
 
 
 def open_folder(folder, select=None):
