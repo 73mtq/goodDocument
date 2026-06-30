@@ -175,3 +175,26 @@ python -m pytest tests/ -v
 ## License
 
 ISC
+
+---
+
+## 健壮性保证
+
+工具对异常场景做了友好化处理，所有错误信息均为中文：
+
+| 异常 | 触发场景 | 错误信息示例 |
+|---|---|---|
+| `InputNotFoundError` | 输入文件不存在 | `找不到文件: X` + 建议"检查路径" |
+| `InvalidFileTypeError` | 不是 .docx | `不是有效的 docx 文件: X` |
+| `CorruptDocxError` | docx 内部损坏 | `docx 文件已损坏: X` + 建议"用 Word 重新保存" |
+| `OutputNotWritableError` | 输出路径不可写 | `无法写入输出: X` + 建议"检查权限/磁盘" |
+| `SameInputOutputError` | 输出=输入 | `输出与输入相同: X` |
+
+**自动备份**：规范化前自动在同目录创建 `<原文件名>.docx.bak`（已有 .bak 时用 .bak.1, .bak.2, ...）。失败不阻塞规范化。
+
+**dry-run 模式**：规范化前先预览，**不修改任何文件**：
+- Python 库：`normalize_docx(..., dry_run=True, return_result=True)` → 返回 `NormalizeResult`
+- GUI：点"预览变更"按钮
+- CLI：`node generate.js --dry-run`
+
+**优雅降级**：遇到无法识别的段落、损坏的表格单元格、读取失败的图片等**非致命问题**时，记录为警告后继续执行，**不中断**整体规范化。
