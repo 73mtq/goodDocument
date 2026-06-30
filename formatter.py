@@ -105,11 +105,42 @@ def set_para_spacing(para, line_spacing_mult=None, before_pt=None, after_pt=None
 
 
 def set_zero_indent(para):
-    """显式清零所有缩进，避免继承正文的首行缩进。"""
+    """显式清零所有缩进，避免继承正文的首行缩进。
+
+    同时清掉 OOXML 字符单位属性（firstLineChars/leftChars/rightChars）：
+    这些属性在 OOXML 中优先于数值单位（firstLine/left/right），仅清数值
+    单位会留下"2 字符缩进"等残留，导致 Word 仍按字符数渲染。
+    """
     pf = para.paragraph_format
     pf.first_line_indent = Pt(0)
     pf.left_indent = Pt(0)
     pf.right_indent = Pt(0)
+    pPr = para._element.get_or_add_pPr()
+    ind = pPr.find(qn("w:ind"))
+    if ind is not None:
+        for attr in ("firstLineChars", "leftChars", "rightChars"):
+            key = qn("w:" + attr)
+            if key in ind.attrib:
+                del ind.attrib[key]
+
+
+def clear_style_indent_chars(style):
+    """清掉样式（通常是 Normal）<w:ind> 里的字符单位属性。
+
+    set_zero_indent 处理的是段落级别的 <w:ind>，但段落会从样式继承 firstLineChars。
+    若样式（如 Normal）里 firstLineChars=200 而段落自己没显式声明，Word 仍按
+    2 字符渲染首行缩进。此函数专用于清掉样式里的字符单位属性。
+    """
+    pPr = style.element.find(qn("w:pPr"))
+    if pPr is None:
+        return
+    ind = pPr.find(qn("w:ind"))
+    if ind is None:
+        return
+    for attr in ("firstLineChars", "leftChars", "rightChars"):
+        key = qn("w:" + attr)
+        if key in ind.attrib:
+            del ind.attrib[key]
 
 
 def add_page_number_field(paragraph, run_font_fn):
@@ -192,6 +223,9 @@ class Formatter:
         npf.first_line_indent = Pt(0)
         npf.space_before = Pt(0)
         npf.space_after = Pt(0)
+        # 关键：清掉 Normal 样式 <w:ind> 里的字符单位属性（firstLineChars 等），
+        # 否则表格单元格段落继承后会按字符数渲染首行缩进。
+        clear_style_indent_chars(normal)
 
         # 标题样式覆盖（黑体/宋体 + 黑色 + 对应字号，覆盖内置蓝色默认）
         for lv in range(1, 5):

@@ -16,6 +16,7 @@ from formatter import (
     set_run_font,
     set_para_spacing,
     set_zero_indent,
+    clear_style_indent_chars,
     add_page_number_field,
     set_run_font_element,
 )
@@ -297,6 +298,9 @@ def _apply_document_styles(doc, cfg):
     npf.first_line_indent = Pt(0)
     npf.space_before = Pt(0)
     npf.space_after = Pt(0)
+    # 关键：清掉 Normal 样式 <w:ind> 里的字符单位属性（firstLineChars 等），
+    # 否则单元格段落继承后会按字符数渲染首行缩进。
+    clear_style_indent_chars(normal)
 
     for lv in range(1, 5):
         hc = cfg.get("headings", {}).get("h" + str(lv))

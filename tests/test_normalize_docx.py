@@ -130,6 +130,89 @@ class NormalizeDocxTests(unittest.TestCase):
             self.assertAlmostEqual(normalized.sections[0].left_margin.cm, 2.2, places=1)
             self.assertEqual(normalized.paragraphs[0].style.name, "Heading 1")
 
+    def test_normalize_docx_clears_first_line_chars_indent_in_table(self):
+        """回归测试：单元格段落若有 OOXML 字符单位缩进（firstLineChars 等），
+        规范化后必须清掉——否则 Word 仍按字符数渲染首行缩进。
+        """
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "table_with_firstlinechars.docx"
+            output = Path(tmp) / "table_with_firstlinechars_规范化.docx"
+
+            # 手工构造：单元格段落带 firstLine=480（24pt）+ firstLineChars=200（2字符）
+            doc = Document()
+            tbl = doc.add_table(rows=1, cols=1)
+            tbl.style = "Table Grid"
+            p = tbl.rows[0].cells[0].paragraphs[0]
+            p.add_run("带字符单位缩进的单元格文字")
+            pPr = p._element.get_or_add_pPr()
+            ind = OxmlElement("w:ind")
+            ind.set(qn("w:left"), "0")
+            ind.set(qn("w:leftChars"), "0")
+            ind.set(qn("w:firstLine"), "480")
+            ind.set(qn("w:firstLineChars"), "200")
+            ind.set(qn("w:right"), "0")
+            pPr.append(ind)
+            doc.save(source)
+
+            normalize_docx(cfg, source, output)
+            normalized = Document(output)
+            cell_p = normalized.tables[0].rows[0].cells[0].paragraphs[0]
+            pPr = cell_p._element.get_or_add_pPr()
+            ind = pPr.find(qn("w:ind"))
+            # 三个数值单位必须为 0
+            self.assertEqual(ind.get(qn("w:firstLine")), "0")
+            self.assertEqual(ind.get(qn("w:left")), "0")
+            self.assertEqual(ind.get(qn("w:right")), "0")
+            # 三个字符单位属性必须被清掉（OOXML 中字符单位优先于数值单位，残留会导致 bug）
+            self.assertIsNone(ind.get(qn("w:firstLineChars")),
+                              "firstLineChars 残留会导致 Word 仍按字符数缩进")
+            self.assertIsNone(ind.get(qn("w:leftChars")),
+                              "leftChars 残留会导致 Word 仍按字符数缩进")
+            self.assertIsNone(ind.get(qn("w:rightChars")),
+                              "rightChars 残留会导致 Word 仍按字符数缩进")
+
+    def test_normalize_docx_clears_first_line_chars_in_normal_style(self):
+        """回归测试：Normal 样式里的 firstLineChars 必须清掉。
+        表格单元格段落没有显式 firstLineChars 时会继承 Normal 样式，
+        若 Normal 样式 firstLineChars=200（2 字符），Word 仍按 2 字符渲染。
+        """
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "normal_with_firstlinechars.docx"
+            output = Path(tmp) / "normal_with_firstlinechars_规范化.docx"
+
+            # 手工构造：Normal 样式带 firstLineChars=200
+            doc = Document()
+            normal = doc.styles["Normal"]
+            pPr = normal.element.find(qn("w:pPr"))
+            if pPr is None:
+                pPr = OxmlElement("w:pPr")
+                normal.element.append(pPr)
+            ind = OxmlElement("w:ind")
+            ind.set(qn("w:firstLine"), "420")
+            ind.set(qn("w:firstLineChars"), "200")
+            pPr.append(ind)
+            # 加一个表格 + 普通段落，模拟真实场景
+            doc.add_paragraph("这是普通正文段落。")
+            tbl = doc.add_table(rows=1, cols=1)
+            tbl.rows[0].cells[0].paragraphs[0].add_run("单元格文字")
+            doc.save(source)
+
+            normalize_docx(cfg, source, output)
+            normalized = Document(output)
+            normal = normalized.styles["Normal"]
+            pPr = normal.element.find(qn("w:pPr"))
+            ind = pPr.find(qn("w:ind")) if pPr is not None else None
+            # 关键断言：Normal 样式里 firstLineChars 必须清掉
+            if ind is not None:
+                self.assertIsNone(ind.get(qn("w:firstLineChars")),
+                                  "Normal 样式的 firstLineChars 必须清掉，否则表格段落会继承")
+
 
 def _add_page_field(paragraph):
     """在段落中插入 PAGE 域。"""

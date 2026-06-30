@@ -274,6 +274,8 @@ function createFormatter(config) {
       return new Paragraph({
         alignment: ALIGN_MAP[t.cellAlign] || AlignmentType.CENTER,
         spacing: { ...lineSpacingConfig(t.cellLineSpacing), before: 30, after: 30 },
+        // 【关键修复】单元格段落显式置零首行缩进，杜绝继承正文 2 字缩进
+        indent: { left: 0, right: 0, firstLine: 0 },
         children: [new TextRun({
           text: String(text), font: cellFont, size: resolveSize(t.cellSize), bold: !!bold,
         })],
