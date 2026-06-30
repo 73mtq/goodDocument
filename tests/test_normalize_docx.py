@@ -534,5 +534,57 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
             self.assertGreater(result.paragraphs_processed, 0)
 
 
+class NormalizeErrorRaiseTests(unittest.TestCase):
+    def test_input_not_found(self):
+        from normalizer import normalize_docx, InputNotFoundError
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(InputNotFoundError):
+                normalize_docx(load_config(),
+                               Path(tmp) / "missing-xyz-9999.docx",
+                               Path(tmp) / "out.docx")
+
+    def test_invalid_file_type_for_txt(self):
+        from normalizer import normalize_docx, InvalidFileTypeError
+        with tempfile.TemporaryDirectory() as tmp:
+            txt = Path(tmp) / "fake.txt"
+            txt.write_text("hi", encoding="utf-8")
+            with self.assertRaises(InvalidFileTypeError):
+                normalize_docx(load_config(), txt, Path(tmp) / "out.docx")
+
+    def test_same_input_output(self):
+        from normalizer import normalize_docx, SameInputOutputError
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "same.docx"
+            Document().save(src)
+            with self.assertRaises(SameInputOutputError):
+                normalize_docx(load_config(), src, src)
+
+    def test_corrupt_docx_garbage(self):
+        from normalizer import normalize_docx, CorruptDocxError
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "garbage.docx"
+            from tests._helpers import make_garbage_docx
+            make_garbage_docx(str(src))
+            with self.assertRaises(CorruptDocxError):
+                normalize_docx(load_config(), src, Path(tmp) / "out.docx")
+
+    def test_corrupt_docx_truncated(self):
+        from normalizer import normalize_docx, CorruptDocxError
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "truncated.docx"
+            from tests._helpers import make_corrupt_docx
+            make_corrupt_docx(str(src))
+            with self.assertRaises(CorruptDocxError):
+                normalize_docx(load_config(), src, Path(tmp) / "out.docx")
+
+    def test_output_not_writable(self):
+        from normalizer import normalize_docx, OutputNotWritableError
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "ok.docx"
+            Document().save(src)
+            with self.assertRaises(OutputNotWritableError):
+                normalize_docx(load_config(), src, "Z:/nonexistent-zzz-9999/out.docx")
+
+
 if __name__ == "__main__":
     unittest.main()

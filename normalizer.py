@@ -173,6 +173,16 @@ def normalize_docx(config, input_path, output_path, assets_dir=None, *,
                 cause=e,
                 hint="用 Word 打开重新保存一次",
             ) from e
+        except Exception as e:  # noqa: BLE001
+            # python-docx 在文件不是 zip 时抛 PackageNotFoundError
+            type_name = type(e).__name__
+            if "Package" in type_name or "Zip" in type_name or "Found" in type_name:
+                raise CorruptDocxError(
+                    f"docx 文件已损坏: {input_path}",
+                    cause=e,
+                    hint="用 Word 打开重新保存一次",
+                ) from e
+            raise
 
         try:
             para_to_section, table_to_section = _build_body_section_maps(doc)
