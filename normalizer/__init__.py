@@ -1,35 +1,34 @@
-"""Backward-compatibility shim — 真实实现在 normalizer/ 包里。
+"""normalizer 包：规范化现有 Word 文档。
 
-新代码请直接 `from normalizer import ...`。
-此文件保留以便旧 import（`import normalizer` 或 `from normalizer import normalize_docx`）继续工作。
+公共 API（re-export）：
+- normalize_docx
+- inspect_docx / DocxInspection
+- NormalizeError / 5 子类 / NormalizeResult / WarningCollector
+- 内部辅助（供 tests 验证）
 """
-from normalizer import (
-    # 公共 API
-    normalize_docx,
-    inspect_docx,
-    DocxInspection,
-    # 异常
+from .errors import (
     NormalizeError,
     InputNotFoundError,
     InvalidFileTypeError,
     CorruptDocxError,
     OutputNotWritableError,
     SameInputOutputError,
-    # 数据类
-    NormalizeResult,
-    # 警告
     WarningCollector,
-    # 常量
-    HEADING_PATTERNS,
-    # 内部辅助（供 tests/test_normalize_docx.py 用）
+    NormalizeResult,
 )
-from normalizer.paths import (
+from .core import normalize_docx
+from .normalize import (
+    DocxInspection,
+    inspect_docx,
+    HEADING_PATTERNS,
+)
+from .paths import (
     _same_path,
     _is_docx_path,
     _validate_paths,
     _backup_source,
 )
-from normalizer.normalize import (
+from .normalize import (
     _paragraph_text,
     _detect_heading_level,
     _is_toc_style,
@@ -55,8 +54,21 @@ from normalizer.normalize import (
 
 
 __all__ = [
-    "normalize_docx", "inspect_docx", "DocxInspection",
-    "NormalizeError", "InputNotFoundError", "InvalidFileTypeError",
-    "CorruptDocxError", "OutputNotWritableError", "SameInputOutputError",
-    "NormalizeResult", "WarningCollector", "HEADING_PATTERNS",
+    # 公共 API
+    "normalize_docx",
+    "inspect_docx",
+    "DocxInspection",
+    # 异常
+    "NormalizeError",
+    "InputNotFoundError",
+    "InvalidFileTypeError",
+    "CorruptDocxError",
+    "OutputNotWritableError",
+    "SameInputOutputError",
+    # 数据类
+    "NormalizeResult",
+    # 警告
+    "WarningCollector",
+    # 常量
+    "HEADING_PATTERNS",
 ]

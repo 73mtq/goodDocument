@@ -8,6 +8,7 @@ a = Analysis(
     datas=[
         ('formatter.py', '.'),
         ('normalizer.py', '.'),
+        ('normalizer', 'normalizer'),
         ('config_model.py', '.'),
         ('paths.py', '.'),
         ('config.json', '.'),
