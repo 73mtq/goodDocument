@@ -36,6 +36,7 @@ function parseArgs(argv) {
     if (a === "--set" || a === "-s") { args.set.push(argv[++i]); continue; }
     if (a === "--list-sizes") { args.listSizes = true; continue; }
     if (a === "--show-config") { args.showConfig = true; continue; }
+    if (a === "--examples") { args.examples = true; continue; }
     if (a === "--dry-run") { args.dryRun = true; continue; }
     if (a === "--help" || a === "-h") { args.help = true; continue; }
     if (a.startsWith("--") && a.indexOf("=") > 2) {
@@ -222,6 +223,7 @@ function printUsage() {
       --out <路径>        输出文件名（默认取 config.output.filename）
       --list-sizes        打印中文字号对照表
       --show-config       打印生效后的配置
+      --examples           打印典型使用场景示例
       --dry-run           预览会生成什么，不写文件
   -h, --help              显示帮助
 
@@ -231,6 +233,7 @@ function printUsage() {
   node generate.js --config 公文配置.json --out 公文.docx
   node generate.js --set table.captionPosition=below
   node generate.js --dry-run
+  node generate.js --examples
 `);
 }
 
@@ -242,11 +245,55 @@ function printSizes() {
   console.log("（也可直接写磅值数字，如 12 表示 12pt）");
 }
 
+function printExamples() {
+  console.log("典型使用场景");
+  console.log("================\n");
+
+  console.log("[场景 1] 学生论文（标准学术格式）");
+  console.log("  - 正文宋体小四 1.5 倍行距首行缩进 2 字");
+  console.log("  - 标题黑体加粗分级（一二三四级）");
+  console.log("  - 图表题五号加粗居中");
+  console.log("  - 参考文献 GB/T 7714 悬挂缩进");
+  console.log("  命令：");
+  console.log("    node generate.js");
+  console.log("    node generate.js --out 我的论文.docx\n");
+
+  console.log("[场景 2] 工程师技术报告（紧凑型）");
+  console.log("  - 表格标题在上方，紧凑布局");
+  console.log("  - 图标题在下方（默认）");
+  console.log("  命令：");
+  console.log("    node generate.js --set table.captionPosition=above");
+  console.log("    node generate.js --set body.lineSpacing=1.0 --set body.firstLineIndentChars=0\n");
+
+  console.log("[场景 3] 行政公文（方正仿宋）");
+  console.log("  - 仿宋 GB2312 三号首行缩进 2 字符");
+  console.log("  - 行距 28pt 固定值（一般用 28-30 磅）");
+  console.log("  命令：");
+  console.log("    node generate.js --set body.font=仿宋_GB2312 --set body.size=16 --set body.lineSpacing=1.75");
+  console.log("    node generate.js --set page.margins.top=3.7 --set page.margins.bottom=3.5\n");
+
+  console.log("[场景 4] 仅预览不生成（dry-run）");
+  console.log("  - 看会生成什么，不写文件");
+  console.log("  命令：");
+  console.log("    node generate.js --dry-run");
+  console.log("    node generate.js --dry-run --set body.size=14\n");
+
+  console.log("[场景 5] 临时切换配置文件");
+  console.log("  命令：");
+  console.log("    node generate.js --config 公文格式.json --out 公文.docx\n");
+
+  console.log("[场景 6] 看当前生效配置");
+  console.log("  命令：");
+  console.log("    node generate.js --show-config");
+  console.log("    node generate.js --show-config --set body.size=14 --set body.lineSpacing=2.0\n");
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
 
   if (args.help) { printUsage(); return; }
   if (args.listSizes) { printSizes(); return; }
+  if (args.examples) { printExamples(); return; }
 
   // 读取配置
   const cfgPath = path.resolve(args.config || "config.json");
