@@ -36,6 +36,7 @@ function parseArgs(argv) {
     if (a === "--set" || a === "-s") { args.set.push(argv[++i]); continue; }
     if (a === "--list-sizes") { args.listSizes = true; continue; }
     if (a === "--show-config") { args.showConfig = true; continue; }
+    if (a === "--dry-run") { args.dryRun = true; continue; }
     if (a === "--help" || a === "-h") { args.help = true; continue; }
     if (a.startsWith("--") && a.indexOf("=") > 2) {
       args.set.push(a.slice(2));
@@ -221,6 +222,7 @@ function printUsage() {
       --out <路径>        输出文件名（默认取 config.output.filename）
       --list-sizes        打印中文字号对照表
       --show-config       打印生效后的配置
+      --dry-run           预览会生成什么，不写文件
   -h, --help              显示帮助
 
 示例:
@@ -228,6 +230,7 @@ function printUsage() {
   node generate.js --set body.size=14 --set body.lineSpacing=2.0
   node generate.js --config 公文配置.json --out 公文.docx
   node generate.js --set table.captionPosition=below
+  node generate.js --dry-run
 `);
 }
 
@@ -269,6 +272,24 @@ function main() {
   const F = createFormatter(config);
   const assetsDir = path.join(__dirname, "assets");
   const children = buildSampleContent(F, assetsDir);
+
+  // dry-run 模式：预览会生成什么，不写文件
+  if (args.dryRun) {
+    console.log("[DRY-RUN] 不会修改任何文件\n");
+    let paraCount = 0, tableCount = 0, otherCount = 0;
+    for (const el of children) {
+      const ctor = el.constructor && el.constructor.name;
+      if (ctor === "Paragraph") paraCount++;
+      else if (ctor === "Table") tableCount++;
+      else otherCount++;
+    }
+    console.log("汇总：");
+    console.log("  · 段落: " + paraCount);
+    console.log("  · 表格: " + tableCount);
+    if (otherCount > 0) console.log("  · 其它: " + otherCount);
+    console.log("\n完成。");
+    return;
+  }
 
   // 装配并输出
   const doc = buildDocument(config, children, { title: "规范文档示例" });
