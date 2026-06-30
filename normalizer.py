@@ -3,6 +3,9 @@
 from dataclasses import dataclass, field
 import os
 import re
+import zipfile
+
+import lxml.etree
 
 from docx import Document
 from docx.shared import Cm, Pt
@@ -128,36 +131,101 @@ def inspect_docx(input_path):
     )
 
 
-def normalize_docx(config, input_path, output_path, assets_dir=None):
-    """Conservatively apply the configured style system to an existing .docx."""
+def normalize_docx(config, input_path, output_path, assets_dir=None, *,
+                   backup=True, dry_run=False, return_result=False, on_warning=None):
+    """规范化 docx。薄包装层。
+
+    旧签名（不传新参数）行为完全兼容：返回 str(output_path)。
+    新签名支持 backup / dry_run / return_result / on_warning。
+    抛 NormalizeError 子类替代原本的 ValueError / FileNotFoundError / KeyError。
+    """
+    import time
     del assets_dir  # Kept for a stable public interface.
+    start = time.time()
     input_path = os.fspath(input_path)
     output_path = os.fspath(output_path)
 
-    if not _is_docx_path(input_path):
-        raise ValueError("输入文件必须是 .docx Word 文档")
-    if not os.path.exists(input_path):
-        raise FileNotFoundError("找不到输入文档: " + input_path)
-    if not _is_docx_path(output_path):
-        raise ValueError("输出文件必须是 .docx Word 文档")
-    if _same_path(input_path, output_path):
-        raise ValueError("输出文件不能覆盖输入文档，请选择不同的保存路径")
+    # 1. 路径校验（抛 NormalizeError 子类）
+    _validate_paths(input_path, output_path)
 
-    doc = Document(input_path)
-    para_to_section, table_to_section = _build_body_section_maps(doc)
-    cover_sections = _collect_cover_section_indices(doc)
+    # 2. 备份（dry_run 时跳过；备份失败归为 warning）
+    backup_path = None
+    if backup and not dry_run:
+        backup_path = _backup_source(input_path)
+        if backup_path is None:
+            warn_msg = "备份失败（不影响规范化继续）"
+            if on_warning:
+                on_warning(warn_msg, location="备份")
 
-    _apply_page_settings(doc, config)
-    _apply_document_styles(doc, config)
-    _normalize_paragraphs(doc, config, para_to_section, cover_sections)
-    _normalize_tables(doc, config, table_to_section, cover_sections)
-    _normalize_inline_images(doc, config)
-    _mark_toc_fields_dirty(doc)
+    # 3. 加载 + 规范化（try/except 把异常转成 NormalizeError）
+    with WarningCollector() as wc:
+        try:
+            doc = Document(input_path)
+        except (zipfile.BadZipFile, lxml.etree.XMLSyntaxError) as e:
+            raise CorruptDocxError(
+                f"docx 文件已损坏: {input_path}",
+                cause=e,
+                hint="用 Word 打开重新保存一次",
+            ) from e
+        except KeyError as e:
+            raise CorruptDocxError(
+                f"docx 关键样式缺失: {input_path}",
+                cause=e,
+                hint="用 Word 打开重新保存一次",
+            ) from e
 
-    out_dir = os.path.dirname(os.path.abspath(output_path))
-    if out_dir:
-        os.makedirs(out_dir, exist_ok=True)
-    doc.save(output_path)
+        try:
+            para_to_section, table_to_section = _build_body_section_maps(doc)
+            cover_sections = _collect_cover_section_indices(doc)
+
+            _apply_page_settings(doc, config)
+            _apply_document_styles(doc, config)
+            _normalize_paragraphs(doc, config, para_to_section, cover_sections, on_warning=wc.warn)
+            _normalize_tables(doc, config, table_to_section, cover_sections, on_warning=wc.warn)
+            _normalize_inline_images(doc, config, on_warning=wc.warn)
+            _mark_toc_fields_dirty(doc)
+        except PermissionError as e:
+            raise OutputNotWritableError(
+                f"无法访问文件: {output_path}",
+                cause=e,
+                hint="检查目录权限和磁盘空间",
+            ) from e
+
+        # 4. 写文件（dry_run 时跳过）
+        if not dry_run:
+            try:
+                out_dir = os.path.dirname(os.path.abspath(output_path))
+                if out_dir:
+                    os.makedirs(out_dir, exist_ok=True)
+                doc.save(output_path)
+            except PermissionError as e:
+                raise OutputNotWritableError(
+                    f"无法写入输出: {output_path}",
+                    cause=e,
+                    hint="检查目录权限和磁盘空间",
+                ) from e
+            except OSError as e:
+                raise OutputNotWritableError(
+                    f"无法写入输出: {output_path}",
+                    cause=e,
+                    hint="检查目录权限和磁盘空间",
+                ) from e
+
+    duration_ms = int((time.time() - start) * 1000)
+    if return_result:
+        return NormalizeResult(
+            input_path=input_path,
+            output_path=output_path if not dry_run else None,
+            backup_path=backup_path,
+            dry_run=dry_run,
+            paragraphs_processed=len(doc.paragraphs),
+            tables_processed=len(doc.tables),
+            images_processed=len(getattr(doc, "inline_shapes", [])),
+            changes=[],
+            warnings=list(wc.warnings),
+            errors=[],
+            duration_ms=duration_ms,
+        )
     return output_path
 
 
@@ -507,7 +575,7 @@ def _apply_reference_format(para, cfg):
     )
 
 
-def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections):
+def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections, on_warning=None):
     fig_prefix = cfg.get("figure", {}).get("prefix", "图")
     table_prefix = cfg.get("table", {}).get("prefix", "表")
     in_refs = False
@@ -547,7 +615,7 @@ def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections):
             _apply_body_format(para, cfg)
 
 
-def _normalize_tables(doc, cfg, table_to_section, cover_sections):
+def _normalize_tables(doc, cfg, table_to_section, cover_sections, on_warning=None):
     t = cfg.get("table", {})
     cell_font = t.get("cellFont", cfg["body"].get("font", "宋体"))
     cell_en = t.get("cellAsciiFont", cfg["body"].get("asciiFont", "Times New Roman"))
@@ -577,7 +645,7 @@ def _normalize_tables(doc, cfg, table_to_section, cover_sections):
                     )
 
 
-def _normalize_inline_images(doc, cfg):
+def _normalize_inline_images(doc, cfg, on_warning=None):
     figure = cfg.get("figure", {})
     max_width = figure.get("maxWidthCm")
     max_height = figure.get("maxHeightCm")

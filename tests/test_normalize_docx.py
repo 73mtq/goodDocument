@@ -72,19 +72,19 @@ class NormalizeDocxTests(unittest.TestCase):
             self.assertEqual(cell_para.paragraph_format.line_spacing, table_cfg["cellLineSpacing"])
 
     def test_normalize_docx_rejects_invalid_paths_and_overwrite(self):
-        from normalizer import normalize_docx
+        from normalizer import normalize_docx, NormalizeError
 
         cfg = load_config()
         source = ROOT / "规范文档示例.docx"
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(NormalizeError):
             normalize_docx(cfg, source, source)
 
         with tempfile.TemporaryDirectory() as tmp:
             bad_input = Path(tmp) / "not-word.txt"
             bad_input.write_text("plain text", encoding="utf-8")
             output = Path(tmp) / "out.docx"
-            with self.assertRaises(ValueError):
+            with self.assertRaises(NormalizeError):
                 normalize_docx(cfg, bad_input, output)
 
     def test_normalize_docx_handles_no_heading_no_table_document(self):
@@ -492,6 +492,46 @@ class BackupSourceTests(unittest.TestCase):
         from normalizer import _backup_source
         result = _backup_source("Z:/nonexistent-xyz-qq-9999/doc.docx")
         self.assertIsNone(result)
+
+
+class NormalizeDocxNewSignatureTests(unittest.TestCase):
+    def test_default_returns_str_backward_compat(self):
+        from normalizer import normalize_docx
+        cfg = load_config()
+        source = ROOT / "规范文档示例.docx"
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "out.docx"
+            result = normalize_docx(cfg, source, output)
+            self.assertIsInstance(result, str)
+            self.assertEqual(result, str(output))
+
+    def test_return_result_returns_normalize_result(self):
+        from normalizer import normalize_docx, NormalizeResult
+        cfg = load_config()
+        source = ROOT / "规范文档示例.docx"
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "out.docx"
+            result = normalize_docx(cfg, source, output, return_result=True)
+            self.assertIsInstance(result, NormalizeResult)
+            self.assertEqual(result.input_path, str(source))
+
+    def test_input_not_found_raises_typed_error(self):
+        from normalizer import normalize_docx, InputNotFoundError
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(InputNotFoundError):
+                normalize_docx(cfg, Path(tmp) / "nope.docx", Path(tmp) / "out.docx")
+
+    def test_dry_run_does_not_write(self):
+        from normalizer import normalize_docx
+        cfg = load_config()
+        source = ROOT / "规范文档示例.docx"
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "out.docx"
+            result = normalize_docx(cfg, source, output, dry_run=True, return_result=True)
+            self.assertTrue(result.dry_run)
+            self.assertFalse(output.exists())
+            self.assertGreater(result.paragraphs_processed, 0)
 
 
 if __name__ == "__main__":
