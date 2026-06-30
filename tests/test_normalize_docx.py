@@ -402,5 +402,28 @@ class NormalizeCoverAndTocTests(unittest.TestCase):
             self.assertFalse(_is_toc_style(doc.paragraphs[7]))
 
 
+class NormalizeErrorTests(unittest.TestCase):
+    def test_normalize_error_includes_message_cause_hint(self):
+        from normalizer import NormalizeError
+        e = NormalizeError("找不到文件", cause=FileNotFoundError("x"), hint="检查路径")
+        s = str(e)
+        self.assertIn("找不到文件", s)
+        self.assertIn("FileNotFoundError", s)
+        self.assertIn("检查路径", s)
+
+    def test_input_not_found_is_normalize_error(self):
+        from normalizer import NormalizeError, InputNotFoundError
+        self.assertTrue(issubclass(InputNotFoundError, NormalizeError))
+
+    def test_each_subclass_exists(self):
+        from normalizer import (
+            NormalizeError, InputNotFoundError, InvalidFileTypeError,
+            CorruptDocxError, OutputNotWritableError, SameInputOutputError,
+        )
+        for cls in (InputNotFoundError, InvalidFileTypeError, CorruptDocxError,
+                    OutputNotWritableError, SameInputOutputError):
+            self.assertTrue(issubclass(cls, NormalizeError))
+
+
 if __name__ == "__main__":
     unittest.main()
