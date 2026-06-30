@@ -586,5 +586,94 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
                 normalize_docx(load_config(), src, "Z:/nonexistent-zzz-9999/out.docx")
 
 
+class BackupAndDryRunTests(unittest.TestCase):
+    def test_backup_creates_bak_file(self):
+        from normalizer import normalize_docx
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "doc.docx"
+            Document().save(src)
+            normalize_docx(load_config(), src, Path(tmp) / "out.docx")
+            self.assertTrue((Path(tmp) / "doc.docx.bak").exists())
+
+    def test_backup_increments_when_exists(self):
+        from normalizer import normalize_docx
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "doc.docx"
+            Document().save(src)
+            (Path(tmp) / "doc.docx.bak").write_bytes(b"x")
+            normalize_docx(load_config(), src, Path(tmp) / "out.docx")
+            self.assertTrue((Path(tmp) / "doc.docx.bak.1").exists())
+
+    def test_dry_run_does_not_write_output(self):
+        from normalizer import normalize_docx
+        cfg = load_config()
+        source = ROOT / "规范文档示例.docx"
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "out.docx"
+            result = normalize_docx(cfg, source, output, dry_run=True, return_result=True)
+            self.assertTrue(result.dry_run)
+            self.assertFalse(output.exists())
+
+    def test_dry_run_returns_normalize_result(self):
+        from normalizer import normalize_docx, NormalizeResult
+        cfg = load_config()
+        source = ROOT / "规范文档示例.docx"
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "out.docx"
+            result = normalize_docx(cfg, source, output, dry_run=True, return_result=True)
+            self.assertIsInstance(result, NormalizeResult)
+            self.assertGreater(result.paragraphs_processed, 0)
+
+    def test_backup_false_skips_backup(self):
+        from normalizer import normalize_docx
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "doc.docx"
+            Document().save(src)
+            normalize_docx(load_config(), src, Path(tmp) / "out.docx", backup=False)
+            self.assertFalse((Path(tmp) / "doc.docx.bak").exists())
+
+
+class EdgeCaseGracefulDegradationTests(unittest.TestCase):
+    def test_continues_with_unrecognized_paragraph(self):
+        from normalizer import normalize_docx
+        with tempfile.TemporaryDirectory() as tmp:
+            from tests._helpers import make_docx_with_unrecognized_paragraph
+            src = Path(tmp) / "doc.docx"
+            make_docx_with_unrecognized_paragraph(str(src))
+            result = normalize_docx(load_config(), src, Path(tmp) / "out.docx", return_result=True)
+            self.assertTrue((Path(tmp) / "out.docx").exists())
+            self.assertGreater(result.paragraphs_processed, 0)
+
+    def test_handles_nested_table(self):
+        from normalizer import normalize_docx
+        with tempfile.TemporaryDirectory() as tmp:
+            from tests._helpers import make_docx_with_nested_table
+            src = Path(tmp) / "nested.docx"
+            make_docx_with_nested_table(str(src))
+            normalize_docx(load_config(), src, Path(tmp) / "out.docx")
+            self.assertTrue((Path(tmp) / "out.docx").exists())
+
+    def test_handles_empty_table(self):
+        from normalizer import normalize_docx
+        with tempfile.TemporaryDirectory() as tmp:
+            from tests._helpers import make_docx_with_empty_table
+            src = Path(tmp) / "empty_tbl.docx"
+            make_docx_with_empty_table(str(src))
+            normalize_docx(load_config(), src, Path(tmp) / "out.docx")
+            self.assertTrue((Path(tmp) / "out.docx").exists())
+
+    def test_message_chinese_human_readable(self):
+        from normalizer import normalize_docx, NormalizeError
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                normalize_docx(load_config(),
+                               Path(tmp) / "missing-9999.docx",
+                               Path(tmp) / "out.docx")
+            except NormalizeError as e:
+                s = str(e)
+                self.assertIn("找不到文件", s)
+                self.assertIn("检查路径", s)
+
+
 if __name__ == "__main__":
     unittest.main()
