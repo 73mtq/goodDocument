@@ -587,21 +587,30 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
 
 
 class BackupAndDryRunTests(unittest.TestCase):
-    def test_backup_creates_bak_file(self):
+    def test_default_no_backup_does_not_create_bak(self):
+        """0.2.1+ 默认 backup=False,不产生 .bak。"""
         from normalizer import normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "doc.docx"
             Document().save(src)
             normalize_docx(load_config(), src, Path(tmp) / "out.docx")
+            self.assertFalse((Path(tmp) / "doc.docx.bak").exists())
+
+    def test_backup_true_creates_bak_file(self):
+        from normalizer import normalize_docx
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "doc.docx"
+            Document().save(src)
+            normalize_docx(load_config(), src, Path(tmp) / "out.docx", backup=True)
             self.assertTrue((Path(tmp) / "doc.docx.bak").exists())
 
-    def test_backup_increments_when_exists(self):
+    def test_backup_true_increments_when_exists(self):
         from normalizer import normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "doc.docx"
             Document().save(src)
             (Path(tmp) / "doc.docx.bak").write_bytes(b"x")
-            normalize_docx(load_config(), src, Path(tmp) / "out.docx")
+            normalize_docx(load_config(), src, Path(tmp) / "out.docx", backup=True)
             self.assertTrue((Path(tmp) / "doc.docx.bak.1").exists())
 
     def test_dry_run_does_not_write_output(self):
@@ -624,7 +633,7 @@ class BackupAndDryRunTests(unittest.TestCase):
             self.assertIsInstance(result, NormalizeResult)
             self.assertGreater(result.paragraphs_processed, 0)
 
-    def test_backup_false_skips_backup(self):
+    def test_backup_false_explicit_skips_backup(self):
         from normalizer import normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "doc.docx"

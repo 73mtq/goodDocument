@@ -61,12 +61,15 @@ from .paths import _same_path, _is_docx_path, _validate_paths, _backup_source
 
 
 def normalize_docx(config, input_path, output_path, assets_dir=None, *,
-                   backup=True, dry_run=False, return_result=False, on_warning=None):
+                   backup=False, dry_run=False, return_result=False, on_warning=None):
     """规范化 docx。薄包装层。
 
     旧签名（不传新参数）行为完全兼容：返回 str(output_path)。
     新签名支持 backup / dry_run / return_result / on_warning。
     抛 NormalizeError 子类替代原本的 ValueError / FileNotFoundError / KeyError。
+
+    注意:backup 默认 False (0.2.1 起) — 早期版本默认 True,会一直产生 .bak 累计。
+          需要备份时显式传 backup=True。
     """
     del assets_dir  # Kept for a stable public interface.
     start = time.time()

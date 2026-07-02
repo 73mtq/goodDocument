@@ -2,7 +2,7 @@
 
 > 接手人第一份必读。讲清楚这是什么、做到哪了、坑在哪、别走哪些路、下一步做什么。
 >
-> 最后更新：v0.2.0（2026-06-30）
+> 最后更新：v0.2.1（2026-07-02）
 
 ---
 
@@ -38,7 +38,8 @@
 | 0.1.0 | `1b44f0e` | 初始版本（双实现 + 14 测试）|
 | 0.1.1 | `a861ab7` | 保留封面/目录原版式（不再一刀切规范化）|
 | 0.1.2 | `e2fb833` | 修表格首行缩进 bug（OOXML 字符单位）|
-| **0.2.0** | `62c6c34` | **健壮性与 UX 全面升级（本次）** |
+| 0.2.0 | `62c6c34` | 健壮性与 UX 全面升级（5 类异常 / dry_run / 备份 / warnings）|
+| **0.2.1** | *(本次)* | **`backup` 默认 `True` → `False`（修 .bak 无限累计）** |
 
 ### 2.2 0.2.0 交付清单
 
@@ -67,14 +68,34 @@
 | **C 代码结构** | normalizer.py 拆为 normalizer/ 包 | `51e782b` | ✅ |
 | **D 打包与发布** | v0.2.0 / GitHub Actions | `9c6cf20` `46fc204` | ✅ |
 
+### 2.5 0.2.1 调整（`backup` 默认关闭）
+
+**问题**：0.2.0 默认 `backup=True`，每次规范化产生 `.bak` / `.bak.1` / `.bak.2` ... 无限累计（实测工作目录累积 27 个 = 38MB 垃圾）。
+
+**修复**（1 个 fix 提交）：
+
+| 文件 | 变更 |
+|---|---|
+| `normalizer/core.py` | `backup=True` → `backup=False`（默认） |
+| `tests/test_normalize_docx.py` | `BackupAndDryRunTests` 重写：新增 `test_default_no_backup_does_not_create_bak`；`test_backup_creates_bak_file` 改名 `test_backup_true_creates_bak_file` 并显式 `backup=True`；`test_backup_increments_when_exists` 同理 |
+| `CHANGELOG.md` | [Unreleased] 加 Changed + Fixed 条目 |
+| `README.md` | 健壮性保证 + FAQ Q7 改描述 |
+| `HANDOVER.md` | 2.4 签名 + 备份策略 + 新增 7.7 决策 |
+| `version.py` / `package.json` | `0.2.0` → `0.2.1` |
+| 工作目录 | 删 27 个 `规范文档示例.docx.bak*` |
+
+**测试**：43 passed（原 42 + 新增 1）。
+
+**教训**：自动备份类功能默认**关**（opt-in），opt-out 容易污染用户工作目录。GUI/CLI 暂不加 backup 开关（用户呼声再加）。
+
 ### 2.4 已确认的方案
 
 - **架构**：Python（GUI + 库）+ Node.js（CLI + 库）双实现，共享 config.json 语义
 - **核心库入口**：`from normalizer import normalize_docx, inspect_docx, NormalizeError, ...`
-- **签名（新）**：`normalize_docx(cfg, input, output, *, backup=True, dry_run=False, return_result=False, on_warning=None)`
+- **签名（新）**：`normalize_docx(cfg, input, output, *, backup=False, dry_run=False, return_result=False, on_warning=None)`
 - **签名（向后兼容）**：不传新参数时返回 `str(output_path)`
 - **错误体系**：`NormalizeError` 异常类，5 子类带中文 message + hint
-- **备份策略**：固定 `.bak` → `.bak.1` → `.bak.2` ...（不暴露配置）
+- **备份策略（0.2.1 调整）**：默认 `backup=False`，需要时显式传 `backup=True`。递增策略 `.bak` → `.bak.1` → ... 保留。原因：默认开启会无限累计污染工作目录（实测累积 27 个 .bak）。
 - **优雅降级**：非致命 warning 继续执行，致命 error 抛 NormalizeError
 - **CI**：GitHub Actions + 推送 `v*` tag 自动构建 exe + zip + Release
 
@@ -93,13 +114,13 @@ goodDocument/
 │   ├── paths.py                 # 路径校验 + 备份（_validate_paths / _backup_source）
 │   ├── normalize.py             # 样式应用 + 段落/表格/图片 + 标题检测 + TOC 处理
 │   └── core.py                  # normalize_docx 主入口（薄包装层）
-├── version.py                   # ⭐ 单一来源 __version__ = "0.2.0"
+├── version.py                   # ⭐ 单一来源 __version__ = "0.2.1"
 ├── config_model.py              # 配置加载/保存/校验
 ├── paths.py                     # 路径工具（PyInstaller 兼容）
 ├── config.json                  # 排版参数配置
 ├── DocFormatter.spec            # PyInstaller 打包配置
 │
-├── package.json                 # Node.js 项目配置（version: 0.2.0）
+├── package.json                 # Node.js 项目配置（version: 0.2.1）
 ├── generate.js                  # Node.js CLI 入口
 ├── formatter.js                 # Node.js 排版核心库
 │
@@ -110,11 +131,11 @@ goodDocument/
 ├── assets/
 │   └── figure1.png              # 示例图片
 │
-├── tests/                       # ⭐ 42 个测试全过
+├── tests/                       # ⭐ 43 个测试全过
 │   ├── __init__.py
 │   ├── test_app_paths.py        # 4 个路径工具测试
 │   ├── test_config_model.py     # 2 个配置测试
-│   ├── test_normalize_docx.py   # 36 个核心测试（14 旧 + 22 新）
+│   ├── test_normalize_docx.py   # 37 个核心测试（14 旧 + 23 新；含 0.2.1 新增 default_no_backup）
 │   ├── _helpers.py              # 边界 docx 构造器（垃圾/截断/嵌套表/空表/无法识别）
 │   ├── _corrupt_source.docx     # _helpers 用的 fixture（自动生成）
 │   └── __pycache__/             # .gitignore
@@ -351,6 +372,18 @@ git push origin main v0.X.0
 - 增加 GUI/CLI 复杂度
 - 固定 `.bak` → `.bak.N` 满足 99% 场景
 - **未来时机**：如有用户反馈再考虑
+
+### 7.7 `backup` 默认值（0.2.1 决策）
+
+**0.2.0** 默认 `backup=True` → 无限累计 `.bak` / `.bak.1` / ... 污染工作目录（实测 27 个）。
+
+**0.2.1** 改成默认 `backup=False`。原因：
+- 默认开 → 用户每规范化一次就多一个 .bak，27 次后 38MB
+- 99% 场景下输出文件就是用户想要的，不需要保留原文件
+- 真要恢复 → 用户的源文件本来就有（normalize 是规范化，不是覆盖原文件）
+- 想要备份 → 显式 `backup=True`
+
+**教训**：自动备份类功能默认**关**，opt-in 比 opt-out 安全得多。GUI/CLI 暂不加 backup 开关（如果有用户呼声再加）。
 
 ---
 

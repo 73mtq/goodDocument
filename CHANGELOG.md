@@ -21,11 +21,16 @@
 - 旧 `ValueError` / `FileNotFoundError` 替换为 `NormalizeError` 子类
 - `_apply_run_defaults` 等接受可选 `on_warning` 回调
 - `formatter.js` 的 `cellPara` 加 `indent: { left: 0, right: 0, firstLine: 0 }`（Node.js 端也清零缩进）
+- **`normalize_docx` 的 `backup` 参数默认值从 `True` 改为 `False`**
+  - 早期版本每次规范化都会产生 `.bak` / `.bak.1` / ... 无限累计，污染工作目录
+  - 现默认不备份；需要时显式传 `backup=True`
+  - `_backup_source` 行为不变（递增策略保留），仅默认不再触发
 
 ### Fixed
 - 表格里文字会继承正文首行缩进 2 字符（OOXML 字符单位 `firstLineChars` 残留问题）
 - 表格里文字会从 Normal 样式继承 `firstLineChars=200`（Normal 样式清理 bug）
 - `formatter.js` Node.js 端表格单元格段落无显式 indent
+- 工作目录被 27 个 `.bak` 累计文件污染（0.2.0 默认行为）
 
 ## [0.1.0] - 2026-06-29
 
