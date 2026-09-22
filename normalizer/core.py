@@ -1,63 +1,27 @@
-"""normalizer 主入口 + 路径校验 + 备份。"""
+"""normalizer 主入口。"""
 from __future__ import annotations
 
 import os
 import time
-import zipfile
 from typing import Optional
 
-import lxml.etree
-
-from docx import Document
-
-from formatter import (
-    resolve_size,
-    resolve_align,
-    set_run_font,
-    set_para_spacing,
-    set_zero_indent,
-    clear_style_indent_chars,
-    add_page_number_field,
-    set_run_font_element,
-)
-
 from .errors import (
-    NormalizeError,
-    InputNotFoundError,
-    InvalidFileTypeError,
-    CorruptDocxError,
     OutputNotWritableError,
-    SameInputOutputError,
     WarningCollector,
     NormalizeResult,
 )
 from .normalize import (
-    HEADING_PATTERNS,
-    _apply_run_defaults,
     _apply_page_settings,
     _apply_document_styles,
-    _apply_heading_format,
-    _apply_body_format,
-    _apply_caption_format,
-    _apply_reference_format,
     _normalize_paragraphs,
     _normalize_tables,
     _normalize_inline_images,
     _mark_toc_fields_dirty,
-    _is_caption_para,
-    _is_toc_style,
-    _paragraph_text,
-    _detect_heading_level,
-    _find_toc_title_index,
     _build_body_section_maps,
     _collect_cover_section_indices,
-    _section_has_page_number,
-    _has_header_footer,
-    _has_complex_objects,
-    DocxInspection,
-    inspect_docx,
+    _open_document,
 )
-from .paths import _same_path, _is_docx_path, _validate_paths, _backup_source
+from .paths import _validate_paths, _backup_source
 
 
 def normalize_docx(config, input_path, output_path, assets_dir=None, *,
@@ -67,6 +31,7 @@ def normalize_docx(config, input_path, output_path, assets_dir=None, *,
     旧签名（不传新参数）行为完全兼容：返回 str(output_path)。
     新签名支持 backup / dry_run / return_result / on_warning。
     抛 NormalizeError 子类替代原本的 ValueError / FileNotFoundError / KeyError。
+    dry_run=True 且 return_result=False 时返回 None（未写文件）。
 
     注意:backup 默认 False (0.2.1 起) — 早期版本默认 True,会一直产生 .bak 累计。
           需要备份时显式传 backup=True。
@@ -79,45 +44,36 @@ def normalize_docx(config, input_path, output_path, assets_dir=None, *,
     # 1. 路径校验
     _validate_paths(input_path, output_path)
 
-    # 2. 备份（dry_run 时跳过；备份失败归为 warning）
-    backup_path: Optional[str] = None
-    if backup and not dry_run:
-        backup_path = _backup_source(input_path)
-        if backup_path is None and on_warning:
-            on_warning("备份失败（不影响规范化继续）", location="备份")
-
-    # 3. 加载 + 规范化（try/except 把异常转成 NormalizeError）
     with WarningCollector() as wc:
-        try:
-            doc = Document(input_path)
-        except (zipfile.BadZipFile, lxml.etree.XMLSyntaxError) as e:
-            raise CorruptDocxError(
-                f"docx 文件已损坏: {input_path}",
-                cause=e, hint="用 Word 打开重新保存一次",
-            ) from e
-        except KeyError as e:
-            raise CorruptDocxError(
-                f"docx 关键样式缺失: {input_path}",
-                cause=e, hint="用 Word 打开重新保存一次",
-            ) from e
-        except Exception as e:  # noqa: BLE001
-            type_name = type(e).__name__
-            if "Package" in type_name or "Zip" in type_name or "Found" in type_name:
-                raise CorruptDocxError(
-                    f"docx 文件已损坏: {input_path}",
-                    cause=e, hint="用 Word 打开重新保存一次",
-                ) from e
-            raise
+        def emit_warning(msg, *, location=None):
+            wc.warn(msg, location=location)
+            if on_warning:
+                on_warning(msg, location=location)
 
+        # 2. 备份（dry_run 时跳过；备份失败归为 warning）
+        backup_path: Optional[str] = None
+        if backup and not dry_run:
+            backup_path = _backup_source(input_path)
+            if backup_path is None:
+                emit_warning("备份失败（不影响规范化继续）", location="备份")
+
+        # 3. 加载 + 规范化
+        doc = _open_document(input_path)
+        changes = []
         try:
             para_to_section, table_to_section = _build_body_section_maps(doc)
             cover_sections = _collect_cover_section_indices(doc)
 
             _apply_page_settings(doc, config)
             _apply_document_styles(doc, config)
-            _normalize_paragraphs(doc, config, para_to_section, cover_sections, on_warning=wc.warn)
-            _normalize_tables(doc, config, table_to_section, cover_sections, on_warning=wc.warn)
-            _normalize_inline_images(doc, config, on_warning=wc.warn)
+            paragraphs_processed = _normalize_paragraphs(
+                doc, config, para_to_section, cover_sections,
+                on_warning=emit_warning, on_change=changes.append)
+            tables_processed = _normalize_tables(
+                doc, config, table_to_section, cover_sections,
+                on_warning=emit_warning, on_change=changes.append)
+            images_processed = _normalize_inline_images(
+                doc, config, on_warning=emit_warning, on_change=changes.append)
             _mark_toc_fields_dirty(doc)
         except PermissionError as e:
             raise OutputNotWritableError(
@@ -150,12 +106,14 @@ def normalize_docx(config, input_path, output_path, assets_dir=None, *,
             output_path=output_path if not dry_run else None,
             backup_path=backup_path,
             dry_run=dry_run,
-            paragraphs_processed=len(doc.paragraphs),
-            tables_processed=len(doc.tables),
-            images_processed=len(getattr(doc, "inline_shapes", [])),
-            changes=[],
+            paragraphs_processed=paragraphs_processed,
+            tables_processed=tables_processed,
+            images_processed=images_processed,
+            changes=list(changes),
             warnings=list(wc.warnings),
             errors=[],
             duration_ms=duration_ms,
         )
+    if dry_run:
+        return None
     return output_path

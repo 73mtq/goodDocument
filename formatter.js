@@ -86,8 +86,7 @@ function pageSizeDxa(size) {
 function contentWidthDxa(cfg) {
   const { w } = pageSizeDxa(cfg.page.size);
   const m = cfg.page.margins;
-  const unit = cfg.page.marginUnit === "cm" ? CM_TO_DXA : 1;
-  return Math.round(w - m.left * unit - m.right * unit);
+  return Math.round(w - m.left * CM_TO_DXA - m.right * CM_TO_DXA);
 }
 
 /* ------------------------------------------------------------------
@@ -97,25 +96,21 @@ function contentWidthDxa(cfg) {
 const HEADING_PATTERNS = {
   h1: /^[一二三四五六七八九十百]+、/,
   h2: /^（[一二三四五六七八九十百]+）|^\([一二三四五六七八九十百]+\)/,
-  h3: /^\d+[.、]/,
+  h3: /^\d+[.、](?!\d)/,
   h4: /^（\d+）|^\(\d+\)/,
 };
 
 /**
  * 根据文本前缀自动判断标题层级（1~4），非标题返回 0。
+ * cfg.headingDetect.patterns 可按层级覆盖内置规则。
  */
 function detectHeadingLevel(text, cfg) {
   if (!text) return 0;
   const t = String(text).trim();
-  // 用户自定义 patterns 优先
   const pats = (cfg && cfg.headingDetect && cfg.headingDetect.patterns) || HEADING_PATTERNS;
   for (const lvl of ["h1", "h2", "h3", "h4"]) {
     const p = pats[lvl] || HEADING_PATTERNS[lvl];
-    try { if (new RegExp(p).test(t)) return Number(lv.slice(1)); } catch (_) {}
-  }
-  // 兜底内置
-  for (const [lvl, re] of Object.entries(HEADING_PATTERNS)) {
-    if (re.test(t)) return Number(lvl.slice(1));
+    try { if (new RegExp(p).test(t)) return Number(lvl.slice(1)); } catch (_) {}
   }
   return 0;
 }
@@ -149,10 +144,12 @@ function createFormatter(config) {
   /* ---- 正文段落 ---- */
   function bodyPara(text, extra = {}) {
     const indentChars = cfg.body.firstLineIndentChars || 0;
+    // firstLine 单位为 twips：字数 × 字号(pt) × 20 = 字数 × 半磅值 × 10
+    const firstLineTwips = Math.round(indentChars * bodySize * 10);
     return new Paragraph({
       alignment: ALIGN_MAP[cfg.body.align] || AlignmentType.JUSTIFIED,
       spacing: { ...lineSpacingConfig(cfg.body.lineSpacing), after: ptToDxa(cfg.body.spaceAfterPt || 0) },
-      indent: indentChars > 0 ? { firstLine: indentChars * bodySize } : undefined,
+      indent: indentChars > 0 ? { firstLine: firstLineTwips } : undefined,
       children: [bodyRun(text)],
       ...extra,
     });
@@ -189,15 +186,65 @@ function createFormatter(config) {
   }
 
   /* ---- 图 ---- */
+  /**
+   * 按 figure 配置算出插入尺寸（px，96 DPI）。
+   * sizeMode="fit"   等比缩放到 maxWidthCm × maxHeightCm 上限内（默认）
+   * sizeMode="fixed" 统一到 fixedWidthCm × fixedHeightCm；keepAspectRatio 为真时
+   *                  等比适配（只填宽度即“统一宽度”），为假则强制拉伸
+   * clampToTextWidth 目标宽度不超过正文可用宽度，避免溢出页面
+   */
   function computeImageTransform(imgPath) {
     const dim = sizeOf(imgPath);
     const ratio = dim.width / dim.height;
-    let w = cfg.figure.maxWidthCm * PX_PER_CM;
-    let h = w / ratio;
-    const maxH = cfg.figure.maxHeightCm * PX_PER_CM;
-    if (h > maxH) { h = maxH; w = h * ratio; }
+    const usableCm = contentWidthDxa(cfg) / CM_TO_DXA;
+    const clampWidth = (cm) => (
+      cfg.figure.clampToTextWidth === false ? cm : Math.min(cm, usableCm)
+    );
+    const positive = (v) => {
+      const n = parseFloat(v);
+      return isNaN(n) || n <= 0 ? null : n;
+    };
+
+    let widthCm = null;
+    let heightCm = null;
+
+    if ((cfg.figure.sizeMode || "fit").toLowerCase() === "fixed") {
+      widthCm = positive(cfg.figure.fixedWidthCm);
+      heightCm = positive(cfg.figure.fixedHeightCm);
+      if (widthCm == null && heightCm == null) widthCm = positive(cfg.figure.maxWidthCm);
+      if (widthCm != null) widthCm = clampWidth(widthCm);
+      if (cfg.figure.keepAspectRatio && widthCm != null) {
+        const scaledH = widthCm / ratio;
+        if (heightCm != null && scaledH > heightCm) {
+          widthCm = heightCm * ratio;
+        } else {
+          heightCm = scaledH;
+        }
+      } else if (cfg.figure.keepAspectRatio && heightCm != null) {
+        widthCm = clampWidth(heightCm * ratio);
+      }
+    } else {
+      widthCm = clampWidth(positive(cfg.figure.maxWidthCm) ?? 15.5);
+      heightCm = widthCm / ratio;
+      const maxH = positive(cfg.figure.maxHeightCm);
+      if (maxH != null && heightCm > maxH) {
+        heightCm = maxH;
+        widthCm = heightCm * ratio;
+      }
+    }
+
+    if (widthCm == null && heightCm == null) {
+      widthCm = clampWidth(positive(cfg.figure.maxWidthCm) ?? 15.5);
+    }
+    if (widthCm == null) widthCm = heightCm * ratio;
+    if (heightCm == null) heightCm = widthCm / ratio;
+
     const type = (dim.type === "jpg" || dim.type === "jpeg") ? "jpg" : "png";
-    return { width: Math.round(w), height: Math.round(h), type };
+    return {
+      width: Math.round(widthCm * PX_PER_CM),
+      height: Math.round(heightCm * PX_PER_CM),
+      type,
+    };
   }
 
   let _figNo = 0, _tabNo = 0;
@@ -273,7 +320,7 @@ function createFormatter(config) {
     function cellPara(text, bold) {
       return new Paragraph({
         alignment: ALIGN_MAP[t.cellAlign] || AlignmentType.CENTER,
-        spacing: { ...lineSpacingConfig(t.cellLineSpacing), before: 30, after: 30 },
+        spacing: { ...lineSpacingConfig(t.cellLineSpacing), before: 0, after: 0 },
         // 【关键修复】单元格段落显式置零首行缩进，杜绝继承正文 2 字缩进
         indent: { left: 0, right: 0, firstLine: 0 },
         children: [new TextRun({

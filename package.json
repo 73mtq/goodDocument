@@ -1,10 +1,11 @@
 {
   "name": "gooddocument",
-  "version": "0.2.1",
+  "version": "0.5.0",
   "description": "规范文档生成器 —— 配置驱动的 .docx 排版工具（参考 GB/T 7714、公文格式）",
   "main": "generate.js",
   "scripts": {
     "start": "node generate.js",
+    "test": "node --test",
     "sizes": "node generate.js --list-sizes",
     "config": "node generate.js --show-config"
   },

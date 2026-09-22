@@ -1,16 +1,17 @@
-name: Build Windows EXE
+name: CI
 
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  test:
     runs-on: windows-latest
 
     steps:
@@ -21,23 +22,50 @@ jobs:
         with:
           python-version: "3.12"
           cache: "pip"
+          cache-dependency-path: requirements-dev.txt
 
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller python-docx
+          pip install -r requirements-dev.txt
 
-      - name: Install Node.js dependencies
+      - name: Lint
+        run: ruff check .
+
+      - name: Run Python tests
+        run: python -m pytest tests/ -v
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
-      - name: npm install
-        run: npm install
+      - name: Install Node.js dependencies
+        run: npm ci
 
-      - name: Run tests
-        run: python -m pytest tests/ -v
+      - name: Run Node.js tests
+        run: npm test
+
+  build:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
 
       - name: Build EXE
         run: pyinstaller DocFormatter.spec --noconfirm --clean
@@ -55,9 +83,7 @@ jobs:
       - name: Package with config
         run: |
           Copy-Item config.json dist\config.json -Force
-          if (Test-Path dist\config.json) {
-            Compress-Archive -Path dist\DocFormatter.exe, dist\config.json -DestinationPath DocFormatter-${{ github.ref_name }}.zip -Force
-          }
+          Compress-Archive -Path dist\DocFormatter.exe, dist\config.json -DestinationPath DocFormatter-${{ github.ref_name }}.zip -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -67,7 +93,6 @@ jobs:
           if-no-files-found: error
 
       - name: Create Release (on tag)
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: DocFormatter-*.zip

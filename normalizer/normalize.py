@@ -2,16 +2,22 @@
 from __future__ import annotations
 
 import re
+import zipfile
 from dataclasses import dataclass
 
+import lxml.etree
+
+from docx import Document
 from docx.shared import Cm, Pt
 from docx.enum.text import WD_LINE_SPACING
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
+from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.oxml.ns import qn
 
 from formatter import (
     resolve_size,
     resolve_align,
+    resolve_page_size,
+    resolve_table_align,
     set_run_font,
     set_para_spacing,
     set_zero_indent,
@@ -20,6 +26,9 @@ from formatter import (
     set_run_font_element,
 )
 
+from .errors import CorruptDocxError, InvalidFileTypeError
+from .paths import _is_docx_path
+
 
 # ----- 常量 -----
 EMU_PER_CM = 360000
@@ -27,7 +36,7 @@ EMU_PER_CM = 360000
 HEADING_PATTERNS = {
     1: re.compile(r"^[一二三四五六七八九十百]+、"),
     2: re.compile(r"^（[一二三四五六七八九十百]+）|^\([一二三四五六七八九十百]+\)"),
-    3: re.compile(r"^\d+[.、]"),
+    3: re.compile(r"^\d+[.、](?!\d)"),
     4: re.compile(r"^（\d+）|^\(\d+\)"),
 }
 
@@ -35,6 +44,11 @@ HEADING_PATTERNS = {
 # ----- 段落/标题检测 -----
 def _paragraph_text(para) -> str:
     return (para.text or "").strip()
+
+
+def _shorten(text, limit=24) -> str:
+    clean = " ".join((text or "").split())
+    return clean if len(clean) <= limit else clean[:limit] + "…"
 
 
 def _detect_heading_level(para) -> int:
@@ -63,12 +77,38 @@ def _is_toc_style(para) -> bool:
     return name.lower().startswith("toc")
 
 
-def _is_caption_para(text, prefixes) -> bool:
-    clean = (text or "").strip()
-    for prefix in prefixes:
-        if prefix and clean.startswith(prefix):
-            return True
-    return False
+def _build_caption_pattern(prefixes):
+    """题注匹配规则：前缀后紧跟编号（如图1、表 2、Figure3），避免误判正文。"""
+    alts = "|".join(re.escape(p) for p in prefixes if p)
+    if not alts:
+        return None
+    return re.compile(r"^(?:" + alts + r")\s*\d+")
+
+
+def _is_caption_para(text, pattern) -> bool:
+    if pattern is None:
+        return False
+    return bool(pattern.match((text or "").strip()))
+
+
+def _is_reference_title(text, level) -> bool:
+    """参考文献区段的起始标题：单独的"参考文献/参考资料"，或含该词的标题段。"""
+    clean = (text or "").strip().rstrip(":：")
+    if clean in ("参考文献", "参考资料"):
+        return True
+    return bool(level) and ("参考文献" in clean or "参考资料" in clean)
+
+
+def _paragraph_has_drawing(para) -> bool:
+    return bool(para._element.findall(".//" + qn("w:drawing")))
+
+
+def _is_blank_paragraph(para) -> bool:
+    if (para.text or "").strip():
+        return False
+    if para.runs:
+        return False
+    return not _paragraph_has_drawing(para)
 
 
 def _find_toc_title_index(doc):
@@ -92,11 +132,20 @@ def _find_toc_title_index(doc):
 
 # ----- Section 辅助 -----
 def _section_has_page_number(section) -> bool:
-    """检测 section 的页脚中是否已存在 PAGE 域。"""
+    """检测 section 的页脚（含继承的页脚定义）中是否已存在 PAGE 域。"""
     for instr in section.footer._element.iter(qn("w:instrText")):
         if instr.text and "PAGE" in instr.text:
             return True
     return False
+
+
+def _find_page_number_paragraph(section):
+    """返回页脚（含继承）中承载 PAGE 域的段落，找不到返回 None。"""
+    for para in section.footer.paragraphs:
+        for instr in para._element.iter(qn("w:instrText")):
+            if instr.text and "PAGE" in instr.text:
+                return para
+    return None
 
 
 def _build_body_section_maps(doc):
@@ -152,12 +201,13 @@ def _apply_run_defaults(para, zh_font, en_font, size_pt, bold=None, color=None):
 def _apply_page_settings(doc, cfg):
     page = cfg.get("page", {})
     margins = page.get("margins", {})
+    page_w, page_h = resolve_page_size(cfg)
     pn = cfg.get("pageNumber", {})
     only_existing = pn.get("onlyUpdateExisting", True)
 
     for sec in doc.sections:
-        sec.page_width = Cm(21.0)
-        sec.page_height = Cm(29.7)
+        sec.page_width = Cm(page_w)
+        sec.page_height = Cm(page_h)
         if "top" in margins:
             sec.top_margin = Cm(margins["top"])
         if "bottom" in margins:
@@ -173,8 +223,12 @@ def _apply_page_settings(doc, cfg):
             continue
 
         footer = sec.footer
-        footer.is_linked_to_previous = False
-        p = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
+        # 定位到真正承载 PAGE 域的段落（可能是继承来的页脚定义），
+        # 避免清空页脚首段导致内容丢失或出现两个页码。
+        p = _find_page_number_paragraph(sec)
+        if p is None:
+            blanks = [q for q in footer.paragraphs if _is_blank_paragraph(q)]
+            p = blanks[0] if blanks else footer.add_paragraph()
         p.clear()
         p.alignment = resolve_align(pn.get("align", "center"))
         set_para_spacing(p, line_spacing_mult=1.0, before_pt=0, after_pt=0)
@@ -289,11 +343,18 @@ def _apply_reference_format(para, cfg):
 
 
 # ----- 规范化主流程 -----
-def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections, on_warning=None):
-    fig_prefix = cfg.get("figure", {}).get("prefix", "图")
+def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections, on_warning=None, on_change=None):
+    fig_cfg = cfg.get("figure", {})
+    fig_prefix = fig_cfg.get("prefix", "图")
     table_prefix = cfg.get("table", {}).get("prefix", "表")
+    fig_caption_re = _build_caption_pattern((fig_prefix, "图", "Figure", "Fig"))
+    table_caption_re = _build_caption_pattern((table_prefix, "表", "Table"))
+    # 图与图题防分页：图题在下则图后紧跟，图题在上则图题后紧跟
+    fig_keep = bool(fig_cfg.get("keepWithCaption", True))
+    fig_caption_below = fig_cfg.get("captionPosition", "below") != "above"
     in_refs = False
     toc_title_index = _find_toc_title_index(doc)
+    processed = 0
 
     for idx, para in enumerate(doc.paragraphs):
         if _is_toc_style(para):
@@ -304,41 +365,68 @@ def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections, on_warning=
         if sec_idx is not None and sec_idx in cover_sections:
             continue
 
+        if _paragraph_has_drawing(para):
+            para.alignment = resolve_align(fig_cfg.get("align", "center"))
+            set_para_spacing(para, line_spacing_mult=1.0, before_pt=0, after_pt=0)
+            set_zero_indent(para)
+            if fig_keep and fig_caption_below:
+                _set_keep_with_next(para)
+            processed += 1
+            continue
+
         text = _paragraph_text(para)
         if not text:
             set_zero_indent(para)
             set_para_spacing(para, line_spacing_mult=1.0, before_pt=0, after_pt=0)
             continue
 
-        if "参考文献" in text or "参考资料" in text:
+        level = _detect_heading_level(para)
+        if _is_reference_title(text, level):
             in_refs = True
 
-        level = _detect_heading_level(para)
         if level:
             _apply_heading_format(para, cfg, level)
-        elif _is_caption_para(text, (fig_prefix, "图", "Figure", "Fig")):
+            processed += 1
+            if on_change:
+                on_change(f"段落 {idx}：{level} 级标题「{_shorten(text)}」")
+        elif _is_caption_para(text, fig_caption_re):
             _apply_caption_format(para, cfg, "figure")
-        elif _is_caption_para(text, (table_prefix, "表", "Table")):
+            if fig_keep and not fig_caption_below:
+                _set_keep_with_next(para)
+            processed += 1
+            if on_change:
+                on_change(f"段落 {idx}：图题注「{_shorten(text)}」")
+        elif _is_caption_para(text, table_caption_re):
             _apply_caption_format(para, cfg, "table")
+            processed += 1
+            if on_change:
+                on_change(f"段落 {idx}：表题注「{_shorten(text)}」")
         elif in_refs and re.match(r"^\[\d+\]", text):
             _apply_reference_format(para, cfg)
+            processed += 1
+            if on_change:
+                on_change(f"段落 {idx}：参考文献条目「{_shorten(text)}」")
         else:
             _apply_body_format(para, cfg)
+            processed += 1
+    return processed
 
 
-def _normalize_tables(doc, cfg, table_to_section, cover_sections, on_warning=None):
+def _normalize_tables(doc, cfg, table_to_section, cover_sections, on_warning=None, on_change=None):
     t = cfg.get("table", {})
     cell_font = t.get("cellFont", cfg["body"].get("font", "宋体"))
     cell_en = t.get("cellAsciiFont", cfg["body"].get("asciiFont", "Times New Roman"))
     cell_size = resolve_size(t.get("cellSize", cfg["body"].get("size", "小四")))
     cell_align = resolve_align(t.get("cellAlign", "center"))
     cell_valign = WD_ALIGN_VERTICAL.CENTER if t.get("cellVAlign", "center") == "center" else WD_ALIGN_VERTICAL.TOP
+    processed = 0
 
     for t_idx, tbl in enumerate(doc.tables):
         sec_idx = table_to_section.get(t_idx)
         if sec_idx is not None and sec_idx in cover_sections:
             continue
-        tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+        processed += 1
+        tbl.alignment = resolve_table_align(t.get("align", "center"))
         for r_idx, row in enumerate(tbl.rows):
             for cell in row.cells:
                 cell.vertical_alignment = cell_valign
@@ -353,33 +441,217 @@ def _normalize_tables(doc, cfg, table_to_section, cover_sections, on_warning=Non
                         cell_size,
                         bold=t.get("headerBold", True) if r_idx == 0 else False,
                     )
+        if on_change:
+            on_change(f"表格 {t_idx}：{len(tbl.rows)}×{len(tbl.columns)} 独立排版")
+    return processed
 
 
-def _normalize_inline_images(doc, cfg, on_warning=None):
-    figure = cfg.get("figure", {})
-    max_width = figure.get("maxWidthCm")
-    max_height = figure.get("maxHeightCm")
-    if not max_width and not max_height:
-        return
+def _set_keep_with_next(para, keep=True):
+    """设置/清除 ``w:keepNext`` —— 让本段与下一段留在同一页（图与图题不被分页拆开）。"""
+    ppr = para._element.get_or_add_pPr()
+    if keep:
+        if ppr.keepNext is None:
+            ppr.get_or_add_keepNext()
+    else:
+        ppr._remove_keepNext()
 
-    max_w_emu = int(max_width * EMU_PER_CM) if max_width else None
-    max_h_emu = int(max_height * EMU_PER_CM) if max_height else None
-    for shape in getattr(doc, "inline_shapes", []):
+
+def _cm_to_emu(value):
+    """厘米 → EMU；非法值或 ≤0 返回 None（表示该维度不约束）。"""
+    try:
+        cm = float(value)
+    except (TypeError, ValueError):
+        return None
+    return int(round(cm * EMU_PER_CM)) if cm > 0 else None
+
+
+def _inside_any(element, local_names):
+    """判断元素是否位于指定局部名祖先之内（不含自身）。"""
+    parent = element.getparent()
+    while parent is not None:
+        if parent.tag.split("}", 1)[-1] in local_names:
+            return True
+        parent = parent.getparent()
+    return False
+
+
+def _iter_picture_frames(doc):
+    """产出 body 中的图片框 ``(kind, frame_el)``，kind 为 "inline" 或 "anchor"。
+
+    ``doc.inline_shapes`` 只覆盖嵌入型图片，周围环绕方式为"四周型/紧密型"等浮动图片
+    完全不在其中；这类图片必须直接读 XML 才能改尺寸。
+    只产出 ``graphicData`` 内含 ``pic:pic`` 的真图片，图表 / 形状 / SmartArt 不处理。
+    """
+    pic_tag = qn("pic:pic")
+    for drawing in doc.element.body.iter(qn("w:drawing")):
+        for frame in drawing:
+            kind = frame.tag.split("}", 1)[-1]
+            if kind not in ("inline", "anchor"):
+                continue
+            if frame.find(".//" + pic_tag) is None:
+                continue
+            yield kind, frame
+
+
+def _frame_extent(frame_el):
+    """读取图片框的 ``(cx, cy)``（EMU）；缺失或非法返回 ``(None, None)``。"""
+    extent = frame_el.find(qn("wp:extent"))
+    if extent is None:
+        return None, None
+    try:
+        return int(extent.get("cx")), int(extent.get("cy"))
+    except (TypeError, ValueError):
+        return None, None
+
+
+def _set_frame_extent(frame_el, cx, cy):
+    """同时写 ``wp:extent`` 与 ``pic:spPr/a:xfrm/a:ext``。
+
+    Word 以 ``wp:extent`` 为准，WPS / LibreOffice 更依赖 ``a:xfrm/a:ext``；
+    只改其中之一会让不同软件显示出的图片尺寸不一致。
+    注意只能精确定位 ``a:xfrm`` 下的 ``a:ext`` —— ``a:extLst`` 内也有同名 ``a:ext``，
+    无差别遍历会写坏扩展节点。
+    """
+    extent = frame_el.find(qn("wp:extent"))
+    if extent is None:
+        return False
+    extent.set("cx", str(int(cx)))
+    extent.set("cy", str(int(cy)))
+    for xfrm in frame_el.iter(qn("a:xfrm")):
+        inner = xfrm.find(qn("a:ext"))
+        if inner is not None:
+            inner.set("cx", str(int(cx)))
+            inner.set("cy", str(int(cy)))
+    return True
+
+
+def _available_text_width_emu(doc):
+    """各节正文可用宽度的最小值（EMU）；无法计算时返回 None。"""
+    widths = []
+    for sec in doc.sections:
         try:
-            width = int(shape.width)
-            height = int(shape.height)
-        except Exception:
+            usable = int(sec.page_width) - int(sec.left_margin) - int(sec.right_margin)
+        except TypeError:
             continue
-        if width <= 0 or height <= 0:
+        if usable > 0:
+            widths.append(usable)
+    return min(widths) if widths else None
+
+
+def _compute_target_size(cx, cy, mode, max_w, max_h, fixed_w, fixed_h, keep_ratio):
+    """按尺寸策略算出目标 ``(cx, cy)``；无需改动时返回 None。"""
+    if mode == "fixed":
+        if not keep_ratio:
+            return fixed_w or cx, fixed_h or cy
+        scales = [limit / cur for limit, cur in ((fixed_w, cx), (fixed_h, cy)) if limit]
+        if not scales:
+            return None
+        scale = min(scales)
+        return int(round(cx * scale)), int(round(cy * scale))
+
+    scales = [limit / cur for limit, cur in ((max_w, cx), (max_h, cy)) if limit]
+    if not scales:
+        return None
+    scale = min(min(scales), 1.0)  # fit 模式只缩不放
+    if scale >= 1.0:
+        return None
+    return int(round(cx * scale)), int(round(cy * scale))
+
+
+def _count_header_footer_images(doc):
+    """页眉/页脚中的图片数量（这些部件不在 body 内，本工具不处理）。"""
+    total = 0
+    for sec in doc.sections:
+        for part in (sec.header, sec.footer):
+            try:
+                if part.is_linked_to_previous:
+                    continue
+                total += len(part._element.findall(".//" + qn("w:drawing")))
+            except Exception:  # noqa: BLE001
+                continue
+    return total
+
+
+def _normalize_inline_images(doc, cfg, on_warning=None, on_change=None):
+    """统一/缩放文档中的图片，返回**实际被调整**的图片数量。
+
+    ``figure.sizeMode``:
+
+    - ``"fit"``（默认）：等比缩放到 ``maxWidthCm`` × ``maxHeightCm`` 上限内，只缩不放。
+    - ``"fixed"``：统一到 ``fixedWidthCm`` × ``fixedHeightCm``。
+      ``keepAspectRatio=false`` 为强制拉伸（等同 Word VBA 的
+      ``LockAspectRatio = msoFalse``）；``true`` 则等比适配，只填宽度即"统一宽度"。
+
+    ``clampToTextWidth`` 为安全阀：目标宽度不超过正文可用宽度，避免图片溢出页面
+    （VBA 写死厘米数时最典型的翻车点）。
+    """
+    figure = cfg.get("figure", {})
+    mode = str(figure.get("sizeMode") or "fit").lower()
+    max_w = _cm_to_emu(figure.get("maxWidthCm"))
+    max_h = _cm_to_emu(figure.get("maxHeightCm"))
+    fixed_w = _cm_to_emu(figure.get("fixedWidthCm"))
+    fixed_h = _cm_to_emu(figure.get("fixedHeightCm"))
+    keep_ratio = bool(figure.get("keepAspectRatio", False))
+    clamp = bool(figure.get("clampToTextWidth", True))
+    skip_in_tables = bool(figure.get("skipInTables", True))
+    limit = _available_text_width_emu(doc) if clamp else None
+
+    if mode == "fixed":
+        if not fixed_w and not fixed_h:
+            if on_warning:
+                on_warning("图片尺寸模式为「统一」但未设置目标宽/高，已跳过", location="图片")
+            return 0
+        if limit and fixed_w and fixed_w > limit:
+            if on_warning:
+                on_warning(
+                    "目标宽度 {0:.2f} cm 超过正文可用宽度 {1:.2f} cm，已按可用宽度收窄".format(
+                        fixed_w / EMU_PER_CM, limit / EMU_PER_CM),
+                    location="图片",
+                )
+            fixed_w = limit
+    elif not max_w and not max_h:
+        return 0
+    elif limit and max_w and max_w > limit:
+        max_w = limit
+
+    hf_count = _count_header_footer_images(doc)
+    if hf_count and on_warning:
+        on_warning(f"页眉/页脚中有 {hf_count} 张图片，本工具不处理，需手工调整", location="图片")
+
+    adjusted = 0
+    for idx, (kind, frame) in enumerate(_iter_picture_frames(doc), start=1):
+        cx, cy = _frame_extent(frame)
+        if not cx or not cy or cx <= 0 or cy <= 0:
+            if on_warning:
+                on_warning(f"图 {idx}：尺寸无效（{cx}×{cy}），保留原样", location="图片")
             continue
-        scale = 1.0
-        if max_w_emu and width > max_w_emu:
-            scale = min(scale, max_w_emu / width)
-        if max_h_emu and height > max_h_emu:
-            scale = min(scale, max_h_emu / height)
-        if scale < 1.0:
-            shape.width = int(width * scale)
-            shape.height = int(height * scale)
+        if _inside_any(frame, {"txbxContent", "txbx"}):
+            if on_change:
+                on_change(f"图 {idx}：位于文本框内，跳过尺寸调整")
+            continue
+        if skip_in_tables and _inside_any(frame, {"tc"}):
+            if on_change:
+                on_change(f"图 {idx}：位于表格内，跳过尺寸调整")
+            continue
+
+        target = _compute_target_size(cx, cy, mode, max_w, max_h, fixed_w, fixed_h, keep_ratio)
+        if target is None or target == (cx, cy):
+            continue
+        new_w, new_h = target
+        if not _set_frame_extent(frame, new_w, new_h):
+            if on_warning:
+                on_warning(f"图 {idx}：写入尺寸失败，保留原样", location="图片")
+            continue
+        adjusted += 1
+        if on_change:
+            on_change(
+                "图 {0}{1}：{2:.2f}×{3:.2f} cm → {4:.2f}×{5:.2f} cm".format(
+                    idx, "（浮动）" if kind == "anchor" else "",
+                    cx / EMU_PER_CM, cy / EMU_PER_CM,
+                    new_w / EMU_PER_CM, new_h / EMU_PER_CM,
+                )
+            )
+    return adjusted
 
 
 def _mark_toc_fields_dirty(doc):
@@ -409,36 +681,80 @@ class DocxInspection:
     has_complex_objects: bool
 
 
-def _has_header_footer(doc) -> bool:
-    for section in doc.sections:
-        if any((p.text or "").strip() for p in section.header.paragraphs):
+def _header_footer_has_content(part) -> bool:
+    for para in part.paragraphs:
+        if (para.text or "").strip():
             return True
-        if section.footer.paragraphs:
+        if _paragraph_has_drawing(para):
+            return True
+    if part.tables:
+        return True
+    for instr in part._element.iter(qn("w:instrText")):
+        if instr.text and instr.text.strip():
             return True
     return False
 
 
+def _has_header_footer(doc) -> bool:
+    for section in doc.sections:
+        for part in (section.header, section.footer):
+            if part.is_linked_to_previous:
+                continue
+            if _header_footer_has_content(part):
+                return True
+    return False
+
+
 def _has_complex_objects(doc) -> bool:
-    xml = doc._element.xml
-    markers = ("<w:drawing", "<w:object", "<w:pict", "<w:sdt", "<w:ins", "<w:del")
-    inline_count = xml.count("<wp:inline")
-    drawing_count = xml.count("<w:drawing")
-    if drawing_count > inline_count:
-        return True
-    return any(marker in xml for marker in markers if marker != "<w:drawing")
+    inline_count = 0
+    drawing_count = 0
+    for el in doc.element.body.iter():
+        tag = el.tag.split("}", 1)[-1]
+        if tag in ("object", "pict", "sdt", "ins", "del"):
+            return True
+        if tag == "inline":
+            inline_count += 1
+        elif tag == "drawing":
+            drawing_count += 1
+    return drawing_count > inline_count
+
+
+def _open_document(input_path):
+    """打开 docx；损坏时抛 CorruptDocxError。"""
+    try:
+        return Document(input_path)
+    except (zipfile.BadZipFile, lxml.etree.XMLSyntaxError) as e:
+        raise CorruptDocxError(
+            f"docx 文件已损坏: {input_path}",
+            cause=e, hint="用 Word 打开重新保存一次",
+        ) from e
+    except KeyError as e:
+        raise CorruptDocxError(
+            f"docx 关键样式缺失: {input_path}",
+            cause=e, hint="用 Word 打开重新保存一次",
+        ) from e
+    except Exception as e:  # noqa: BLE001
+        type_name = type(e).__name__
+        if "Package" in type_name or "Zip" in type_name or "Found" in type_name:
+            raise CorruptDocxError(
+                f"docx 文件已损坏: {input_path}",
+                cause=e, hint="用 Word 打开重新保存一次",
+            ) from e
+        raise
 
 
 def inspect_docx(input_path):
-    from .paths import _is_docx_path
     if not _is_docx_path(input_path):
-        raise ValueError("输入文件必须是 .docx Word 文档")
-    from docx import Document
-    doc = Document(input_path)
+        raise InvalidFileTypeError(
+            f"不是有效的 docx 文件: {input_path}",
+            hint="确认文件是 Word 导出的 .docx 格式（不是 .doc / .rtf / .wps）",
+        )
+    doc = _open_document(input_path)
     heading_levels = sorted({_detect_heading_level(p) for p in doc.paragraphs} - {0})
     return DocxInspection(
         paragraph_count=len(doc.paragraphs),
         table_count=len(doc.tables),
-        image_count=len(doc.inline_shapes),
+        image_count=sum(1 for _ in _iter_picture_frames(doc)),
         heading_levels=tuple(heading_levels),
         has_header_footer=_has_header_footer(doc),
         has_complex_objects=_has_complex_objects(doc),

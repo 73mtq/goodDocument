@@ -31,6 +31,11 @@ def _validate_paths(input_path, output_path) -> None:
     input_path = os.fspath(input_path)
     output_path = os.fspath(output_path)
 
+    if not os.path.exists(input_path):
+        raise InputNotFoundError(
+            f"找不到文件: {input_path}",
+            hint="检查路径是否正确，文件名是否包含特殊字符",
+        )
     if not _is_docx_path(input_path):
         raise InvalidFileTypeError(
             f"不是有效的 docx 文件: {input_path}",
@@ -40,11 +45,6 @@ def _validate_paths(input_path, output_path) -> None:
         raise InvalidFileTypeError(
             f"输出路径不是 .docx 后缀: {output_path}",
             hint="输出文件必须以 .docx 结尾",
-        )
-    if not os.path.exists(input_path):
-        raise InputNotFoundError(
-            f"找不到文件: {input_path}",
-            hint="检查路径是否正确，文件名是否包含特殊字符",
         )
     if _same_path(input_path, output_path):
         raise SameInputOutputError(

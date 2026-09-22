@@ -53,4 +53,9 @@ def validate_config(config):
         if key not in headings:
             raise ValueError("配置缺少 headings." + key)
 
+    size_mode = config.get("figure", {}).get("sizeMode")
+    if size_mode is not None and str(size_mode).lower() not in ("fit", "fixed"):
+        raise ValueError(
+            "figure.sizeMode 只能是 fit（等比缩放）或 fixed（统一尺寸），当前为: " + str(size_mode))
+
     return True

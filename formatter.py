@@ -15,7 +15,6 @@ formatter.py —— 规范文档排版核心库（Python / python-docx，配置�
 """
 
 import os
-import re
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
@@ -27,9 +26,10 @@ from docx.oxml import OxmlElement
 # 常量与解析
 # ------------------------------------------------------------------
 
-CM_PER_INCH = 2.54
-PT_PER_CM = 28.3464567  # 1cm = 28.35 pt
-EMU_PER_CM = 360000
+PAGE_SIZE_CM = {
+    "a4": (21.0, 29.7),
+    "letter": (21.59, 27.94),
+}
 
 SIZE_NAME_TO_PT = {
     "初号": 42, "小初": 36,
@@ -68,6 +68,21 @@ def resolve_size(val):
 
 def resolve_align(a):
     return ALIGN_MAP.get(str(a).lower() if a else "left", WD_ALIGN_PARAGRAPH.LEFT)
+
+
+def resolve_page_size(cfg):
+    """页面尺寸（宽, 高，单位 cm）。config 的 page.size 支持 A4 / Letter，默认 A4。"""
+    size = str(cfg.get("page", {}).get("size", "A4")).strip().lower()
+    return PAGE_SIZE_CM.get(size, PAGE_SIZE_CM["a4"])
+
+
+def resolve_table_align(a):
+    """表格整体位置：left / center / right，默认 center。"""
+    return {
+        "left": WD_TABLE_ALIGNMENT.LEFT,
+        "center": WD_TABLE_ALIGNMENT.CENTER,
+        "right": WD_TABLE_ALIGNMENT.RIGHT,
+    }.get(str(a).lower() if a else "center", WD_TABLE_ALIGNMENT.CENTER)
 
 
 def set_run_font(run, zh_font, en_font, size_pt=None, bold=None, color=None):
@@ -186,15 +201,15 @@ class Formatter:
     def _setup_page(self):
         cfg = self.cfg
         sec = self.doc.sections[0]
-        # A4
-        sec.page_width = Cm(21.0)
-        sec.page_height = Cm(29.7)
+        page_w, page_h = resolve_page_size(cfg)
+        sec.page_width = Cm(page_w)
+        sec.page_height = Cm(page_h)
         m = cfg["page"]["margins"]
         sec.top_margin = Cm(m["top"])
         sec.bottom_margin = Cm(m["bottom"])
         sec.left_margin = Cm(m["left"])
         sec.right_margin = Cm(m["right"])
-        self.content_width_cm = 21.0 - m["left"] - m["right"]
+        self.content_width_cm = page_w - m["left"] - m["right"]
 
         # 页脚页码（底部居中）
         pn = cfg.get("pageNumber", {})
@@ -284,6 +299,62 @@ class Formatter:
     def h4(self, t): return self.heading(4, t)
 
     # ---- 图 ----
+    def _figure_size(self, image_path):
+        """按 figure 配置算出插入尺寸 (width_cm, height_cm|None)。
+
+        sizeMode="fit"   —— 等比缩放到 maxWidthCm × maxHeightCm 上限内（默认）。
+        sizeMode="fixed" —— 统一到 fixedWidthCm × fixedHeightCm；keepAspectRatio
+                            为真时等比适配（只填宽度即"统一宽度"），为假则强制拉伸。
+        clampToTextWidth —— 目标宽度不超过正文可用宽度，避免溢出页面。
+        """
+        f = self.cfg["figure"]
+        mode = str(f.get("sizeMode") or "fit").lower()
+        margins = self.cfg["page"]["margins"]
+        page_w, _ = resolve_page_size(self.cfg)
+        usable = page_w - margins.get("left", 3) - margins.get("right", 2.5)
+        clamp = bool(f.get("clampToTextWidth", True))
+
+        def cm_of(value):
+            try:
+                cm = float(value)
+            except (TypeError, ValueError):
+                return None
+            return cm if cm > 0 else None
+
+        def capped(value):
+            if clamp and value and usable > 0 and value > usable:
+                return usable
+            return value
+
+        w_px, h_px = get_image_size(image_path)
+        ratio = (w_px / h_px) if (w_px and h_px) else None
+
+        if mode == "fixed":
+            width = capped(cm_of(f.get("fixedWidthCm")))
+            height = cm_of(f.get("fixedHeightCm"))
+            if width is None and height is None:
+                width = capped(cm_of(f.get("maxWidthCm")) or 15.5)
+            if f.get("keepAspectRatio", False) and ratio:
+                if width:
+                    scaled = width / ratio
+                    if height and scaled > height:
+                        height, width = height, height * ratio
+                    else:
+                        height = scaled
+                elif height:
+                    width = height * ratio
+            return width, height
+
+        width = capped(cm_of(f.get("maxWidthCm")) or 15.5)
+        height = None
+        if ratio:
+            height = width / ratio
+            max_h = cm_of(f.get("maxHeightCm"))
+            if max_h and height > max_h:
+                height = max_h
+                width = height * ratio
+        return width, height
+
     def figure(self, image_path, title, source=None):
         f = self.cfg["figure"]
         self.fig_no += 1
@@ -292,17 +363,8 @@ class Formatter:
         cap_en = f.get("captionAsciiFont", self.cfg["body"]["asciiFont"])
         out = []
 
-        # 图片尺寸：默认宽度=正文宽度，按宽高比缩放，超高则反向缩放
-        w_px, h_px = get_image_size(image_path)
-        width_cm = f.get("maxWidthCm", 15.5)
-        height_cm = None
-        if w_px and h_px:
-            ratio = w_px / h_px
-            height_cm = width_cm / ratio
-            max_h = f.get("maxHeightCm", 22)
-            if height_cm > max_h:
-                height_cm = max_h
-                width_cm = height_cm * ratio
+        # 图片尺寸：由 figure.sizeMode 决定（等比上限 / 统一尺寸）
+        width_cm, height_cm = self._figure_size(image_path)
 
         # 图题段
         def cap_para():
@@ -396,7 +458,7 @@ class Formatter:
         # 表格
         ncol = len(headers)
         tbl = self.doc.add_table(rows=1 + len(rows), cols=ncol)
-        tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+        tbl.alignment = resolve_table_align(t.get("align", "center"))
         tbl.style = "Table Grid"
         # 列宽
         total_cm = self.content_width_cm

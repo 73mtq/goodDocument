@@ -2,7 +2,7 @@
 
 > 接手人第一份必读。讲清楚这是什么、做到哪了、坑在哪、别走哪些路、下一步做什么。
 >
-> 最后更新：v0.2.1（2026-07-02）
+> 最后更新：v0.5.0（2026-09-22）
 
 ---
 
@@ -29,7 +29,7 @@
 
 ---
 
-## 2. 当前进度（v0.2.0）
+## 2. 当前进度（v0.5.0）
 
 ### 2.1 版本时间线
 
@@ -39,7 +39,10 @@
 | 0.1.1 | `a861ab7` | 保留封面/目录原版式（不再一刀切规范化）|
 | 0.1.2 | `e2fb833` | 修表格首行缩进 bug（OOXML 字符单位）|
 | 0.2.0 | `62c6c34` | 健壮性与 UX 全面升级（5 类异常 / dry_run / 备份 / warnings）|
-| **0.2.1** | *(本次)* | **`backup` 默认 `True` → `False`（修 .bak 无限累计）** |
+| 0.2.1 | *(历史)* | **`backup` 默认 `True` → `False`（修 .bak 无限累计）** |
+| 0.3.0 | *(历史)* | **全项目审查修复：识别误判、页脚页码、变更收集、跨实现统一、测试与 CI** |
+| 0.4.0 | *(历史)* | **桌面界面重做（朱批纸面）+ 拖拽 + 后台执行 + 高 DPI + 快捷键** |
+| **0.5.0** | *(本次)* | **图片能力补全：统一尺寸模式 + 浮动图片 + 安全阀 + 图题防分页** |
 
 ### 2.2 0.2.0 交付清单
 
@@ -88,6 +91,95 @@
 
 **教训**：自动备份类功能默认**关**（opt-in），opt-out 容易污染用户工作目录。GUI/CLI 暂不加 backup 开关（用户呼声再加）。
 
+### 2.6 0.3.0 变更摘要（全项目审查修复）
+
+**识别的缺陷**（均已修复，测试覆盖）：
+
+- Node.js 版正文首行缩进单位错误（半磅值当 twips，2 字小四实际输出 48 而非 480）
+- Node.js 版 `detectHeadingLevel` 自定义规则因 `lv` 未定义而失效
+- 题注识别范围过宽：正文段"图片…""表题…"被当作题注
+- 标题识别范围过宽："1.5 倍行距…"被当作三级标题
+- `inspect_docx().has_header_footer` 恒为 True
+- 页脚页码更新固定清空首段，页码位于其他段落时产生两个 PAGE 域
+- `NormalizeResult.changes` 与处理过程中的 warnings 从未产生（设计文档承诺未实现）
+- Python 版忽略 `page.size` / `table.align`；`config.json` 有 5 个无效键
+- CI 无法成功（缺 pytest、`cache: pip` 缺少依赖文件）
+
+**交付**：
+
+| 模块 | 状态 |
+|---|---|
+| 题注 / 标题 / 参考文献识别收紧 | ✅ |
+| 页脚 PAGE 段落定位改写 | ✅ |
+| 变更收集与准确计数（跳过封面/目录）| ✅ |
+| 警告回调与 `NormalizeResult.warnings` 打通 | ✅ |
+| Python 版 `page.size`（A4/Letter）与 `table.align` | ✅ |
+| Node.js 首行缩进 twips 修复、自定义标题规则修复、单元格段距统一 | ✅ |
+| 根目录 `normalizer.py` 兼容层删除；`normalizer/__init__.py` 只保留公开 API | ✅ |
+| 测试样例改为运行时生成；删除提交的二进制样本 | ✅ |
+| `tests/node/` Node.js 测试 + `npm test` | ✅ |
+| `tests/test_formatter.py`、`tests/test_version_consistency.py` | ✅ |
+| `requirements.txt` / `requirements-dev.txt` / `pyproject.toml`（ruff） | ✅ |
+| CI 拆分为 test / build 两个任务 | ✅ |
+| 版本 0.3.0；CHANGELOG / README / HANDOVER 同步 | ✅ |
+
+**当时测试**：Python 64 个 + Node.js 11 个，全部通过。
+
+### 2.7 0.4.0 变更摘要（桌面界面重做）
+
+**视觉方向**：朱批纸面 —— 纸色打底、墨色承载信息、朱砂只出现在主操作上；无阴影、1px 分隔线、以字号与字重建立层级。
+
+| 模块 | 状态 |
+|---|---|
+| 新增 `ui_theme.py`（颜色/字体令牌 + clam 主题全部 ttk 样式 + 取值映射）| ✅ |
+| 主界面改为三步单列流程：选择文档 → 规范化后另存为 → 预览/开始规范化 | ✅ |
+| 文件拖拽（`tkinterdnd2`，含空格与中文路径）| ✅ |
+| 选中文档后显示摘要（段落/表格/图片/标题层级/页眉页脚）| ✅ |
+| 结果区「变更 / 警告 / 日志」分段展示 | ✅ |
+| 后台线程执行 + 进度条 + 忙碌时禁用操作 | ✅ |
+| 完成后状态栏内联「打开文件夹」，去掉模态询问 | ✅ |
+| 高级设置改为右侧可滚动折叠面板（7 组）| ✅ |
+| 下拉选项值中文化（center → 居中、above → 上方、top → 顶部）| ✅ |
+| 快捷键 Ctrl+O / Ctrl+P / Ctrl+Enter / Ctrl+S / Ctrl+G / F1 | ✅ |
+| Windows 高 DPI 感知 | ✅ |
+| 主操作唯一突出，其余收进「更多」菜单 | ✅ |
+| `tests/test_ui_theme.py`（令牌、对比度、映射）| ✅ |
+| exe 构建验证：tkdnd 已打入归档，启动后拖拽可用 | ✅ |
+
+**当时测试**：Python 70 个 + Node.js 11 个，全部通过。
+
+### 2.8 0.5.0 变更摘要（图片能力补全）
+
+**起因**：用户给出一个 Word VBA 宏（`LockAspectRatio = msoFalse` 后把所有图片写死成 12×9 cm），要求把这个「照片处理」能力并入本工具，并顺带审查还有哪些可优化处。
+
+**识别出的既有缺陷**（均已修复）：
+
+- **浮动图片完全未被处理** —— `doc.inline_shapes` 只覆盖嵌入型（`wp:inline`），环绕方式为四周型 / 浮于文字上方的图片（`wp:anchor`）一张都不动。VBA 的 `InlineShapes` 同样有这个盲区
+- **`a:ext` 未同步** —— 图片尺寸有 `wp:extent` 与 `pic:spPr/a:xfrm/a:ext` 两处，只改前者时 WPS / LibreOffice 可能仍按旧尺寸渲染
+- **图片会溢出页面** —— 早期只做「只缩不放」，没有把目标宽度与正文可用宽度对齐的安全阀
+- **`images_processed` 名不副实** —— 等于文档中图片总数，而非实际调整数，预览摘要「将处理 N 张图」会误导
+- **`inspect_docx().image_count`** 漏掉浮动图片
+- **图与图题会被分页拆开** —— 未设置 `w:keepNext`
+
+**交付**：
+
+| 模块 | 状态 |
+|---|---|
+| `figure.sizeMode`（`fit` 等比 / `fixed` 统一尺寸）| ✅ |
+| `fixedWidthCm` / `fixedHeightCm` / `keepAspectRatio`（强制拉伸 vs 等比适配）| ✅ |
+| 浮动图片（`wp:anchor`）与嵌入图片统一处理 | ✅ |
+| `clampToTextWidth` 宽度安全阀（默认开，带警告）| ✅ |
+| `skipInTables` 表格内图片默认跳过（带变更说明）| ✅ |
+| 文本框内图片跳过；页眉/页脚图片给出提示 | ✅ |
+| `keepWithCaption` 图题防分页（`w:keepNext`）| ✅ |
+| `wp:extent` 与 `a:xfrm/a:ext` 同步写入 | ✅ |
+| GUI「图」分组新增 6 个控件 + 中文取值标签（等比缩放 / 统一尺寸）| ✅ |
+| Node.js `computeImageTransform` 与 Python 端语义对齐 | ✅ |
+| 生成端 `Formatter._figure_size` 支持两种模式 | ✅ |
+| 测试：Python 70 → 89，Node.js 11 → 16 | ✅ |
+
+**当前测试**：Python 89 个 + Node.js 16 个，全部通过。
+
 ### 2.4 已确认的方案
 
 - **架构**：Python（GUI + 库）+ Node.js（CLI + 库）双实现，共享 config.json 语义
@@ -97,6 +189,7 @@
 - **错误体系**：`NormalizeError` 异常类，5 子类带中文 message + hint
 - **备份策略（0.2.1 调整）**：默认 `backup=False`，需要时显式传 `backup=True`。递增策略 `.bak` → `.bak.1` → ... 保留。原因：默认开启会无限累计污染工作目录（实测累积 27 个 .bak）。
 - **优雅降级**：非致命 warning 继续执行，致命 error 抛 NormalizeError
+- **图片尺寸（0.5.0）**：两种模式共存，`fit` 为默认（向后兼容，行为不变）；`fixed` 才启用统一尺寸。安全阀 `clampToTextWidth` 与 `skipInTables` 默认**开** —— 宁可少改也不能把版面弄坏，跳过时在「变更」列表写明原因
 - **CI**：GitHub Actions + 推送 `v*` tag 自动构建 exe + zip + Release
 
 ---
@@ -105,40 +198,45 @@
 
 ```
 goodDocument/
-├── app.py                       # tkinter GUI 入口（486 行）
-├── formatter.py                 # 核心排版引擎（生成文档，501 行）
-├── normalizer.py                # ⚠️ shim 文件（re-export 自 normalizer/ 包）
+├── app.py                       # tkinter GUI 入口（拖拽、后台执行、快捷键）
+├── ui_theme.py                  # ⭐ 界面主题（令牌 + ttk 样式 + 取值映射）
+├── formatter.py                 # 核心排版引擎（生成文档）
 ├── normalizer/                  # ⭐ 子项目 C 拆分后的包
-│   ├── __init__.py              # 公共 API + 内部辅助（re-export）
+│   ├── __init__.py              # 公共 API（仅公开入口）
 │   ├── errors.py                # NormalizeError + 5 子类 + NormalizeResult + WarningCollector
 │   ├── paths.py                 # 路径校验 + 备份（_validate_paths / _backup_source）
 │   ├── normalize.py             # 样式应用 + 段落/表格/图片 + 标题检测 + TOC 处理
 │   └── core.py                  # normalize_docx 主入口（薄包装层）
-├── version.py                   # ⭐ 单一来源 __version__ = "0.2.1"
+├── version.py                   # ⭐ 单一来源 __version__ = "0.5.0"
 ├── config_model.py              # 配置加载/保存/校验
 ├── paths.py                     # 路径工具（PyInstaller 兼容）
 ├── config.json                  # 排版参数配置
 ├── DocFormatter.spec            # PyInstaller 打包配置
+├── requirements.txt             # ⭐ Python 运行依赖（含 tkinterdnd2）
+├── requirements-dev.txt         # ⭐ 开发依赖（pytest / pyinstaller / ruff）
+├── pyproject.toml               # ⭐ ruff 与 pytest 配置
 │
-├── package.json                 # Node.js 项目配置（version: 0.2.1）
-├── generate.js                  # Node.js CLI 入口
+├── package.json                 # Node.js 项目配置（version: 0.5.0）
+├── generate.js                  # Node.js CLI 入口（含 require.main 守卫）
 ├── formatter.js                 # Node.js 排版核心库
 │
 ├── .github/
 │   └── workflows/
-│       └── build.yml            # ⭐ GitHub Actions：推送 v* tag 自动构建
+│       └── build.yml            # ⭐ CI：test（push/PR）+ build（v* tag）
 │
 ├── assets/
 │   └── figure1.png              # 示例图片
 │
-├── tests/                       # ⭐ 43 个测试全过
+├── tests/                       # ⭐ Python 89 个测试全过
 │   ├── __init__.py
-│   ├── test_app_paths.py        # 4 个路径工具测试
-│   ├── test_config_model.py     # 2 个配置测试
-│   ├── test_normalize_docx.py   # 37 个核心测试（14 旧 + 23 新；含 0.2.1 新增 default_no_backup）
-│   ├── _helpers.py              # 边界 docx 构造器（垃圾/截断/嵌套表/空表/无法识别）
-│   ├── _corrupt_source.docx     # _helpers 用的 fixture（自动生成）
-│   └── __pycache__/             # .gitignore
+│   ├── test_app_paths.py        # 路径工具测试
+│   ├── test_config_model.py     # 配置测试
+│   ├── test_formatter.py        # ⭐ 生成器与工具函数测试
+│   ├── test_normalize_docx.py   # 核心规范化 + 回归测试（样例运行时生成）
+│   ├── test_ui_theme.py         # ⭐ 主题令牌、对比度、取值映射
+│   ├── test_version_consistency.py  # ⭐ version.py 与 package.json 一致性
+│   ├── _helpers.py              # 边界与图片 docx 构造器（垃圾/截断/嵌套表/空表/浮动图片）
+│   └── node/                    # ⭐ Node.js 测试（node --test）
 │
 ├── docs/
 │   └── superpowers/
@@ -151,10 +249,10 @@ goodDocument/
 ├── .gitignore                   # 已 gitignore：.omc/ .omo/ *.docx.bak __pycache__/ build/ dist/ node_modules/
 │
 ├── dist/                        # .gitignore，打包产物
-│   ├── DocFormatter.exe         # 19.98 MB
+│   ├── DocFormatter.exe
 │   └── config.json
 │
-├── README.md                    # ⭐ 全面重写（200 行，4 场景 + 10 FAQ + 健壮性章节）
+├── README.md                    # ⭐ 使用说明
 ├── CHANGELOG.md                 # ⭐ 版本变更记录
 └── HANDOVER.md                  # ⭐ 本文件
 ```
@@ -169,9 +267,9 @@ goodDocument/
 |---|---|
 | 改规范化逻辑 | `normalizer/normalize.py` 的 `_normalize_*` 函数 |
 | 改样式应用 | `normalizer/normalize.py` 的 `_apply_*` 函数 |
-| 改错误信息 | `normalizer/errors.py` 各子类 + `normalizer/core.py` 的 try/except |
+| 改错误信息 | `normalizer/errors.py` 各子类 + `normalizer/normalize.py` 的 `_open_document` |
 | 改备份策略 | `normalizer/paths.py` 的 `_backup_source` |
-| 改 GUI | `app.py`（486 行，结构清晰） |
+| 改 GUI | `app.py` |
 | 改 CLI | `generate.js` 的 `main()` |
 | 改字号/字体工具 | `formatter.py` 顶部常量 + `set_run_font` / `set_zero_indent` |
 
@@ -191,10 +289,16 @@ add_page_number_field(para, fn)  # 插 PAGE 域（页码）
 normalize_docx(cfg, in, out, *, backup, dry_run, return_result, on_warning)  # 主入口
 _validate_paths(in, out)       # 抛 NormalizeError 子类
 _backup_source(in)              # 返回 .bak 路径或 None
-_normalize_paragraphs(doc, ...) # 段落遍历：标题/正文/题注/参考文献
+_open_document(path)            # 打开 docx，损坏时抛 CorruptDocxError
+_normalize_paragraphs(doc, ...) # 段落遍历：标题/正文/题注/参考文献（返回处理计数，支持 on_change）
 _normalize_tables(doc, ...)     # 表格遍历：单元格段落全部独立
+_normalize_inline_images(...)   # 图片尺寸策略（fit/fixed）；返回实际调整数
+_iter_picture_frames(doc)       # 遍历 body 中所有图片框 (kind, frame)：inline + anchor
+_set_frame_extent(...)          # 写尺寸，同时落 wp:extent 与 a:xfrm/a:ext
+_available_text_width_emu(doc)  # 正文可用宽度（页宽 − 左右边距），宽度安全阀用
+_set_keep_with_next(para)       # w:keepNext，图与图题防分页
 _mark_toc_fields_dirty(doc)     # 标记 TOC 域 dirty（让 Word 重新生成目录）
-inspect_docx(path)               # 返回 DocxInspection 数据类
+inspect_docx(path)              # 返回 DocxInspection 数据类
 ```
 
 ### 4.3 异常体系（用户友好化的关键）
@@ -207,7 +311,7 @@ NormalizeError(message, *, cause=None, hint=None)
 ├── OutputNotWritableError  # 权限/磁盘
 └── SameInputOutputError    # 输出 = 输入
 
-# 使用模式（normalizer/core.py 入口）
+# 使用模式（normalizer/normalize.py 的 _open_document）
 try:
     doc = Document(input_path)
 except (zipfile.BadZipFile, lxml.etree.XMLSyntaxError) as e:
@@ -225,20 +329,24 @@ except (zipfile.BadZipFile, lxml.etree.XMLSyntaxError) as e:
 |---|---|
 | Python | 3.12+（conda / system 都可）|
 | Node.js | 20+（`node` + `npm`）|
-| PyInstaller | 6.x |
-| python-docx | 最新（`pip install python-docx`）|
+| PyInstaller | 6.x（需 `pyinstaller-hooks-contrib`，自带 tkinterdnd2 hook）|
+| python-docx | 1.2.x（`pip install -r requirements.txt`）|
+| tkinterdnd2 | 0.6.x（GUI 拖拽）|
 | docx (npm) | 9.7.1 |
 | pytest | 8.x |
+| ruff | 0.15+ |
 
 ### 5.2 一次性 setup
 
 ```bash
 # Python
-pip install python-docx pyinstaller pytest
-python -m pytest tests/ -v  # 42 passed
+pip install -r requirements-dev.txt
+python -m pytest tests/ -v  # 89 passed
+ruff check .
 
 # Node.js
-npm install
+npm ci
+npm test                    # 11 passed
 node generate.js --examples
 ```
 
@@ -324,6 +432,57 @@ git push origin main v0.X.0
 
 **教训**：跨平台 CLI 工具的测试要避免 PowerShell 默认 GBK 编码干扰。
 
+### 坑 7：`a:extLst` 里也有 `a:ext`，无差别遍历会写坏文件
+
+**症状**：想同步图片的 `a:xfrm/a:ext`，写了 `frame_el.iter(qn("a:ext"))` 一起改 —— 结果把 `<a:extLst><a:ext uri="...">` 这类**扩展节点**也写了 `cx`/`cy`，文件出现莫名的渲染问题。
+
+**根因**：DrawingML 里有两个不同层级的同名元素：
+- `pic:spPr/a:xfrm/a:ext` —— 图片容器的真实尺寸，需要同步
+- `a:extLst/a:ext` —— 扩展列表项，**只带 `uri` 属性**，与尺寸无关
+
+**修复**（`normalizer/normalize.py` 的 `_set_frame_extent`）：只精确定位 `a:xfrm` 下的 `a:ext`：
+
+```python
+for xfrm in frame_el.iter(qn("a:xfrm")):
+    inner = xfrm.find(qn("a:ext"))
+    if inner is not None:
+        inner.set("cx", ...)
+```
+
+**教训**：OOXML 的元素名在不同命名空间/层级下会重复，用 `findall(".//tag")` 前先想清楚会不会误伤。
+
+### 坑 8：改 `wp:inline` 的 XML 时丢掉命名空间声明，文件直接解析失败
+
+**症状**：测试夹具里把 `document.xml` 的 `<wp:inline ...>` 用正则替换成 `<wp:anchor ...>`，保存后用 python-docx 打开报 `XMLSyntaxError: Namespace prefix a on graphicFrameLocks is not defined`。
+
+**根因**：python-docx 生成的 `<wp:inline>` **把 `xmlns:a` / `xmlns:pic` / `xmlns:wp` 等声明挂在自己的开始标签上**。用 `<wp:inline[^>]*>` 整个替换掉，声明就一起没了，后续所有 `a:` 前缀都成了未定义。
+
+**修复**（`tests/_helpers.py` 的 `make_docx_with_floating_image`）：捕获原标签的属性串并原样带过去：
+
+```python
+re.sub(r"<wp:inline(?P<attrs>[^>]*)>",
+       lambda m: "<wp:anchor " + ATTRS + m.group("attrs") + ">" + HEAD, xml)
+```
+
+顺带注意 `wp:anchor` 的子元素顺序（schema 要求）：`simplePos` → `positionH` → `positionV` → `extent` → `effectExtent?` → `wrapNone/wrapSquare/...` → `docPr` → `cNvGraphicFramePr` → `graphic`。把 `wrapNone` 塞在 `extent` 前面同样是错的。
+
+**教训**：改写 OOXML 片段时，命名空间声明和子元素顺序两件事都不能想当然。
+
+### 坑 9：页面尺寸经 twips 往返换算，厘米值不精确
+
+**症状**：测试断言 `wp:extent` 钳制后的宽度等于 `15.5 × 360000 = 5580000` EMU，实际得到 `5580380`。
+
+**根因**：OOXML 的 `w:pgSz/@w:w` 与 `w:pgMar/@w:*` 单位是 **twips（1 twip = 635 EMU）**，python-docx 写入时按 twips 取整。`21cm → 11906 twips → 7560310 EMU`，边距同理，累加后与「厘米直接换 EMU」差几百 EMU。
+
+**修复**：测试改为按厘米比较并给容差：
+
+```python
+def assertCm(self, emu, expected_cm):
+    self.assertAlmostEqual(emu / 360000, expected_cm, delta=0.01)
+```
+
+**教训**：凡是与页面几何相关的数值断言，**不要拿 EMU 精确相等**，按厘米给容差。
+
 ---
 
 ## 7. 不能再走的错误路线（明确放弃）
@@ -344,12 +503,11 @@ git push origin main v0.X.0
 - 加 i18n 增加复杂度但收益小
 - **未来时机**：如有英文用户需求再做
 
-### 7.3 GUI 进度条
+### 7.3 GUI 进度条（0.4.0 已落地，方案见此）
 
-**讨论过**但**延后**。原因：
-- 规范化通常很快（<5 秒），进度条意义不大
-- 大文档场景下需要，但当前未优化
-- **未来时机**：性能优化时一起做
+**曾经的判断**"规范化通常很快（<5 秒），进度条意义不大" —— 0.4.0 已实现：后台线程执行 + `ttk.Progressbar` 不确定态动画 + 忙碌时禁用操作，见 `app.py` 的 `_set_busy`。
+
+**仍然没做**：`_normalize_*` 里的**百分比进度回调**（当前只是转圈，不显示 37%）。如果将来出现「几千张图的大文档」场景，再往里加 `on_progress` 回调。
 
 ### 7.4 Python / Node.js 公共 API 抽象
 
@@ -391,28 +549,29 @@ git push origin main v0.X.0
 
 ### 8.1 立即（接手后第一周）
 
-- [ ] **看 `dist/DocFormatter.exe` v0.2.0 在真实机器上跑起来**
+- [ ] **看 `dist/DocFormatter.exe` 在真实机器上跑起来**
   - Windows 10/11 双击启动
-  - 选个真实的 docx 规范化
+  - 拖入一份真实 docx（含空格与中文路径），确认拖拽可用
   - 验证错误信息是否友好
-  - 验证 dry-run 是否正常
-- [ ] **等 GitHub Actions v0.2.0 构建完成**
+  - 验证「预览变更」「打开文件夹」与快捷键
+- [ ] **拿一份真实的「图片尺寸杂乱」文档验证 0.5.0 的图片能力**
+  - 「统一尺寸」模式下确认所有目标图片宽度一致
+  - 确认表格内图标被跳过且「变更」列表写明了原因
+  - 用 WPS 打开输出的 docx，确认图片显示尺寸与 Word 一致（验证 `a:ext` 同步）
+- [ ] **打 v0.5.0 tag 并确认 CI 通过**
+  - test 任务：ruff + pytest + npm test
+  - build 任务：构建 exe 并发布 Release
   - https://github.com/73mtq/goodDocument/actions
-  - 下载自动构建的 exe 与本地对比
-- [ ] **编辑 GitHub Release v0.2.0 的 release notes**
-  - CI 自动生成的可能太简单
-  - 建议加：4 子项目摘要 + 14 commit 列表 + 截图
+- [ ] **编辑 GitHub Release v0.5.0 的 release notes**
+  - 建议概括统一尺寸模式、浮动图片、安全阀与图题防分页
 
 ### 8.2 短期（1-2 周）
 
 - [ ] **加 i18n 错误信息基础架构**（如果需要支持英文用户）
   - 把 `NormalizeError` message 改成模板 `not_found: "{path} 不存在"`
   - 加 `locale` 参数
-- [ ] **formatter.py 拆分**（如果感觉 500 行+ 太大）
-  - 拆成 `font.py` + `spacing.py` + `Formatter` 类
-- [ ] **加 GUI 进度条**（如果大文档场景下规范化慢）
-  - 用 `ttk.Progressbar`
-  - 在 `_normalize_*` 函数里加进度回调
+- [ ] **GUI 里把两种图片模式做成预设按钮**（"统一宽度 / 等比缩放"一键切换）
+  - 现在要点开「图」分组逐项改，场景化预设更顺手
 
 ### 8.3 中期（1-2 月）
 

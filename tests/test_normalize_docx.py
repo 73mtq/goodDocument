@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,21 +11,43 @@ from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
+from docx.shared import Pt
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+from tests._helpers import picture_sizes  # noqa: E402
+
+_fixture_dir = None
+SAMPLE_DOCX = None
 
 
 def load_config():
     return json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 
 
+def setUpModule():
+    """运行时生成样例文档，避免依赖仓库中的二进制 fixture。"""
+    global _fixture_dir, SAMPLE_DOCX
+    from formatter import generate
+
+    _fixture_dir = tempfile.mkdtemp(prefix="gooddocument-sample-")
+    SAMPLE_DOCX = Path(_fixture_dir) / "规范文档示例.docx"
+    generate(load_config(), SAMPLE_DOCX, assets_dir=ROOT / "assets")
+
+
+def tearDownModule():
+    global _fixture_dir
+    if _fixture_dir and os.path.isdir(_fixture_dir):
+        shutil.rmtree(_fixture_dir, ignore_errors=True)
+    _fixture_dir = None
+
+
 class NormalizeDocxTests(unittest.TestCase):
     def test_inspect_docx_reports_structure(self):
         from normalizer import inspect_docx
 
-        source = ROOT / "规范文档示例.docx"
+        source = SAMPLE_DOCX
 
         info = inspect_docx(source)
 
@@ -40,7 +63,7 @@ class NormalizeDocxTests(unittest.TestCase):
         from normalizer import normalize_docx
 
         cfg = load_config()
-        source = ROOT / "规范文档示例.docx"
+        source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "规范文档示例_规范化.docx"
 
@@ -75,7 +98,7 @@ class NormalizeDocxTests(unittest.TestCase):
         from normalizer import normalize_docx, NormalizeError
 
         cfg = load_config()
-        source = ROOT / "规范文档示例.docx"
+        source = SAMPLE_DOCX
 
         with self.assertRaises(NormalizeError):
             normalize_docx(cfg, source, source)
@@ -342,7 +365,7 @@ class NormalizeCoverAndTocTests(unittest.TestCase):
             self.assertNotEqual(cover_cell.paragraphs[0].alignment, WD_ALIGN_PARAGRAPH.CENTER)
 
     def test_mark_toc_fields_dirty(self):
-        from normalizer import _mark_toc_fields_dirty
+        from normalizer.normalize import _mark_toc_fields_dirty
 
         doc = Document()
         p = doc.add_paragraph()
@@ -368,7 +391,7 @@ class NormalizeCoverAndTocTests(unittest.TestCase):
         self.assertEqual(begin.get(qn("w:dirty")), "true")
 
     def test_helpers_section_and_toc_detection(self):
-        from normalizer import (
+        from normalizer.normalize import (
             _build_body_section_maps,
             _collect_cover_section_indices,
             _find_toc_title_index,
@@ -428,13 +451,15 @@ class NormalizeErrorTests(unittest.TestCase):
 
 class ValidatePathsTests(unittest.TestCase):
     def test_raises_input_not_found(self):
-        from normalizer import _validate_paths, InputNotFoundError
+        from normalizer import InputNotFoundError
+        from normalizer.paths import _validate_paths
         with self.assertRaises(InputNotFoundError) as ctx:
             _validate_paths("Z:/nonexistent-xyz-9999.docx", "Z:/out.docx")
         self.assertIn("找不到文件", str(ctx.exception))
 
     def test_raises_invalid_file_type(self):
-        from normalizer import _validate_paths, InvalidFileTypeError
+        from normalizer import InvalidFileTypeError
+        from normalizer.paths import _validate_paths
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, mode="w") as f:
             f.write("hi")
             p = f.name
@@ -446,7 +471,8 @@ class ValidatePathsTests(unittest.TestCase):
             os.remove(p)
 
     def test_raises_same_input_output(self):
-        from normalizer import _validate_paths, SameInputOutputError
+        from normalizer import SameInputOutputError
+        from normalizer.paths import _validate_paths
         with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
             p = f.name
         try:
@@ -458,7 +484,7 @@ class ValidatePathsTests(unittest.TestCase):
 
 class BackupSourceTests(unittest.TestCase):
     def test_creates_bak_file(self):
-        from normalizer import _backup_source
+        from normalizer.paths import _backup_source
         with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
             f.write(b"x")
             p = f.name
@@ -473,7 +499,7 @@ class BackupSourceTests(unittest.TestCase):
                 os.remove(bak)
 
     def test_uses_incremented_name_when_bak_exists(self):
-        from normalizer import _backup_source
+        from normalizer.paths import _backup_source
         with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
             f.write(b"x")
             p = f.name
@@ -489,7 +515,7 @@ class BackupSourceTests(unittest.TestCase):
                     os.remove(b)
 
     def test_returns_none_on_missing_input(self):
-        from normalizer import _backup_source
+        from normalizer.paths import _backup_source
         result = _backup_source("Z:/nonexistent-xyz-qq-9999/doc.docx")
         self.assertIsNone(result)
 
@@ -498,7 +524,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
     def test_default_returns_str_backward_compat(self):
         from normalizer import normalize_docx
         cfg = load_config()
-        source = ROOT / "规范文档示例.docx"
+        source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "out.docx"
             result = normalize_docx(cfg, source, output)
@@ -508,7 +534,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
     def test_return_result_returns_normalize_result(self):
         from normalizer import normalize_docx, NormalizeResult
         cfg = load_config()
-        source = ROOT / "规范文档示例.docx"
+        source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "out.docx"
             result = normalize_docx(cfg, source, output, return_result=True)
@@ -525,7 +551,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
     def test_dry_run_does_not_write(self):
         from normalizer import normalize_docx
         cfg = load_config()
-        source = ROOT / "规范文档示例.docx"
+        source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "out.docx"
             result = normalize_docx(cfg, source, output, dry_run=True, return_result=True)
@@ -616,7 +642,7 @@ class BackupAndDryRunTests(unittest.TestCase):
     def test_dry_run_does_not_write_output(self):
         from normalizer import normalize_docx
         cfg = load_config()
-        source = ROOT / "规范文档示例.docx"
+        source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "out.docx"
             result = normalize_docx(cfg, source, output, dry_run=True, return_result=True)
@@ -626,7 +652,7 @@ class BackupAndDryRunTests(unittest.TestCase):
     def test_dry_run_returns_normalize_result(self):
         from normalizer import normalize_docx, NormalizeResult
         cfg = load_config()
-        source = ROOT / "规范文档示例.docx"
+        source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "out.docx"
             result = normalize_docx(cfg, source, output, dry_run=True, return_result=True)
@@ -682,6 +708,402 @@ class EdgeCaseGracefulDegradationTests(unittest.TestCase):
                 s = str(e)
                 self.assertIn("找不到文件", s)
                 self.assertIn("检查路径", s)
+
+
+class DetectionRegressionTests(unittest.TestCase):
+    """题注、标题、参考文献识别不再误判正文。"""
+
+    def _normalize(self, doc, cfg=None):
+        from normalizer import normalize_docx
+
+        cfg = cfg or load_config()
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        source = Path(tmp.name) / "in.docx"
+        output = Path(tmp.name) / "out.docx"
+        doc.save(source)
+        normalize_docx(cfg, source, output)
+        return Document(output)
+
+    def test_body_paragraph_starting_with_figure_or_table_word_is_not_caption(self):
+        doc = Document()
+        doc.add_paragraph("图片统一宽度等于正文宽度，高度按宽高比缩放。")
+        doc.add_paragraph("表题置于表上方，单元格水平居中。")
+        result = self._normalize(doc)
+        for para in (result.paragraphs[0], result.paragraphs[1]):
+            self.assertEqual(para.alignment, WD_ALIGN_PARAGRAPH.JUSTIFY)
+            self.assertFalse(para.runs[0].font.bold)
+
+    def test_numbered_captions_still_detected(self):
+        doc = Document()
+        doc.add_paragraph("图1  各季度销售额对比")
+        doc.add_paragraph("表2  主要指标年度对比")
+        result = self._normalize(doc)
+        for para in (result.paragraphs[0], result.paragraphs[1]):
+            self.assertEqual(para.alignment, WD_ALIGN_PARAGRAPH.CENTER)
+            self.assertTrue(para.runs[0].font.bold)
+
+    def test_decimal_prefix_is_not_heading(self):
+        doc = Document()
+        doc.add_paragraph("1.5 倍行距是最常见的选择。")
+        result = self._normalize(doc)
+        self.assertNotEqual(result.paragraphs[0].style.name, "Heading 3")
+
+    def test_reference_mention_in_body_does_not_switch_mode(self):
+        doc = Document()
+        doc.add_paragraph("本文参考文献如下所示。")
+        doc.add_paragraph("[1] 此段仍是正文，不是参考文献条目。")
+        result = self._normalize(doc)
+        second = result.paragraphs[1]
+        self.assertEqual(second.alignment, WD_ALIGN_PARAGRAPH.JUSTIFY)
+        self.assertEqual(second.paragraph_format.first_line_indent, Pt(24))
+
+
+class PageNumberFooterTests(unittest.TestCase):
+    def test_existing_page_field_paragraph_is_rewritten_in_place(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "footer_two_paras.docx"
+            output = Path(tmp) / "out.docx"
+            doc = Document()
+            doc.add_paragraph("正文")
+            footer = doc.sections[0].footer
+            footer.paragraphs[0].text = "页脚说明文字"
+            _add_page_field(footer.add_paragraph())
+            doc.save(source)
+
+            normalize_docx(cfg, source, output)
+            normalized = Document(output)
+            footer = normalized.sections[0].footer
+            self.assertEqual((footer.paragraphs[0].text or "").strip(), "页脚说明文字")
+            page_fields = [
+                el.text for el in footer._element.iter(qn("w:instrText"))
+                if el.text and "PAGE" in el.text
+            ]
+            self.assertEqual(len(page_fields), 1)
+
+
+class PageSizeSupportTests(unittest.TestCase):
+    def test_letter_page_size_applied(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        cfg["page"]["size"] = "Letter"
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "plain.docx"
+            output = Path(tmp) / "out.docx"
+            doc = Document()
+            doc.add_paragraph("正文")
+            doc.save(source)
+            normalize_docx(cfg, source, output)
+            normalized = Document(output)
+            self.assertAlmostEqual(normalized.sections[0].page_width.cm, 21.59, places=1)
+            self.assertAlmostEqual(normalized.sections[0].page_height.cm, 27.94, places=1)
+
+
+class HeaderFooterDetectionTests(unittest.TestCase):
+    def test_empty_document_has_no_header_footer(self):
+        from normalizer import inspect_docx
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "empty.docx"
+            Document().save(source)
+            self.assertFalse(inspect_docx(source).has_header_footer)
+
+    def test_sample_document_has_header_footer(self):
+        from normalizer import inspect_docx
+
+        self.assertTrue(inspect_docx(SAMPLE_DOCX).has_header_footer)
+
+
+class InspectDocxErrorTests(unittest.TestCase):
+    def test_inspect_docx_rejects_non_docx(self):
+        from normalizer import inspect_docx, InvalidFileTypeError
+
+        with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, mode="w") as f:
+            f.write("hi")
+            p = f.name
+        try:
+            with self.assertRaises(InvalidFileTypeError):
+                inspect_docx(p)
+        finally:
+            os.remove(p)
+
+
+class ChangesCollectionTests(unittest.TestCase):
+    def test_sample_changes_cover_headings_captions_references_tables(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "out.docx"
+            result = normalize_docx(cfg, SAMPLE_DOCX, output, return_result=True)
+            texts = "\n".join(result.changes)
+            self.assertIn("级标题", texts)
+            self.assertIn("图题注", texts)
+            self.assertIn("表题注", texts)
+            self.assertIn("参考文献条目", texts)
+            self.assertIn("表格 0", texts)
+            self.assertGreater(result.paragraphs_processed, 0)
+
+    def test_counts_and_changes_exclude_cover_sections(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "with_cover.docx"
+            output = Path(tmp) / "out.docx"
+            _build_cover_toc_document(source)
+            result = normalize_docx(cfg, source, output, return_result=True)
+            self.assertEqual(result.paragraphs_processed, 2)
+            self.assertEqual(result.tables_processed, 0)
+            self.assertTrue(any("1 级标题" in c for c in result.changes))
+            self.assertFalse(any(
+                c.startswith("段落 0") or c.startswith("段落 1") for c in result.changes
+            ))
+
+    def test_dry_run_without_result_returns_none(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "out.docx"
+            self.assertIsNone(normalize_docx(cfg, SAMPLE_DOCX, output, dry_run=True))
+
+
+class WarningCollectionTests(unittest.TestCase):
+    def test_invalid_image_size_produces_warning_and_callback(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "zero_image.docx"
+            output = Path(tmp) / "out.docx"
+            doc = Document()
+            para = doc.add_paragraph()
+            para.add_run().add_picture(str(ROOT / "assets" / "figure1.png"))
+            extent = para._element.findall(".//" + qn("wp:extent"))[0]
+            extent.set("cx", "0")
+            extent.set("cy", "0")
+            doc.save(source)
+
+            received = []
+            result = normalize_docx(
+                cfg, source, output, return_result=True,
+                on_warning=lambda msg, location=None: received.append((msg, location)),
+            )
+            self.assertTrue(any("尺寸无效" in msg for msg in result.warnings))
+            self.assertTrue(any("尺寸无效" in msg for msg, _ in received))
+
+
+class ImageSizingTests(unittest.TestCase):
+    """图片尺寸策略：fit（等比上限）/ fixed（统一尺寸，等效 Word VBA）。"""
+
+    EMU_PER_CM = 360000
+    DELTA_CM = 0.01  # 页面尺寸经 twips 往返换算，厘米值有极小误差
+
+    def cm(self, emu):
+        return emu / self.EMU_PER_CM
+
+    def assertCm(self, emu, expected_cm):
+        self.assertAlmostEqual(self.cm(emu), expected_cm, delta=self.DELTA_CM)
+
+    def _normalize(self, tmp, source, **figure_overrides):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        cfg["figure"].update(figure_overrides)
+        output = Path(tmp) / "out.docx"
+        warnings = []
+        result = normalize_docx(
+            cfg, source, output, return_result=True,
+            on_warning=lambda msg, location=None: warnings.append(msg),
+        )
+        return result, picture_sizes(output), warnings
+
+    def test_fit_mode_only_shrinks_oversized_image(self):
+        """默认 fit：大图等比缩到上限内，小图原样不动。"""
+        from tests._helpers import make_docx_with_images
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12), (3, 2)])
+            result, sizes, _ = self._normalize(tmp, source)
+
+            self.assertEqual(result.images_processed, 1)
+            self.assertCm(sizes[0][1], 15.5)
+            self.assertCm(sizes[0][2], 12 * 15.5 / 18)
+            self.assertCm(sizes[1][1], 3)
+            self.assertCm(sizes[1][2], 2)
+
+    def test_fixed_mode_stretches_both_dimensions(self):
+        """fixed + 不保持比例：所有图片强制拉伸到同一尺寸（等同 VBA 解锁长宽比）。"""
+        from tests._helpers import make_docx_with_images
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12), (3, 2)])
+            result, sizes, _ = self._normalize(
+                tmp, source, sizeMode="fixed", fixedWidthCm=12, fixedHeightCm=9,
+                keepAspectRatio=False,
+            )
+
+            self.assertEqual(result.images_processed, 2)
+            for _, cx, cy, _ in sizes:
+                self.assertCm(cx, 12)
+                self.assertCm(cy, 9)
+
+    def test_fixed_mode_uniform_width_keeps_ratio(self):
+        """fixed + 保持比例 + 只设宽度：所有图片统一宽度、高度各自等比。"""
+        from tests._helpers import make_docx_with_images
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12), (3, 2)])
+            result, sizes, _ = self._normalize(
+                tmp, source, sizeMode="fixed", fixedWidthCm=10, fixedHeightCm=None,
+                keepAspectRatio=True,
+            )
+
+            self.assertEqual(result.images_processed, 2)
+            self.assertCm(sizes[0][1], 10)
+            self.assertCm(sizes[1][1], 10)
+            self.assertCm(sizes[0][2], 12 * 10 / 18)
+            self.assertCm(sizes[1][2], 2 * 10 / 3)
+
+    def test_target_width_clamped_to_text_width_with_warning(self):
+        """目标宽度超过正文可用宽度时按可用宽度收窄，并给出警告。"""
+        from tests._helpers import make_docx_with_images
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)])
+            result, sizes, warnings = self._normalize(
+                tmp, source, sizeMode="fixed", fixedWidthCm=20, fixedHeightCm=None,
+                keepAspectRatio=True, clampToTextWidth=True,
+            )
+
+            self.assertCm(sizes[0][1], 15.5)
+            self.assertTrue(any("超过正文可用宽度" in msg for msg in warnings))
+            self.assertTrue(any("超过正文可用宽度" in msg for msg in result.warnings))
+
+    def test_clamp_can_be_disabled(self):
+        """关闭安全阀后允许按给定厘米数写死（与 VBA 行为一致）。"""
+        from tests._helpers import make_docx_with_images
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)])
+            _, sizes, _ = self._normalize(
+                tmp, source, sizeMode="fixed", fixedWidthCm=20, fixedHeightCm=None,
+                keepAspectRatio=True, clampToTextWidth=False,
+            )
+
+            self.assertCm(sizes[0][1], 20)
+
+    def test_both_extent_elements_stay_in_sync(self):
+        """wp:extent 与 a:xfrm/a:ext 必须同步，否则 WPS / LibreOffice 显示尺寸不一致。"""
+        from tests._helpers import make_docx_with_images
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)])
+            _, sizes, _ = self._normalize(
+                tmp, source, sizeMode="fixed", fixedWidthCm=12, fixedHeightCm=9,
+                keepAspectRatio=False,
+            )
+
+            for _, cx, _, xfrm_cx in sizes:
+                self.assertEqual(cx, xfrm_cx)
+
+    def test_floating_image_is_resized(self):
+        """浮动图片（wp:anchor）不在 doc.inline_shapes 中，同样要被处理。"""
+        from tests._helpers import make_docx_with_floating_image
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_floating_image(Path(tmp) / "float.docx", 18, 12)
+            result, sizes, _ = self._normalize(tmp, source)
+
+            self.assertEqual(len(sizes), 1)
+            self.assertEqual(sizes[0][0], "anchor")
+            self.assertEqual(result.images_processed, 1)
+            self.assertCm(sizes[0][1], 15.5)
+
+    def test_inspect_docx_counts_floating_images(self):
+        """文档摘要的图片数要把浮动图片算进去。"""
+        from normalizer import inspect_docx
+        from tests._helpers import make_docx_with_floating_image
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_floating_image(Path(tmp) / "float.docx", 18, 12)
+            self.assertEqual(inspect_docx(source).image_count, 1)
+
+    def test_table_image_skipped_by_default(self):
+        """表格单元格里的图标默认跳过（单元格远窄于正文，强制统一会被拉爆）。"""
+        from tests._helpers import make_docx_with_images
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)], table_image=True)
+            result, sizes, _ = self._normalize(
+                tmp, source, sizeMode="fixed", fixedWidthCm=10, fixedHeightCm=None,
+                keepAspectRatio=True,
+            )
+
+            self.assertEqual(result.images_processed, 1)
+            self.assertCm(sizes[-1][1], 2)
+            self.assertTrue(any("位于表格内" in item for item in result.changes))
+
+    def test_table_image_processed_when_skip_disabled(self):
+        from tests._helpers import make_docx_with_images
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)], table_image=True)
+            result, sizes, _ = self._normalize(
+                tmp, source, sizeMode="fixed", fixedWidthCm=10, fixedHeightCm=None,
+                keepAspectRatio=True, skipInTables=False,
+            )
+
+            self.assertEqual(result.images_processed, 2)
+            self.assertCm(sizes[-1][1], 10)
+
+
+class FigureCaptionPaginationTests(unittest.TestCase):
+    """图与图题不应被分页拆开（w:keepNext）。"""
+
+    @staticmethod
+    def _keep_next_paragraphs(path):
+        from docx.oxml.ns import qn
+
+        doc = Document(str(path))
+        result = []
+        for index, para in enumerate(doc.paragraphs):
+            ppr = para._element.find(qn("w:pPr"))
+            if ppr is not None and ppr.find(qn("w:keepNext")) is not None:
+                result.append(index)
+        return result
+
+    def _run(self, tmp, caption_position, keep=True):
+        from normalizer import normalize_docx
+        from tests._helpers import make_docx_with_images
+
+        cfg = load_config()
+        cfg["figure"]["captionPosition"] = caption_position
+        cfg["figure"]["keepWithCaption"] = keep
+        source = make_docx_with_images(
+            Path(tmp) / "in.docx", [(10, 7)], caption_position=caption_position)
+        output = Path(tmp) / "out.docx"
+        normalize_docx(cfg, source, output)
+        return self._keep_next_paragraphs(output)
+
+    def test_caption_below_keeps_image_with_caption(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            # 段落顺序：0 正文、1 图、2 图题 → 图段（1）带 keepNext
+            self.assertEqual(self._run(tmp, "below"), [1])
+
+    def test_caption_above_keeps_caption_with_image(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            # 段落顺序：0 正文、1 图题、2 图 → 图题段（1）带 keepNext
+            self.assertEqual(self._run(tmp, "above"), [1])
+
+    def test_disabled_adds_no_keep_next(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(self._run(tmp, "below", keep=False), [])
 
 
 if __name__ == "__main__":

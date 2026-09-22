@@ -149,10 +149,9 @@ function buildSampleContent(F, assetsDir) {
 function buildDocument(config, children, meta = {}) {
   const { w, h } = pageSizeDxa(config.page.size);
   const m = config.page.margins;
-  const unit = config.page.marginUnit === "cm" ? CM_TO_DXA : 1;
   const margins = {
-    top: Math.round(m.top * unit), bottom: Math.round(m.bottom * unit),
-    left: Math.round(m.left * unit), right: Math.round(m.right * unit),
+    top: Math.round(m.top * CM_TO_DXA), bottom: Math.round(m.bottom * CM_TO_DXA),
+    left: Math.round(m.left * CM_TO_DXA), right: Math.round(m.right * CM_TO_DXA),
   };
 
   // 页脚页码
@@ -350,4 +349,11 @@ function main() {
   }).catch(e => { console.error("生成失败: " + e.message); process.exit(1); });
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  parseArgs, parseValue, setByPath, applyOverrides,
+  buildSampleContent, buildDocument, main,
+};

@@ -27,10 +27,14 @@
 
 - **一键规范化** — 打开任意 `.docx`，自动识别标题层级（一、/（一）/1./（1））、图表题注、参考文献段落，统一套用配置的格式系统
 - **从零生成** — 生成包含正文、图片、表格、GB/T 7714 参考文献的完整示例文档
-- **配置驱动** — 字体、字号、行距、边距、对齐、段前段后等全部参数集中在 `config.json` 中
+- **配置驱动** — 字体、字号、行距、边距、段落排列、段前段后等全部参数集中在 `config.json` 中
 - **表格独立排版** — 单元格使用独立的字体/字号/行距，显式置零首行缩进（OOXML 字符单位也清零）
-- **图片智能缩放** — 默认宽度等于正文宽度，按宽高比等比缩放
-- **页码自动插入** — 底部居中页码，PAGE 域自动编号
+- **图片智能缩放** — 两种模式：`fit` 等比缩放到上限内（默认），`fixed` 把全部图片统一到指定尺寸；可只填宽度实现「统一宽度」，也可强制拉伸
+- **浮动图片同样处理** — `wp:anchor`（四周型 / 浮于文字上方）也在处理范围内，不只是嵌入型
+- **图片安全阀** — 目标宽度自动收窄到正文可用宽度、表格内图标默认跳过，避免图片溢出页面或被拉爆
+- **图与图题不分页** — 自动设置 `keepNext`，图题不会被分页甩到下一页
+- **页码样式统一** — 已有页码统一为底部居中并套用配置的字体字号；无页码的封面/前置页保持原样（可用 `pageNumber.onlyUpdateExisting` 改为给所有分节新增页码）
+- **桌面界面** — 支持把 `.docx` 拖入窗口；选中文档后显示段落/表格/图片摘要；结果按「变更 / 警告 / 日志」分段展示；耗时操作在后台执行并显示进度
 - **健壮性优先** — 中文错误信息、自动备份、dry-run 预览、优雅降级（详见 [健壮性保证](#健壮性保证)）
 - **双语言实现** — Python（tkinter GUI + python-docx）和 Node.js（CLI + docx 库），共享同一份配置
 
@@ -40,12 +44,14 @@
 
 ### 方式一：直接运行可执行文件（Windows，推荐）
 
-从 [Releases](../../releases) 下载 `DocFormatter.exe`，双击即可启动 GUI。将 `config.json` 放在 exe 同目录即可自定义排版参数。
+从 [Releases](../../releases) 下载 `DocFormatter.exe`，双击即可启动 GUI。将 `config.json` 放在 exe 同目录即可自定义排版参数。把 `.docx` 拖入窗口或点击选择，点「开始规范化」即可；「预览变更」不会写入文件。
+
+GUI 快捷键：`Ctrl+O` 选择文档、`Ctrl+P` 预览变更、`Ctrl+Enter` 开始规范化、`Ctrl+S` 保存配置、`Ctrl+G` 生成示例文档、`F1` 关于。
 
 ### 方式二：Python 运行
 
 ```bash
-pip install python-docx
+pip install -r requirements.txt
 python app.py
 ```
 
@@ -69,8 +75,9 @@ node generate.js --dry-run                      # 预览，不写文件
 
 **操作**：
 1. 启动 GUI（`DocFormatter.exe` 或 `python app.py`）
-2. 选输入 `.docx`，点"开始规范化"
-3. 默认配置就是学术格式
+2. 把 `.docx` 拖入窗口（或点「选择文档…」）
+3. 可先点「预览变更」确认会改什么，再点「开始规范化」
+4. 默认配置就是学术格式
 
 **等价 CLI**：
 ```bash
@@ -81,7 +88,7 @@ node generate.js --out 我的论文.docx
 
 **目标**：表题在上方、行距紧凑、无首行缩进。
 
-**操作**：GUI 里打开"高级设置" → "表" → 把"表题位置"改成 `above`；"正文" → 行距改 1.0、首行缩进改 0。
+**操作**：打开右侧「高级设置」→ 展开「表」分组 → 表题位置选「上方」；展开「正文」分组 → 行距改 1.0、首行缩进改 0。
 
 **等价 CLI**：
 ```bash
@@ -113,6 +120,32 @@ for src in Path("papers").glob("*.docx"):
     print(f"OK: {out}")
 ```
 
+### 场景 5：把文档里所有照片统一成同样大小
+
+**目标**：一批尺寸不一的照片（截图、手机拍照）统一为宽 12cm，高度各自等比；如果要求每张都严格 12×9 cm（允许多少变形）改成强制拉伸。
+
+**操作**（GUI）：右侧「高级设置」→ 展开「图」分组 →
+- 尺寸模式选「统一尺寸」
+- 「统一宽度(cm)」填 12（高度留空即只约束宽度）
+- 勾上「统一时保持比例」
+
+**等价配置**：
+
+```json
+"figure": {
+  "sizeMode": "fixed",
+  "fixedWidthCm": 12,
+  "fixedHeightCm": null,
+  "keepAspectRatio": true
+}
+```
+
+强制拉伸成 12×9（等同 Word VBA 的 `LockAspectRatio = msoFalse`）：
+
+```json
+"figure": { "sizeMode": "fixed", "fixedWidthCm": 12, "fixedHeightCm": 9, "keepAspectRatio": false }
+```
+
 ### 更多场景
 
 `node generate.js --examples` 查看全部 6 个场景。
@@ -125,12 +158,12 @@ for src in Path("papers").glob("*.docx"):
 
 | 区段 | 说明 | 关键参数 |
 |------|------|----------|
-| `page` | 页面设置 | `margins`（上下左右边距，cm）、`forceA4` |
-| `pageNumber` | 页码 | `enabled`、`align`、`size`、`font` |
+| `page` | 页面设置 | `margins`（上下左右边距，cm）、`size`（A4 / Letter） |
+| `pageNumber` | 页码 | `enabled`、`align`、`size`、`font`、`onlyUpdateExisting`（只更新已有页码，默认 true） |
 | `body` | 正文 | `font`（中文字体）、`asciiFont`（英数字体）、`size`、`lineSpacing`、`firstLineIndentChars`（首行缩进字数）、`align` |
 | `headings` | 标题（H1-H4） | 每级独立设置 `font`、`size`、`bold`、`color`、`spaceBeforePt`、`spaceAfterPt`、`align` |
-| `figure` | 图片 | `maxWidthCm`、`maxHeightCm`、`captionPosition`（above/below）、`captionSize`、`prefix` |
-| `table` | 表格 | `captionPosition`、`cellSize`、`cellAlign`、`cellVAlign`、`headerBold`、`prefix` |
+| `figure` | 图片 | `sizeMode`（`fit` 等比 / `fixed` 统一）、`maxWidthCm`、`maxHeightCm`、`fixedWidthCm`、`fixedHeightCm`、`keepAspectRatio`、`clampToTextWidth`、`skipInTables`、`keepWithCaption`、`captionPosition`（above/below）、`captionSize`、`prefix` |
+| `table` | 表格 | `captionPosition`、`align`、`cellSize`、`cellAlign`、`cellVAlign`、`headerBold`、`prefix`；`borderColor` / `borderSize` 仅 Node.js 版生效 |
 | `references` | 参考文献 | `style`（GB/T 7714）、`hangingIndentPt`（悬挂缩进）、`size`、`lineSpacing` |
 | `output` | 输出 | `filename` |
 
@@ -236,14 +269,27 @@ A: 工具拒绝覆盖原文件（防误操作）。选一个不同的输出文�
 ### Q7: 想恢复规范化前的版本
 A: 0.2.1+ **默认不生成 .bak 备份**（之前版本会生成）。如果规范化时显式传了 `backup=True`，同目录会有 `<原文件名>.docx.bak`，把它改回原名即可。
 
-### Q8: GUI 启动后界面错位
-A: 显示器缩放不是 100% 时会错位。右键 exe → 属性 → 兼容性 → 改高 DPI 设置 → "替代高 DPI 缩放行为"。
+### Q8: GUI 启动后界面模糊或错位
+A: 0.4.0+ 已在启动时声明 Windows DPI 感知，正常显示。如果仍异常，右键 exe → 属性 → 兼容性 → 改高 DPI 设置 → "替代高 DPI 缩放行为"。
 
 ### Q9: 想让表格在文档中居中
-A: 表格默认居中（`<w:jc w:val="center"/>`）。如果不对，可能是 Normal 样式被改动 — 用"重置默认"按钮恢复。
+A: 表格默认居中。如果不对，可能是 Normal 样式被改动 — 用「更多 → 恢复默认配置」恢复。
 
 ### Q10: 参考文献格式不对（不是 GB/T 7714）
 A: GB/T 7714 是一组规范，工具只负责悬挂缩进。文献条目本身的标点格式需要按规范排。常见类型标识：`[M]` 专著 / `[J]` 期刊 / `[D]` 学位论文 / `[J/OL]` 网络期刊 / `[EB/OL]` 网络资源。
+
+### Q11: 设了「统一尺寸」，但有的图片没变
+A: 按以下顺序排查：
+1. **在表格里** — `figure.skipInTables` 默认为 `true`，表格单元格内的图标会跳过（单元格远窄于正文，强制 12cm 会被拉爆）。「变更」列表里会写明「图 N：位于表格内，跳过尺寸统一」。确实要一起改就把 `skipInTables` 设为 `false`
+2. **在文本框里** — 文本框内的小图标一律跳过（会写明原因）
+3. **在页眉/页脚里** — 这些部件不属于正文（body），本工具不处理，会给出警告提示
+4. **本来就是目标尺寸** — 已经等于目标大小，无需改动，也不计入「调整 N 张图」
+
+### Q12: 统一宽度设了 20cm，结果变成了 15.5cm
+A: 这是 `clampToTextWidth`（默认开）在起作用 —— 目标宽度超过正文可用宽度时会自动收窄，否则图片会溢出页面。正文可用宽度 = 页宽 − 左右边距，A4 加 3 / 2.5cm 边距时为 15.5cm。确实想要更宽就调小页边距，或关闭 `clampToTextWidth`。
+
+### Q13: 想让图片严格 12×9 cm，变形不变形无所谓
+A: 用 `sizeMode: "fixed"` + `keepAspectRatio: false`，这就是 Word VBA 里解开长宽比锁定后写死宽高的效果。若希望不变形，把 `keepAspectRatio` 设为 `true`（按框等比适配）。
 
 ---
 
@@ -270,32 +316,21 @@ A: GB/T 7714 是一组规范，工具只负责悬挂缩进。文献条目本身�
 - GUI：点"预览变更"按钮
 - CLI：`node generate.js --dry-run`
 
-**优雅降级**：遇到无法识别的段落、损坏的表格单元格、读取失败的图片等**非致命问题**时，记录为警告后继续执行，**不中断**整体规范化。
+**优雅降级**：图片尺寸读取失败等**非致命问题**记录为警告（进入 `NormalizeResult.warnings`，同时回调 `on_warning`）后继续执行，**不中断**整体规范化。
 
 ---
 
 ## 从源码构建
 
 ```bash
-# Python 版打包（生成 dist\DocFormatter.exe）
-pip install pyinstaller
+# Python 依赖与打包工具
+pip install -r requirements-dev.txt
+
+# 打包（生成 dist\DocFormatter.exe）
 pyinstaller DocFormatter.spec --noconfirm --clean
 
 # Node.js 依赖
-npm install
-```
-
-或用命令行参数：
-
-```bash
-pyinstaller --onefile --windowed --name DocFormatter ^
-    --add-data "formatter.py;." ^
-    --add-data "normalizer.py;." ^
-    --add-data "config_model.py;." ^
-    --add-data "paths.py;." ^
-    --add-data "config.json;." ^
-    --add-data "assets;assets" ^
-    app.py
+npm ci
 ```
 
 生成的 `dist/DocFormatter.exe` 可独立运行，不需要 Python 环境。
@@ -306,28 +341,34 @@ pyinstaller --onefile --windowed --name DocFormatter ^
 
 ```
 goodDocument/
-├── app.py              # tkinter GUI 入口
-├── formatter.py        # 核心排版引擎（生成文档）
-├── normalizer.py       # 已有文档规范化处理（含健壮性异常层）
-├── config_model.py     # 配置加载/保存/校验
-├── paths.py            # 路径工具（支持 PyInstaller 打包模式）
-├── config.json         # 排版参数配置
-├── DocFormatter.spec   # PyInstaller 打包配置
-├── generate.js         # Node.js CLI 入口
-├── formatter.js        # Node.js 排版核心库
-├── package.json        # Node.js 项目配置
-├── assets/             # 示例图片资源
+├── app.py               # tkinter GUI 入口（拖拽、后台执行、快捷键）
+├── ui_theme.py          # 界面主题（颜色/字体令牌、ttk 样式、取值映射）
+├── formatter.py         # 核心排版引擎（生成文档）
+├── normalizer/          # 已有文档规范化（core / normalize / errors / paths）
+├── config_model.py      # 配置加载/保存/校验
+├── paths.py             # 路径工具（支持 PyInstaller 打包模式）
+├── config.json          # 排版参数配置
+├── DocFormatter.spec    # PyInstaller 打包配置
+├── generate.js          # Node.js CLI 入口
+├── formatter.js         # Node.js 排版核心库
+├── package.json         # Node.js 项目配置
+├── requirements.txt     # Python 运行依赖
+├── requirements-dev.txt # Python 开发依赖（pytest / pyinstaller / ruff）
+├── assets/              # 示例图片资源
 │   └── figure1.png
-├── tests/              # 单元测试
+├── tests/               # 测试
 │   ├── test_app_paths.py
 │   ├── test_config_model.py
+│   ├── test_formatter.py
 │   ├── test_normalize_docx.py
+│   ├── test_ui_theme.py
+│   ├── test_version_consistency.py
 │   ├── _helpers.py
-│   └── _corrupt_source.docx
+│   └── node/            # Node.js 测试（node --test）
 └── docs/
     └── superpowers/
-        ├── specs/      # 设计文档
-        └── plans/      # 实施计划
+        ├── specs/       # 设计文档
+        └── plans/       # 实施计划
 ```
 
 ---
@@ -335,16 +376,19 @@ goodDocument/
 ## 运行测试
 
 ```bash
-python -m pytest tests/ -v
+pip install -r requirements-dev.txt
+python -m pytest tests/ -v   # Python 测试
+npm test                     # Node.js 测试
+ruff check .                 # 静态检查
 ```
 
-**42 个测试**全部覆盖：核心规范化、配置加载、异常抛出、备份、dry-run、边界场景（损坏 docx、嵌套表、空表、无法识别段落等）。
+覆盖核心规范化、配置加载、生成器、异常抛出、备份、dry-run、边界场景（损坏 docx、嵌套表、空表、无法识别段落等）、变更收集、界面主题令牌与版本一致性。
 
 ---
 
-## 技术栈
+## 使用的技术
 
-- **Python 版** — Python 3.12 / python-docx / tkinter / PyInstaller
+- **Python 版** — Python 3.12 / python-docx / tkinter + tkinterdnd2 / PyInstaller
 - **Node.js 版** — Node.js / docx / image-size
 - **排版规范参照** — GB/T 7714 参考文献著录规则、党政机关公文格式
 

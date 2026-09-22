@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
+.ruff_cache/
 
 # PyInstaller
 build/
@@ -32,6 +34,10 @@ unpacked/
 .omc/
 .omo/
 
+# Local agent workspace memory (not source)
+.workbuddy/
+
 # Output samples (generated, not source)
-# 规范文档示例.docx
-# 规范文档示例_v2.docx
+规范文档示例.docx
+规范文档示例_v2.docx
+tests/_corrupt_source.docx
