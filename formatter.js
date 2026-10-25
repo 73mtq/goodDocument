@@ -76,6 +76,23 @@ function lineSpacingConfig(ratio) {
 /** 磅 → DXA（用于段前段后、缩进） */
 const ptToDxa = (pt) => Math.round(pt * PT_TO_DXA);
 
+/** GB/T 7714 单条参考文献文本，与 formatter.py format_reference_entry 语义一致 */
+function formatReferenceEntry(it, number) {
+  let s = `[${number}] ${it.authors}. ${it.title}[${it.type}]. `;
+  if (it.place && it.publisher) {
+    s += `${it.place}: ${it.publisher}, ${it.year}.`;
+  } else if (it.source) {
+    s += `${it.source}, ${it.year}`;
+    if (it.volume) s += `, ${it.volume}`;
+    if (it.issue) s += `(${it.issue})`;
+    s += `: ${it.pages || ""}.`;
+  } else {
+    s += `${it.year || ""}.`;
+  }
+  if (it.url) { s += ` ${it.url}`; if (it.accessDate) s += ` [${it.accessDate}].`; }
+  return s;
+}
+
 /** 页面尺寸：A4 / Letter，返回 {w,h} DXA */
 function pageSizeDxa(size) {
   if (/letter/i.test(String(size))) return { w: 12240, h: 15840 };
@@ -391,19 +408,7 @@ function createFormatter(config) {
     const sz = resolveSize(r.size);
     const hang = ptToDxa(r.hangingIndentPt || 24);
     return items.map((it, i) => {
-      const n = i + 1;
-      let s = `[${n}] ${it.authors}. ${it.title}[${it.type}]. `;
-      if (it.place && it.publisher) {
-        s += `${it.place}: ${it.publisher}, ${it.year}.`;
-      } else if (it.source) {
-        s += `${it.source}, ${it.year}`;
-        if (it.volume) s += `, ${it.volume}`;
-        if (it.issue) s += `(${it.issue})`;
-        s += `: ${it.pages || ""}.`;
-      } else {
-        s += `${it.year || ""}.`;
-      }
-      if (it.url) { s += ` ${it.url}`; if (it.accessDate) s += ` [${it.accessDate}].`; }
+      const s = formatReferenceEntry(it, i + 1);
       return new Paragraph({
         alignment: ALIGN_MAP[r.align] || AlignmentType.JUSTIFIED,
         spacing: { ...lineSpacingConfig(r.lineSpacing), before: 0, after: 60 },
@@ -423,7 +428,7 @@ function createFormatter(config) {
 }
 
 module.exports = {
-  resolveSize, makeFont, lineSpacingConfig, detectHeadingLevel,
+  resolveSize, makeFont, lineSpacingConfig, detectHeadingLevel, formatReferenceEntry,
   pageSizeDxa, contentWidthDxa, createFormatter,
   CM_TO_DXA, PT_TO_DXA, SIZE_NAME_TO_PT,
 };

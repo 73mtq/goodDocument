@@ -6,38 +6,52 @@ import zipfile
 from dataclasses import dataclass
 
 import lxml.etree
-
 from docx import Document
-from docx.shared import Cm, Pt
 from docx.enum.text import WD_LINE_SPACING
-from docx.enum.table import WD_ALIGN_VERTICAL
+from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docx.shared import Cm, Pt
+from docx.text.paragraph import Paragraph
 
 from formatter import (
-    resolve_size,
+    add_page_number_field,
+    clear_style_indent_chars,
     resolve_align,
     resolve_page_size,
+    resolve_size,
     resolve_table_align,
-    set_run_font,
+    set_indent_values,
     set_para_spacing,
-    set_zero_indent,
-    clear_style_indent_chars,
-    add_page_number_field,
+    set_run_font,
     set_run_font_element,
+    set_zero_indent,
 )
 
 from .errors import CorruptDocxError, InvalidFileTypeError
 from .paths import _is_docx_path
-
+from .table_align import analyze_table, table_grid
 
 # ----- 常量 -----
 EMU_PER_CM = 360000
 
+_CN_NUM = "〇零一二三四五六七八九十百千"
+
+# 未编号章级标题：整段仅此词（内部可含空格，如「摘  要」）。
+# 对应规格中不加章号、按章标题排版的结论/致谢/参考文献/摘要等。
+UNNUMBERED_H1_TEXTS = {"结论", "结语", "致谢", "谢辞", "参考文献", "附录", "摘要", "abstract"}
+
+# 「N.M 标题」/「N.M.K 标题」体系。两道防线避免把正文小数误判为标题：
+# 1) 编号后紧跟谓词/量词（是/为/约/倍…）→ 是小数作主语的句子，不是标题；
+# 2) 余文含句末标点（。！？…）→ 是完整句子。
+# 另要求编号后不能再跟数字/点（排除 1.1.1、3.14）。
+_DOTTED_GUARD = r"(?![.\d])(?!\s*(?:是|不是|为|等于|约|超过|接近|倍))(?![\s\S]*[。！？!?…])"
+
 HEADING_PATTERNS = {
-    1: re.compile(r"^[一二三四五六七八九十百]+、"),
-    2: re.compile(r"^（[一二三四五六七八九十百]+）|^\([一二三四五六七八九十百]+\)"),
-    3: re.compile(r"^\d+[.、](?!\d)"),
-    4: re.compile(r"^（\d+）|^\(\d+\)"),
+    1: re.compile(r"^[一二三四五六七八九十百]+、|^第[" + _CN_NUM + r"\d]+章(?=\s|$)"),
+    2: re.compile(r"^（[一二三四五六七八九十百]+）|^\([一二三四五六七八九十百]+\)"
+                  r"|^\d+\.\d+" + _DOTTED_GUARD),
+    3: re.compile(r"^\d+[.、](?!\d)|^\d+\.\d+\.\d+" + _DOTTED_GUARD),
+    4: re.compile(r"^（\d+）|^\(\d+\)|^\d+\.\d+\.\d+\.\d+(?![.\d])"),
 }
 
 
@@ -55,13 +69,17 @@ def _detect_heading_level(para) -> int:
     style_name = ""
     try:
         style_name = para.style.name or ""
-    except Exception:
+    except (AttributeError, KeyError, ValueError):
         style_name = ""
     match = re.search(r"Heading\s+([1-4])", style_name, re.I)
     if match:
         return int(match.group(1))
 
     text = _paragraph_text(para)
+    # 未编号章级标题（结论/致谢/参考文献/摘要…，允许「摘  要」内部空格）
+    compact = re.sub(r"\s+", "", text)
+    if compact and compact.lower() in UNNUMBERED_H1_TEXTS:
+        return 1
     for level, pattern in HEADING_PATTERNS.items():
         if pattern.search(text):
             return level
@@ -72,7 +90,7 @@ def _is_toc_style(para) -> bool:
     """检测段落样式是否为目录条目样式（toc 1/2/3...）。"""
     try:
         name = para.style.name or ""
-    except Exception:
+    except (AttributeError, KeyError, ValueError):
         return False
     return name.lower().startswith("toc")
 
@@ -216,6 +234,10 @@ def _apply_page_settings(doc, cfg):
             sec.left_margin = Cm(margins["left"])
         if "right" in margins:
             sec.right_margin = Cm(margins["right"])
+        if "header" in margins:
+            sec.header_distance = Cm(margins["header"])
+        if "footer" in margins:
+            sec.footer_distance = Cm(margins["footer"])
 
         if not pn.get("enabled", True):
             continue
@@ -236,6 +258,33 @@ def _apply_page_settings(doc, cfg):
         add_page_number_field(p, lambda r: set_run_font(
             r, pn.get("font", "宋体"), pn.get("asciiFont", "Times New Roman"),
             size_pt=resolve_size(pn.get("size", "小五"))))
+
+
+def _format_headers(doc, cfg, cover_sections):
+    """格式化已有页眉（不创建/不改文字）：宋体小五居中，从正文开始。
+
+    仅当配置含 header 区段时生效（学位论文预设启用；默认配置无此段，行为不变）。
+    """
+    h = cfg.get("header")
+    if not isinstance(h, dict):
+        return
+    size_pt = resolve_size(h.get("size", "小五"))
+    for idx, sec in enumerate(doc.sections):
+        if idx in cover_sections:  # 页眉从正文开始，封面/前置节保持原样
+            continue
+        try:
+            if sec.header.is_linked_to_previous:
+                continue
+        except (AttributeError, ValueError):
+            continue
+        for para in sec.header.paragraphs:
+            if not _paragraph_text(para):
+                continue
+            para.alignment = resolve_align(h.get("align", "center"))
+            set_para_spacing(para, line_spacing_mult=1.0, before_pt=0, after_pt=0)
+            set_zero_indent(para)
+            _apply_run_defaults(para, h.get("font", "宋体"),
+                                h.get("asciiFont", "Times New Roman"), size_pt)
 
 
 def _apply_document_styles(doc, cfg):
@@ -277,11 +326,12 @@ def _apply_heading_format(para, cfg, level):
     hc = cfg["headings"].get("h" + str(level), {})
     try:
         para.style = "Heading " + str(level)
-    except Exception:
+    except (KeyError, ValueError, AttributeError):
         pass
     para.alignment = resolve_align(hc.get("align", "left"))
     set_para_spacing(para, line_spacing_mult=hc.get("lineSpacing", 1.5),
-                     before_pt=hc.get("spaceBeforePt", 0), after_pt=hc.get("spaceAfterPt", 0))
+                     before_pt=hc.get("spaceBeforePt", 0), after_pt=hc.get("spaceAfterPt", 0),
+                     before_lines=hc.get("spaceBeforeLines"), after_lines=hc.get("spaceAfterLines"))
     set_zero_indent(para)
     _apply_run_defaults(
         para,
@@ -299,11 +349,8 @@ def _apply_body_format(para, cfg):
     set_para_spacing(para, line_spacing_mult=body.get("lineSpacing", 1.5),
                      before_pt=0, after_pt=body.get("spaceAfterPt", 0))
     indent_chars = body.get("firstLineIndentChars", 0)
-    para.paragraph_format.first_line_indent = (
-        Pt(resolve_size(body.get("size", "小四")) * indent_chars) if indent_chars > 0 else Pt(0)
-    )
-    para.paragraph_format.left_indent = Pt(0)
-    para.paragraph_format.right_indent = Pt(0)
+    first_line_pt = resolve_size(body.get("size", "小四")) * indent_chars if indent_chars > 0 else 0
+    set_indent_values(para, first_line_pt=first_line_pt, left_pt=0, right_pt=0)
     _apply_run_defaults(
         para,
         body.get("font", "宋体"),
@@ -343,6 +390,33 @@ def _apply_reference_format(para, cfg):
 
 
 # ----- 规范化主流程 -----
+def _classify_paragraph(text, level, fig_re, table_re, in_refs):
+    if level:
+        return "heading"
+    if _is_caption_para(text, fig_re):
+        return "figure_caption"
+    if _is_caption_para(text, table_re):
+        return "table_caption"
+    if in_refs and re.match(r"^\[\d+\]", text):
+        return "reference"
+    return "body"
+
+
+def _handle_drawing_paragraph(para, cfg, fig_keep, fig_caption_below):
+    fig_cfg = cfg.get("figure", {})
+    para.alignment = resolve_align(fig_cfg.get("align", "center"))
+    set_para_spacing(para, line_spacing_mult=1.0, before_pt=0, after_pt=0)
+    set_zero_indent(para)
+    if fig_keep and fig_caption_below:
+        _set_keep_with_next(para)
+    return 1
+
+
+def _fingerprint(*elements):
+    """元素序列化指纹——用于幂等变更检测（第二次规范化不再重复上报）。"""
+    return b"".join(lxml.etree.tostring(el) for el in elements if el is not None)
+
+
 def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections, on_warning=None, on_change=None):
     fig_cfg = cfg.get("figure", {})
     fig_prefix = fig_cfg.get("prefix", "图")
@@ -366,12 +440,8 @@ def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections, on_warning=
             continue
 
         if _paragraph_has_drawing(para):
-            para.alignment = resolve_align(fig_cfg.get("align", "center"))
-            set_para_spacing(para, line_spacing_mult=1.0, before_pt=0, after_pt=0)
-            set_zero_indent(para)
-            if fig_keep and fig_caption_below:
-                _set_keep_with_next(para)
-            processed += 1
+            processed += _handle_drawing_paragraph(
+                para, cfg, fig_keep, fig_caption_below)
             continue
 
         text = _paragraph_text(para)
@@ -384,41 +454,177 @@ def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections, on_warning=
         if _is_reference_title(text, level):
             in_refs = True
 
-        if level:
+        note = None
+        kind = _classify_paragraph(text, level, fig_caption_re, table_caption_re, in_refs)
+        before = _fingerprint(para._element) if on_change else None
+        if kind == "heading":
             _apply_heading_format(para, cfg, level)
             processed += 1
-            if on_change:
-                on_change(f"段落 {idx}：{level} 级标题「{_shorten(text)}」")
-        elif _is_caption_para(text, fig_caption_re):
+            note = f"段落 {idx}：{level} 级标题「{_shorten(text)}」"
+        elif kind == "figure_caption":
             _apply_caption_format(para, cfg, "figure")
             if fig_keep and not fig_caption_below:
                 _set_keep_with_next(para)
             processed += 1
-            if on_change:
-                on_change(f"段落 {idx}：图题注「{_shorten(text)}」")
-        elif _is_caption_para(text, table_caption_re):
+            note = f"段落 {idx}：图题注「{_shorten(text)}」"
+        elif kind == "table_caption":
             _apply_caption_format(para, cfg, "table")
             processed += 1
-            if on_change:
-                on_change(f"段落 {idx}：表题注「{_shorten(text)}」")
-        elif in_refs and re.match(r"^\[\d+\]", text):
+            note = f"段落 {idx}：表题注「{_shorten(text)}」"
+        elif kind == "reference":
             _apply_reference_format(para, cfg)
             processed += 1
-            if on_change:
-                on_change(f"段落 {idx}：参考文献条目「{_shorten(text)}」")
+            note = f"段落 {idx}：参考文献条目「{_shorten(text)}」"
         else:
             _apply_body_format(para, cfg)
             processed += 1
+        # 幂等：只有真的改了 XML 才计入「变更」
+        if note and on_change and _fingerprint(para._element) != before:
+            on_change(note)
     return processed
 
 
+def _table_style_element(tbl):
+    """表格所引用的表格样式元素（用于级联修改与指纹比对），无则返回 None。"""
+    try:
+        style = tbl.style
+    except (KeyError, ValueError):
+        return None
+    return style.element if style is not None else None
+
+
+def _zero_style_indents(style_element):
+    """样式 <w:ind>：删字符单位属性（firstLineChars 等），数值单位清零。
+
+    段落级 set_zero_indent 只压制直接格式；样式里的 firstLineChars 仍会按字符数
+    渲染（HANDOVER 坑 1），单元格引用到的样式必须一并清零。
+    """
+    pPr = style_element.find(qn("w:pPr"))
+    if pPr is None:
+        return
+    ind = pPr.find(qn("w:ind"))
+    if ind is None:
+        return
+    for attr in ("firstLineChars", "leftChars", "rightChars"):
+        key = qn("w:" + attr)
+        if key in ind.attrib:
+            del ind.attrib[key]
+    for attr in ("firstLine", "left", "right"):
+        key = qn("w:" + attr)
+        if key in ind.attrib:
+            ind.set(key, "0")
+
+
+def _style_by_id(doc, style_id):
+    for style in doc.styles:
+        if style.style_id == style_id:
+            return style
+    return None
+
+
+def _clear_table_style_indents(doc, tbl):
+    """单元格段落引用到的样式（含 basedOn 链）：清除缩进，样式级兜底。"""
+    seen = set()
+    for p in tbl._tbl.iter(qn("w:p")):
+        pPr = p.find(qn("w:pPr"))
+        if pPr is None:
+            continue
+        ps = pPr.find(qn("w:pStyle"))
+        if ps is None:
+            continue
+        style_id = ps.get(qn("w:val"))
+        if not style_id or style_id in seen:
+            continue
+        seen.add(style_id)
+        style = _style_by_id(doc, style_id)
+        visited = set()
+        while style is not None and id(style.element) not in visited:
+            visited.add(id(style.element))
+            _zero_style_indents(style.element)
+            try:
+                style = style.base_style
+            except (AttributeError, KeyError, ValueError):
+                break
+
+
+_BORDER_SIDE_TAGS = tuple(qn("w:" + side) for side in (
+    "top", "left", "bottom", "right", "insideH", "insideV", "start", "end"))
+
+
+def _strip_element_colors(el, border_color):
+    """底纹清除 + 已有边框颜色恢复。作用于表格元素或其表格样式元素。"""
+    # 1) w:shd：表/行/单元格/字符底纹全部移除（保留的显式 clear 由调用方补写）
+    for shd in list(el.iter(qn("w:shd"))):
+        parent = shd.getparent()
+        if parent is None:
+            continue
+        if parent.tag in (qn("w:tblPr"), qn("w:trPr"), qn("w:tcPr"), qn("w:rPr")):
+            parent.remove(shd)
+    # 2) 已有边框（含段落/单元格/表级）颜色统一恢复为配置色
+    for side in list(el.iter()):
+        if side.tag in _BORDER_SIDE_TAGS:
+            if side.get(qn("w:color")):
+                side.set(qn("w:color"), border_color)
+
+
+def _force_clear_cell_shading(tbl):
+    """每个单元格显式写入无填充，压过表格样式自带的底色。"""
+    for tc in tbl._tbl.iter(qn("w:tc")):
+        tcPr = tc.find(qn("w:tcPr"))
+        if tcPr is None:
+            tcPr = OxmlElement("w:tcPr")
+            tc.insert(0, tcPr)
+        for shd in tcPr.findall(qn("w:shd")):
+            tcPr.remove(shd)
+        shd = OxmlElement("w:shd")
+        shd.set(qn("w:val"), "clear")
+        shd.set(qn("w:color"), "auto")
+        shd.set(qn("w:fill"), "auto")
+        anchor = None
+        for tag in ("w:tcW", "w:gridSpan", "w:hMerge", "w:vMerge"):
+            found = tcPr.find(qn(tag))
+            if found is not None:
+                anchor = found
+        if anchor is not None:
+            anchor.addnext(shd)
+        else:
+            tcPr.insert(0, shd)
+
+
+def _format_table_cell(tc, align, valign, cell_font, cell_en, cell_size, line_spacing, bold):
+    """格式化单个物理单元格（含合并延续格），完全独立于正文样式。"""
+    tcPr = tc.get_or_add_tcPr()
+    vAlign = tcPr.find(qn("w:vAlign"))
+    if vAlign is None:
+        vAlign = OxmlElement("w:vAlign")
+        tcPr.append(vAlign)
+    vAlign.set(qn("w:val"), valign)
+    for p_el in tc.findall(qn("w:p")):
+        para = Paragraph(p_el, None)
+        para.alignment = align
+        set_para_spacing(para, line_spacing_mult=line_spacing, before_pt=0, after_pt=0)
+        set_zero_indent(para)
+        _apply_run_defaults(para, cell_font, cell_en, cell_size, bold=bold)
+
+
 def _normalize_tables(doc, cfg, table_to_section, cover_sections, on_warning=None, on_change=None):
+    """表格规范化：独立排版 + 底纹/彩色边框清除 + 可选智能对齐。
+
+    单元格字体默认五号宋体（不再回退到 body 的字体字号）；首行缩进在段落级
+    与样式级双重清零；cellAlign="smart" 时按 normalizer.table_align 的判定
+    逐格对齐，headerBold 只加在判定出的表头行上。
+    """
     t = cfg.get("table", {})
-    cell_font = t.get("cellFont", cfg["body"].get("font", "宋体"))
-    cell_en = t.get("cellAsciiFont", cfg["body"].get("asciiFont", "Times New Roman"))
-    cell_size = resolve_size(t.get("cellSize", cfg["body"].get("size", "小四")))
-    cell_align = resolve_align(t.get("cellAlign", "center"))
-    cell_valign = WD_ALIGN_VERTICAL.CENTER if t.get("cellVAlign", "center") == "center" else WD_ALIGN_VERTICAL.TOP
+    smart = str(t.get("cellAlign", "center")).lower() == "smart"
+    threshold = t.get("smartAlignThresholdChars", 6)
+    cell_font = t.get("cellFont", "宋体")
+    cell_en = t.get("cellAsciiFont", "Times New Roman")
+    cell_size = resolve_size(t.get("cellSize", "五号"))
+    cell_align = resolve_align("center" if smart else t.get("cellAlign", "center"))
+    valign = "center" if t.get("cellVAlign", "center") == "center" else "top"
+    border_color = t.get("borderColor", "000000")
+    line_spacing = t.get("cellLineSpacing", 1.0)
+    header_bold = bool(t.get("headerBold", True))
     processed = 0
 
     for t_idx, tbl in enumerate(doc.tables):
@@ -426,23 +632,35 @@ def _normalize_tables(doc, cfg, table_to_section, cover_sections, on_warning=Non
         if sec_idx is not None and sec_idx in cover_sections:
             continue
         processed += 1
+        # 智能对齐检测必须先于底纹/边框清除（纵表头信号 ③ 要读底纹）
+        plan = analyze_table(tbl, threshold) if smart else None
+        style_el = _table_style_element(tbl)
+        before = _fingerprint(tbl._tbl, style_el) if on_change else None
+
+        # —— 表格独立于正文 ——
+        _clear_table_style_indents(doc, tbl)
+        _strip_element_colors(tbl._tbl, border_color)
+        if style_el is not None:
+            _strip_element_colors(style_el, border_color)
+        _force_clear_cell_shading(tbl)
         tbl.alignment = resolve_table_align(t.get("align", "center"))
-        for r_idx, row in enumerate(tbl.rows):
-            for cell in row.cells:
-                cell.vertical_alignment = cell_valign
-                for para in cell.paragraphs:
-                    para.alignment = cell_align
-                    set_para_spacing(para, line_spacing_mult=t.get("cellLineSpacing", 1.0), before_pt=0, after_pt=0)
-                    set_zero_indent(para)
-                    _apply_run_defaults(
-                        para,
-                        cell_font,
-                        cell_en,
-                        cell_size,
-                        bold=t.get("headerBold", True) if r_idx == 0 else False,
-                    )
-        if on_change:
-            on_change(f"表格 {t_idx}：{len(tbl.rows)}×{len(tbl.columns)} 独立排版")
+
+        bold_rows = set(plan.header_rows) if plan is not None else ({0} if header_bold else set())
+        # smart 模式复用检测时的网格（plan.grid），避免重建 lxml 代理导致坐标错位
+        grid_rows = plan.grid if plan is not None else table_grid(tbl)
+        for row in grid_rows:
+            for info in row:
+                align = (resolve_align(plan.align_for(info.row, info.col))
+                         if plan is not None else cell_align)
+                _format_table_cell(info.tc, align, valign, cell_font, cell_en,
+                                   cell_size, line_spacing,
+                                   bold=header_bold and info.row in bold_rows)
+
+        if on_change and _fingerprint(tbl._tbl, style_el) != before:
+            if plan is not None:
+                on_change(f"表格 {t_idx}：{plan.summary}")
+            else:
+                on_change(f"表格 {t_idx}：{len(tbl.rows)}×{len(tbl.columns)} 独立排版")
     return processed
 
 
@@ -567,7 +785,7 @@ def _count_header_footer_images(doc):
                 if part.is_linked_to_previous:
                     continue
                 total += len(part._element.findall(".//" + qn("w:drawing")))
-            except Exception:  # noqa: BLE001
+            except (AttributeError, ValueError):
                 continue
     return total
 
@@ -734,8 +952,8 @@ def _open_document(input_path):
             cause=e, hint="用 Word 打开重新保存一次",
         ) from e
     except Exception as e:  # noqa: BLE001
-        type_name = type(e).__name__
-        if "Package" in type_name or "Zip" in type_name or "Found" in type_name:
+        from docx.opc.exceptions import PackageNotFoundError
+        if isinstance(e, PackageNotFoundError):
             raise CorruptDocxError(
                 f"docx 文件已损坏: {input_path}",
                 cause=e, hint="用 Word 打开重新保存一次",

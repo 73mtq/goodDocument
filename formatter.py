@@ -14,13 +14,15 @@ formatter.py —— 规范文档排版核心库（Python / python-docx，配置�
 字号写法：中文名（小二/小三/小四/五号/小五…）或磅值数字（18/15/12/10.5/9）。
 """
 
+import functools
 import os
+
 from docx import Document
-from docx.shared import Pt, Cm, RGBColor
+from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
-from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Cm, Pt, RGBColor
 
 # ------------------------------------------------------------------
 # 常量与解析
@@ -53,6 +55,11 @@ ALIGN_MAP = {
 
 def resolve_size(val):
     """字号名/磅值 → pt。默认小四(12)。"""
+    return _resolve_size_cached(str(val) if isinstance(val, str) else val)
+
+
+@functools.lru_cache(maxsize=64)
+def _resolve_size_cached(val):
     if val is None:
         return 12.0
     if isinstance(val, (int, float)):
@@ -107,8 +114,14 @@ def set_run_font(run, zh_font, en_font, size_pt=None, bold=None, color=None):
         run.font.color.rgb = RGBColor.from_string(color)
 
 
-def set_para_spacing(para, line_spacing_mult=None, before_pt=None, after_pt=None):
-    """设置段落行距与段前段后。line_spacing_mult 为倍数（1.0/1.5）。"""
+def set_para_spacing(para, line_spacing_mult=None, before_pt=None, after_pt=None,
+                     before_lines=None, after_lines=None):
+    """设置段落行距与段前段后。line_spacing_mult 为倍数（1.0/1.5）。
+
+    before_lines/after_lines 为「行」单位的段前/段后（0.5 → 半行）。Word 优先
+    使用行单位属性（w:beforeLines，单位 1/100 行），磅值作为不支持该属性的
+    渲染器（部分 LibreOffice/WPS 版本）的兜底，两者同时写入。
+    """
     pf = para.paragraph_format
     if line_spacing_mult is not None:
         pf.line_spacing = line_spacing_mult
@@ -117,26 +130,48 @@ def set_para_spacing(para, line_spacing_mult=None, before_pt=None, after_pt=None
         pf.space_before = Pt(before_pt)
     if after_pt is not None:
         pf.space_after = Pt(after_pt)
+    if before_lines is not None or after_lines is not None:
+        spacing = para._element.get_or_add_pPr().get_or_add_spacing()
+        if before_lines is not None:
+            spacing.set(qn("w:beforeLines"), str(int(round(before_lines * 100))))
+        if after_lines is not None:
+            spacing.set(qn("w:afterLines"), str(int(round(after_lines * 100))))
 
 
 def set_zero_indent(para):
     """显式清零所有缩进，避免继承正文的首行缩进。
 
-    同时清掉 OOXML 字符单位属性（firstLineChars/leftChars/rightChars）：
-    这些属性在 OOXML 中优先于数值单位（firstLine/left/right），仅清数值
-    单位会留下"2 字符缩进"等残留，导致 Word 仍按字符数渲染。
+    同时清掉 OOXML 字符单位属性（firstLineChars/leftChars/rightChars，它们
+    优先于数值单位，残留会让 Word 仍按字符数渲染）。
+
+    实现注意：直接在 w:ind 上写属性、不删重建——python-docx 的
+    first_line_indent setter 会先删 firstLine/hanging 再重加，属性顺序在
+    两次规范化间往返翻转，破坏幂等（第二次运行仍报「变更」）。
     """
-    pf = para.paragraph_format
-    pf.first_line_indent = Pt(0)
-    pf.left_indent = Pt(0)
-    pf.right_indent = Pt(0)
     pPr = para._element.get_or_add_pPr()
-    ind = pPr.find(qn("w:ind"))
-    if ind is not None:
-        for attr in ("firstLineChars", "leftChars", "rightChars"):
+    ind = pPr.get_or_add_ind()
+    for attr in ("firstLine", "left", "right"):
+        ind.set(qn("w:" + attr), "0")
+    for attr in ("firstLineChars", "leftChars", "rightChars", "hanging", "hangingChars"):
+        key = qn("w:" + attr)
+        if key in ind.attrib:
+            del ind.attrib[key]
+
+
+def set_indent_values(para, first_line_pt=None, left_pt=None, right_pt=None):
+    """直接写 w:ind 数值缩进（磅 → twips），保持属性顺序稳定（幂等）。"""
+    pPr = para._element.get_or_add_pPr()
+    ind = pPr.get_or_add_ind()
+    if first_line_pt is not None:
+        for attr in ("hanging", "hangingChars"):
             key = qn("w:" + attr)
             if key in ind.attrib:
                 del ind.attrib[key]
+        ind.set(qn("w:firstLine"), str(int(round(first_line_pt * 20))))
+    if left_pt is not None:
+        ind.set(qn("w:left"), str(int(round(left_pt * 20))))
+    if right_pt is not None:
+        ind.set(qn("w:right"), str(int(round(right_pt * 20))))
 
 
 def clear_style_indent_chars(style):
@@ -176,11 +211,16 @@ def add_page_number_field(paragraph, run_font_fn):
 
 def get_image_size(path):
     """读取图片像素尺寸（用 python-docx 内置 image 模块）。"""
+    return _get_image_size_cached(os.fspath(path))
+
+
+@functools.lru_cache(maxsize=64)
+def _get_image_size_cached(path_str):
     try:
         from docx.image.image import Image
-        img = Image.from_file(path)
+        img = Image.from_file(path_str)
         return img.px_width, img.px_height
-    except Exception:
+    except (FileNotFoundError, OSError, ValueError):
         return None, None
 
 
@@ -511,23 +551,7 @@ class Formatter:
         hang_pt = r.get("hangingIndentPt", 24)
         size_pt = resolve_size(r.get("size", "小五"))
         for i, it in enumerate(items):
-            n = i + 1
-            s = "[%d] %s. %s[%s]. " % (n, it["authors"], it["title"], it["type"])
-            if it.get("place") and it.get("publisher"):
-                s += "%s: %s, %s." % (it["place"], it["publisher"], it.get("year", ""))
-            elif it.get("source"):
-                s += "%s, %s" % (it["source"], it.get("year", ""))
-                if it.get("volume"):
-                    s += ", %s" % it["volume"]
-                if it.get("issue"):
-                    s += "(%s)" % it["issue"]
-                s += ": %s." % it.get("pages", "")
-            else:
-                s += "%s." % it.get("year", "")
-            if it.get("url"):
-                s += " %s" % it["url"]
-                if it.get("accessDate"):
-                    s += " [%s]." % it["accessDate"]
+            s = format_reference_entry(it, i + 1)
             p = self.doc.add_paragraph()
             p.alignment = resolve_align(r.get("align", "justify"))
             set_para_spacing(p, line_spacing_mult=r.get("lineSpacing", 1.0), before_pt=0, after_pt=3)
@@ -541,6 +565,27 @@ class Formatter:
 
     def save(self, path):
         self.doc.save(path)
+
+
+def format_reference_entry(item, number):
+    # 与 formatter.js formatReferenceEntry 保持语义一致，变更时两侧同步更新
+    text = "[%d] %s. %s[%s]. " % (number, item["authors"], item["title"], item["type"])
+    if item.get("place") and item.get("publisher"):
+        text += "%s: %s, %s." % (item["place"], item["publisher"], item.get("year", ""))
+    elif item.get("source"):
+        text += "%s, %s" % (item["source"], item.get("year", ""))
+        if item.get("volume"):
+            text += ", %s" % item["volume"]
+        if item.get("issue"):
+            text += "(%s)" % item["issue"]
+        text += ": %s." % item.get("pages", "")
+    else:
+        text += "%s." % item.get("year", "")
+    if item.get("url"):
+        text += " %s" % item["url"]
+        if item.get("accessDate"):
+            text += " [%s]." % item["accessDate"]
+    return text
 
 
 def set_run_font_element(style_element, zh_font, en_font, size_pt, color):

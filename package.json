@@ -1,20 +1,29 @@
 {
   "name": "gooddocument",
-  "version": "0.5.0",
+  "version": "0.8.1",
   "description": "规范文档生成器 —— 配置驱动的 .docx 排版工具（参考 GB/T 7714、公文格式）",
   "main": "generate.js",
   "scripts": {
     "start": "node generate.js",
-    "test": "node --test",
+    "test": "node --test tests/node/*.test.js",
     "sizes": "node generate.js --list-sizes",
     "config": "node generate.js --show-config"
   },
-  "keywords": ["docx", "排版", "公文", "GB7714", "规范文档"],
+  "keywords": [
+    "docx",
+    "排版",
+    "公文",
+    "GB7714",
+    "规范文档"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "docx": "^9.7.1",
     "image-size": "^1.2.1"
+  },
+  "devDependencies": {
+    "jszip": "^3.10.1"
   }
 }

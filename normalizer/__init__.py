@@ -8,23 +8,22 @@
 - WarningCollector
 - HEADING_PATTERNS
 """
+from .core import normalize_docx
 from .errors import (
-    NormalizeError,
+    CorruptDocxError,
     InputNotFoundError,
     InvalidFileTypeError,
-    CorruptDocxError,
+    NormalizeError,
+    NormalizeResult,
     OutputNotWritableError,
     SameInputOutputError,
     WarningCollector,
-    NormalizeResult,
 )
-from .core import normalize_docx
 from .normalize import (
+    HEADING_PATTERNS,
     DocxInspection,
     inspect_docx,
-    HEADING_PATTERNS,
 )
-
 
 __all__ = [
     "normalize_docx",

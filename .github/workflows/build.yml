@@ -45,7 +45,7 @@ jobs:
         run: npm ci
 
       - name: Run Node.js tests
-        run: npm test
+        run: node --test tests/node/*.test.js
 
   build:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -79,11 +79,16 @@ jobs:
             Write-Error "EXE not found"
             exit 1
           }
+          if (-not (Test-Path assets\figure1.png)) {
+            Write-Error "示例图片缺失"
+            exit 1
+          }
 
       - name: Package with config
         run: |
           Copy-Item config.json dist\config.json -Force
-          Compress-Archive -Path dist\DocFormatter.exe, dist\config.json -DestinationPath DocFormatter-${{ github.ref_name }}.zip -Force
+          Copy-Item assets dist\assets -Recurse -Force
+          Compress-Archive -Path dist\DocFormatter.exe, dist\config.json, dist\assets -DestinationPath DocFormatter-${{ github.ref_name }}.zip -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

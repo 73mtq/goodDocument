@@ -79,6 +79,42 @@ function applyOverrides(config, setList) {
   return config;
 }
 
+/** 基础配置校验，与 Python config_model.validate_config 对齐 */
+function validateConfig(config) {
+  const required = ["page", "pageNumber", "body", "headings", "figure", "table", "references", "output"];
+  for (const key of required) {
+    if (config[key] == null || typeof config[key] !== "object") {
+      throw new Error("配置缺少必要区段: " + key);
+    }
+  }
+  const margins = config.page.margins || {};
+  for (const key of ["top", "bottom", "left", "right"]) {
+    const value = margins[key];
+    if (typeof value !== "number" || value < 0 || value > 15) {
+      throw new Error("page.margins." + key + " 必须是 0-15 的数字，当前为: " + value);
+    }
+  }
+  if (!config.body.font || !config.body.asciiFont || config.body.size == null) {
+    throw new Error("配置缺少 body.font/asciiFont/size");
+  }
+  for (const key of ["h1", "h2", "h3", "h4"]) {
+    if (config.headings[key] == null) {
+      throw new Error("配置缺少 headings." + key);
+    }
+  }
+  const mode = String(config.figure.sizeMode || "fit").toLowerCase();
+  if (mode !== "fit" && mode !== "fixed") {
+    throw new Error("figure.sizeMode 只能是 fit 或 fixed，当前为: " + config.figure.sizeMode);
+  }
+  for (const key of ["maxWidthCm", "maxHeightCm", "fixedWidthCm", "fixedHeightCm"]) {
+    const value = config.figure[key];
+    if (value != null && (typeof value !== "number" || value < 0 || value > 40)) {
+      throw new Error("figure." + key + " 非法，当前为: " + value);
+    }
+  }
+  return true;
+}
+
 /* ------------------------------------------------------------------
  * 示例文档内容（替换此处即可生成你自己的文档）
  * ------------------------------------------------------------------ */
@@ -308,6 +344,12 @@ function main() {
 
   // 应用 CLI 覆盖
   if (args.set.length) applyOverrides(config, args.set);
+  try {
+    validateConfig(config);
+  } catch (e) {
+    console.error("配置校验失败: " + e.message);
+    process.exit(1);
+  }
 
   if (args.showConfig) {
     console.log("生效配置（已应用 --set 覆盖）：");
@@ -354,6 +396,6 @@ if (require.main === module) {
 }
 
 module.exports = {
-  parseArgs, parseValue, setByPath, applyOverrides,
+  parseArgs, parseValue, setByPath, applyOverrides, validateConfig,
   buildSampleContent, buildDocument, main,
 };

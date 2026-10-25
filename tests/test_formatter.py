@@ -19,7 +19,6 @@ from formatter import (
     set_zero_indent,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

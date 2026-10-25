@@ -25,18 +25,21 @@
 
 ## 功能特性
 
-- **一键规范化** — 打开任意 `.docx`，自动识别标题层级（一、/（一）/1./（1））、图表题注、参考文献段落，统一套用配置的格式系统
+- **排版预设一键切换** — GUI 主卡片「学校模板」下拉一键载入整套学校/场景规格（首个内置「成都理工大学学士论文」），载入后仍可在高级设置微调；模板放 `config/templates/`，复用 config.json schema
+- **一键规范化** — 打开任意 `.docx`，自动识别标题层级（一、/（一）/1./（1）与 第X章/X.1/X.1.1/X.1.1.1，以及结论/致谢/参考文献/附录/摘要等未编号章）、图表题注、参考文献段落，统一套用配置的格式系统
+- **表格智能对齐** — `cellAlign: smart` 自动判定表头形态（横/纵/横+纵/无表头）并逐格对齐：表头居中、行名列左、数字列整列右对齐（上下对齐成竖线）、日期/状态居中、短文本居中、长文本左对齐；每个表格报告判定与决策，dry-run 同样可见
 - **从零生成** — 生成包含正文、图片、表格、GB/T 7714 参考文献的完整示例文档
 - **配置驱动** — 字体、字号、行距、边距、段落排列、段前段后等全部参数集中在 `config.json` 中
-- **表格独立排版** — 单元格使用独立的字体/字号/行距，显式置零首行缩进（OOXML 字符单位也清零）
+- **表格独立排版** — 单元格默认五号宋体（不回退到正文字号），段落级与样式级首行缩进双重清零（OOXML 字符单位也清零）；自动清除彩色底纹、彩色边框恢复黑色；合并单元格同样规范化
 - **图片智能缩放** — 两种模式：`fit` 等比缩放到上限内（默认），`fixed` 把全部图片统一到指定尺寸；可只填宽度实现「统一宽度」，也可强制拉伸
 - **浮动图片同样处理** — `wp:anchor`（四周型 / 浮于文字上方）也在处理范围内，不只是嵌入型
 - **图片安全阀** — 目标宽度自动收窄到正文可用宽度、表格内图标默认跳过，避免图片溢出页面或被拉爆
 - **图与图题不分页** — 自动设置 `keepNext`，图题不会被分页甩到下一页
-- **页码样式统一** — 已有页码统一为底部居中并套用配置的字体字号；无页码的封面/前置页保持原样（可用 `pageNumber.onlyUpdateExisting` 改为给所有分节新增页码）
-- **桌面界面** — 支持把 `.docx` 拖入窗口；选中文档后显示段落/表格/图片摘要；结果按「变更 / 警告 / 日志」分段展示；耗时操作在后台执行并显示进度
+- **页码样式统一** — 已有页码统一为底部居中并套用配置的字体字号；无页码的封面/前置页保持原样（可用 `pageNumber.onlyUpdateExisting` 改为给所有分节新增页码）；可选 `header` 区段把已有页眉统一为宋体小五居中（从正文开始，不创建不改文字）
+- **幂等可重入** — 同一文件连续规范化两次，第二次「变更」计数为 0
+- **桌面界面** — 支持把 `.docx` 拖入窗口；选中文档后显示段落/表格/图片摘要；结果按「改动 / 提醒 / 记录」分段展示；耗时操作在后台执行并显示进度。「高级设置」按使用目的分组（图标 + 名称 + 当前生效值 + 尾部控件），顶部过滤框输入即筛，每组可单独恢复默认，与学校模板一致的行标「按学校模板」、改过的标「已修改」
 - **健壮性优先** — 中文错误信息、自动备份、dry-run 预览、优雅降级（详见 [健壮性保证](#健壮性保证)）
-- **双语言实现** — Python（tkinter GUI + python-docx）和 Node.js（CLI + docx 库），共享同一份配置
+- **双语言实现** — Python（tkinter GUI + python-docx）和 Node.js（CLI + docx 库），共享同一份配置；表格智能对齐仅 Python 规范化端实现
 
 ---
 
@@ -44,9 +47,9 @@
 
 ### 方式一：直接运行可执行文件（Windows，推荐）
 
-从 [Releases](../../releases) 下载 `DocFormatter.exe`，双击即可启动 GUI。将 `config.json` 放在 exe 同目录即可自定义排版参数。把 `.docx` 拖入窗口或点击选择，点「开始规范化」即可；「预览变更」不会写入文件。
+从 [Releases](../../releases) 下载 `DocFormatter.exe`，双击即可启动 GUI。将 `config.json` 放在 exe 同目录即可自定义排版参数。把 `.docx` 拖入窗口或点击选择，点「开始整理」即可；「预览改动」不会写入文件。
 
-GUI 快捷键：`Ctrl+O` 选择文档、`Ctrl+P` 预览变更、`Ctrl+Enter` 开始规范化、`Ctrl+S` 保存配置、`Ctrl+G` 生成示例文档、`F1` 关于。
+GUI 快捷键：`Ctrl+O` 选择文档、`Ctrl+P` 预览改动、`Ctrl+Enter` 开始整理、`Ctrl+S` 保存设置、`Ctrl+G` 生成示例文档。
 
 ### 方式二：Python 运行
 
@@ -75,9 +78,9 @@ node generate.js --dry-run                      # 预览，不写文件
 
 **操作**：
 1. 启动 GUI（`DocFormatter.exe` 或 `python app.py`）
-2. 把 `.docx` 拖入窗口（或点「选择文档…」）
-3. 可先点「预览变更」确认会改什么，再点「开始规范化」
-4. 默认配置就是学术格式
+2. 「排版预设」下拉选择学校规格（如「成都理工大学学士论文」，表格自动启用智能对齐），或保持「自定义」用当前 config.json
+3. 把 `.docx` 拖入窗口（或点「选择文档…」）
+4. 可先点「预览改动」确认会改什么（含每个表格的对齐决策），再点「开始整理」
 
 **等价 CLI**：
 ```bash
@@ -88,7 +91,7 @@ node generate.js --out 我的论文.docx
 
 **目标**：表题在上方、行距紧凑、无首行缩进。
 
-**操作**：打开右侧「高级设置」→ 展开「表」分组 → 表题位置选「上方」；展开「正文」分组 → 行距改 1.0、首行缩进改 0。
+**操作**：打开右侧「高级设置」→「表格」组的「表题位置」选「上方」；「正文」组「行距」改 1、「段首缩进」改 0；想撤销就点对应组的「恢复默认」。
 
 **等价 CLI**：
 ```bash
@@ -124,10 +127,10 @@ for src in Path("papers").glob("*.docx"):
 
 **目标**：一批尺寸不一的照片（截图、手机拍照）统一为宽 12cm，高度各自等比；如果要求每张都严格 12×9 cm（允许多少变形）改成强制拉伸。
 
-**操作**（GUI）：右侧「高级设置」→ 展开「图」分组 →
-- 尺寸模式选「统一尺寸」
-- 「统一宽度(cm)」填 12（高度留空即只约束宽度）
-- 勾上「统一时保持比例」
+**操作**（GUI）：右侧「高级设置」→「图片」组 →
+- 「图片大小方式」选「统一尺寸」
+- 「统一宽度」填 12（高度不动即只约束宽度）
+- 「统一时保持比例」打开
 
 **等价配置**：
 
@@ -158,16 +161,23 @@ for src in Path("papers").glob("*.docx"):
 
 | 区段 | 说明 | 关键参数 |
 |------|------|----------|
-| `page` | 页面设置 | `margins`（上下左右边距，cm）、`size`（A4 / Letter） |
+| `page` | 页面设置 | `margins`（上下左右边距，cm；可选 `header` / `footer` 页眉页脚距边）、`size`（A4 / Letter） |
 | `pageNumber` | 页码 | `enabled`、`align`、`size`、`font`、`onlyUpdateExisting`（只更新已有页码，默认 true） |
+| `header` | 页眉（可选） | `enabled`、`font`、`size`、`align`；只格式化已有页眉文字，不创建不修改内容，封面/前置节跳过 |
 | `body` | 正文 | `font`（中文字体）、`asciiFont`（英数字体）、`size`、`lineSpacing`、`firstLineIndentChars`（首行缩进字数）、`align` |
-| `headings` | 标题（H1-H4） | 每级独立设置 `font`、`size`、`bold`、`color`、`spaceBeforePt`、`spaceAfterPt`、`align` |
+| `headings` | 标题（H1-H4） | 每级独立设置 `font`、`size`、`bold`、`color`、`spaceBeforePt`、`spaceAfterPt`、`spaceBeforeLines` / `spaceAfterLines`（段前/段后「行」单位，0.5 → 半行）、`align` |
 | `figure` | 图片 | `sizeMode`（`fit` 等比 / `fixed` 统一）、`maxWidthCm`、`maxHeightCm`、`fixedWidthCm`、`fixedHeightCm`、`keepAspectRatio`、`clampToTextWidth`、`skipInTables`、`keepWithCaption`、`captionPosition`（above/below）、`captionSize`、`prefix` |
-| `table` | 表格 | `captionPosition`、`align`、`cellSize`、`cellAlign`、`cellVAlign`、`headerBold`、`prefix`；`borderColor` / `borderSize` 仅 Node.js 版生效 |
+| `table` | 表格 | `captionPosition`、`align`、`cellSize`、`cellAlign`（`left` / `center` / `right` / `justify` / **`smart` 智能对齐**）、`smartAlignThresholdChars`（smart 模式短文本阈值，默认 6，中文计 1 半角计 0.5）、`cellVAlign`、`headerBold`、`prefix`、`borderColor`（清除彩色边框后的恢复色） |
 | `references` | 参考文献 | `style`（GB/T 7714）、`hangingIndentPt`（悬挂缩进）、`size`、`lineSpacing` |
 | `output` | 输出 | `filename` |
 
 默认配置参照公文格式：正文宋体小四 1.5 倍行距首行缩进 2 字，一级标题黑体小二，图表题注五号加粗居中，参考文献小五悬挂缩进。
+
+### 排版预设（config/templates/）
+
+预设是「填好参数的 config.json」，可加 `_preset.name` / `_preset.description` 供 GUI 展示；放入 `config/templates/*.json` 即被自动发现（`config_model.list_presets()`，校验失败的模板自动跳过）。GUI 顶部下拉选择即载入，「更多 → 保存设置」可把当前参数（含预设微调结果）写回 `config.json`。内置：
+
+- **成都理工大学学士论文** — 依据学校《学生学士学位论文（设计）编写格式》：A4、边距上下左右 2.54cm、页眉 1.5cm、页脚 1.75cm；正文宋体小四 1.5 倍行距首行缩进 2 字；页码小五底端居中；章（第X章/结论/致谢/参考文献）小二黑体居中段前 0.5 行、节 X.1 小三黑体、条 X.1.1 小四黑体段前后 0.5 行；表题上方五号黑体、表内容五号宋体智能对齐；图题下方五号黑体；参考文献五号宋体 GB/T 7714 悬挂缩进
 
 **字号两种写法都支持**：
 ```json
@@ -313,7 +323,7 @@ A: 用 `sizeMode: "fixed"` + `keepAspectRatio: false`，这就是 Word VBA 里�
 
 **dry-run 模式**：规范化前先预览，**不修改任何文件**：
 - Python 库：`normalize_docx(..., dry_run=True, return_result=True)` → 返回 `NormalizeResult`
-- GUI：点"预览变更"按钮
+- GUI：点"预览改动"按钮
 - CLI：`node generate.js --dry-run`
 
 **优雅降级**：图片尺寸读取失败等**非致命问题**记录为警告（进入 `NormalizeResult.warnings`，同时回调 `on_warning`）后继续执行，**不中断**整体规范化。
@@ -341,8 +351,9 @@ npm ci
 
 ```
 goodDocument/
-├── app.py               # tkinter GUI 入口（拖拽、后台执行、快捷键）
-├── ui_theme.py          # 界面主题（颜色/字体令牌、ttk 样式、取值映射）
+├── app.py               # tkinter GUI 入口（拖拽、设置面板、后台执行、快捷键）
+├── ui_theme.py          # 界面主题（颜色/字体/结构令牌、ttk 样式、取值映射）
+├── ui_icons.py          # Segoe 图标字体系统（码点表、运行时检测、纯文字回退）
 ├── formatter.py         # 核心排版引擎（生成文档）
 ├── normalizer/          # 已有文档规范化（core / normalize / errors / paths）
 ├── config_model.py      # 配置加载/保存/校验

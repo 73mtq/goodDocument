@@ -1,10 +1,15 @@
 [tool.ruff]
 target-version = "py312"
 line-length = 120
-exclude = ["build", "dist", "node_modules", ".codegraph"]
+exclude = ["build", "dist", "node_modules", ".codegraph", ".venv"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W"]
+select = ["E", "F", "W", "I", "B"]
+dummy-variable-rgx = "^_$"
+
+[tool.ruff.lint.per-file-ignores]
+# design/icon-metrics 构建脚本需先插 sys.path 再 import 仓库模块，E402 属结构性
+"design/icon-metrics/*" = ["E402"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

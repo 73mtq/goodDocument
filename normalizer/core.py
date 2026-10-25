@@ -6,22 +6,23 @@ import time
 from typing import Optional
 
 from .errors import (
+    NormalizeResult,
     OutputNotWritableError,
     WarningCollector,
-    NormalizeResult,
 )
 from .normalize import (
-    _apply_page_settings,
     _apply_document_styles,
-    _normalize_paragraphs,
-    _normalize_tables,
-    _normalize_inline_images,
-    _mark_toc_fields_dirty,
+    _apply_page_settings,
     _build_body_section_maps,
     _collect_cover_section_indices,
+    _format_headers,
+    _mark_toc_fields_dirty,
+    _normalize_inline_images,
+    _normalize_paragraphs,
+    _normalize_tables,
     _open_document,
 )
-from .paths import _validate_paths, _backup_source
+from .paths import _backup_source, _validate_paths
 
 
 def normalize_docx(config, input_path, output_path, assets_dir=None, *,
@@ -66,6 +67,7 @@ def normalize_docx(config, input_path, output_path, assets_dir=None, *,
 
             _apply_page_settings(doc, config)
             _apply_document_styles(doc, config)
+            _format_headers(doc, config, cover_sections)
             paragraphs_processed = _normalize_paragraphs(
                 doc, config, para_to_section, cover_sections,
                 on_warning=emit_warning, on_change=changes.append)

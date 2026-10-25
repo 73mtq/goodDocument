@@ -1,0 +1,7880 @@
+{
+ "token_ppems": [
+  [
+   16,
+   16
+  ],
+  [
+   16,
+   20
+  ],
+  [
+   16,
+   24
+  ],
+  [
+   20,
+   20
+  ],
+  [
+   20,
+   25
+  ],
+  [
+   20,
+   30
+  ],
+  [
+   40,
+   40
+  ],
+  [
+   40,
+   50
+  ],
+  [
+   40,
+   60
+  ]
+ ],
+ "residuals": {
+  "Segoe Fluent Icons": {
+   "page": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "dialpad": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "font": {
+    "16": [
+     0.0,
+     0.5
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "bold": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     -0.5
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     -0.5,
+     -0.5
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "photo": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "caption": {
+    "16": [
+     0.0,
+     -0.5
+    ],
+    "20": [
+     0.0,
+     -0.5
+    ],
+    "24": [
+     0.0,
+     -0.5
+    ],
+    "25": [
+     0.0,
+     -0.5
+    ],
+    "30": [
+     0.0,
+     -0.5
+    ],
+    "40": [
+     0.0,
+     0.5
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "table": {
+    "16": [
+     0.0,
+     0.5
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.5
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     -0.5
+    ],
+    "50": [
+     0.0,
+     0.5
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "library": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "document": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "save": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "search": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     -0.5,
+     -0.5
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "settings": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "undo": {
+    "16": [
+     0.5,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     -0.5,
+     0.0
+    ],
+    "25": [
+     -0.5,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     -0.5,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "play": {
+    "16": [
+     0.5,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     -0.5,
+     0.0
+    ],
+    "25": [
+     -0.5,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.5,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "view": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.5,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "edit": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     -0.5
+    ],
+    "25": [
+     0.0,
+     -0.5
+    ],
+    "30": [
+     0.0,
+     -0.5
+    ],
+    "40": [
+     0.5,
+     -0.5
+    ],
+    "50": [
+     0.5,
+     -0.5
+    ],
+    "60": [
+     0.5,
+     -0.5
+    ]
+   },
+   "warning": {
+    "16": [
+     0.5,
+     -0.5
+    ],
+    "20": [
+     0.0,
+     -0.5
+    ],
+    "24": [
+     0.0,
+     1.0
+    ],
+    "25": [
+     0.0,
+     0.5
+    ],
+    "30": [
+     0.0,
+     0.5
+    ],
+    "40": [
+     -0.5,
+     0.5
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.5,
+     -0.5
+    ]
+   },
+   "list": {
+    "16": [
+     0.0,
+     0.5
+    ],
+    "20": [
+     0.0,
+     0.5
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.5
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     -0.5
+    ],
+    "50": [
+     0.0,
+     0.5
+    ],
+    "60": [
+     0.0,
+     0.5
+    ]
+   },
+   "folder": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     -0.5,
+     0.0
+    ],
+    "40": [
+     -0.5,
+     0.0
+    ],
+    "50": [
+     -0.5,
+     0.0
+    ],
+    "60": [
+     -0.5,
+     0.0
+    ]
+   },
+   "check": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.5
+    ],
+    "30": [
+     0.0,
+     0.5
+    ],
+    "40": [
+     0.0,
+     -0.5
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "chevron_right": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.5,
+     0.0
+    ],
+    "24": [
+     0.5,
+     0.0
+    ],
+    "25": [
+     0.5,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "clear": {
+    "16": [
+     0.5,
+     0.5
+    ],
+    "20": [
+     0.5,
+     0.5
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     -0.5,
+     -0.5
+    ],
+    "50": [
+     0.5,
+     0.0
+    ],
+    "60": [
+     0.5,
+     0.5
+    ]
+   }
+  },
+  "Segoe MDL2 Assets": {
+   "page": {
+    "16": [
+     0.5,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.5,
+     0.0
+    ],
+    "25": [
+     0.5,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.5,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "dialpad": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "font": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.5
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.5,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "bold": {
+    "16": [
+     -0.5,
+     0.5
+    ],
+    "20": [
+     0.0,
+     0.5
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.5
+    ],
+    "30": [
+     0.5,
+     0.0
+    ],
+    "40": [
+     -0.5,
+     -0.5
+    ],
+    "50": [
+     0.0,
+     0.5
+    ],
+    "60": [
+     0.5,
+     0.5
+    ]
+   },
+   "photo": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "caption": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.5
+    ],
+    "25": [
+     0.0,
+     -0.5
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.5
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     -0.5
+    ]
+   },
+   "table": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "library": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.5,
+     0.0
+    ],
+    "25": [
+     0.5,
+     0.0
+    ],
+    "30": [
+     0.5,
+     0.0
+    ],
+    "40": [
+     -0.5,
+     0.0
+    ],
+    "50": [
+     -0.5,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "document": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "save": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "search": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "settings": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "undo": {
+    "16": [
+     0.0,
+     -0.5
+    ],
+    "20": [
+     0.0,
+     -0.5
+    ],
+    "24": [
+     0.0,
+     -0.5
+    ],
+    "25": [
+     0.0,
+     -0.5
+    ],
+    "30": [
+     0.0,
+     -0.5
+    ],
+    "40": [
+     0.0,
+     -0.5
+    ],
+    "50": [
+     0.0,
+     -0.5
+    ],
+    "60": [
+     0.0,
+     -0.5
+    ]
+   },
+   "play": {
+    "16": [
+     -0.5,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     -0.5,
+     0.0
+    ],
+    "30": [
+     -0.5,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     -0.5,
+     0.0
+    ]
+   },
+   "view": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.5
+    ],
+    "25": [
+     0.0,
+     0.5
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.5
+    ],
+    "50": [
+     0.0,
+     -0.5
+    ],
+    "60": [
+     0.0,
+     0.5
+    ]
+   },
+   "edit": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "warning": {
+    "16": [
+     0.5,
+     1.0
+    ],
+    "20": [
+     0.0,
+     1.0
+    ],
+    "24": [
+     0.5,
+     1.0
+    ],
+    "25": [
+     0.5,
+     0.5
+    ],
+    "30": [
+     0.0,
+     0.5
+    ],
+    "40": [
+     0.0,
+     0.5
+    ],
+    "50": [
+     0.0,
+     1.0
+    ],
+    "60": [
+     0.0,
+     0.5
+    ]
+   },
+   "list": {
+    "16": [
+     0.0,
+     0.5
+    ],
+    "20": [
+     0.0,
+     0.5
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.5
+    ],
+    "30": [
+     0.0,
+     0.5
+    ],
+    "40": [
+     0.0,
+     -0.5
+    ],
+    "50": [
+     0.0,
+     0.5
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "folder": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "check": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     -0.5,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.5
+    ],
+    "50": [
+     0.0,
+     -0.5
+    ],
+    "60": [
+     0.0,
+     -0.5
+    ]
+   },
+   "chevron_right": {
+    "16": [
+     0.5,
+     0.0
+    ],
+    "20": [
+     0.5,
+     0.0
+    ],
+    "24": [
+     -0.5,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     -0.5,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   },
+   "clear": {
+    "16": [
+     0.0,
+     0.0
+    ],
+    "20": [
+     0.0,
+     0.0
+    ],
+    "24": [
+     0.0,
+     0.0
+    ],
+    "25": [
+     0.0,
+     0.0
+    ],
+    "30": [
+     0.0,
+     0.0
+    ],
+    "40": [
+     0.0,
+     0.0
+    ],
+    "50": [
+     0.0,
+     0.0
+    ],
+    "60": [
+     0.0,
+     0.0
+    ]
+   }
+  }
+ },
+ "rows": [
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    17,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    5,
+    16,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    5,
+    19,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    5,
+    16,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    6,
+    4,
+    17,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    8,
+    19,
+    16
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    19,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    17,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    4,
+    18,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    18,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    5,
+    18,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    7,
+    18,
+    16
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    19,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    5,
+    4,
+    19,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    6,
+    19,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    5,
+    19,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    8,
+    17,
+    15
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    6,
+    14,
+    17
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "ink_bbox": [
+    7,
+    7,
+    17,
+    17
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    6,
+    19,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    5,
+    19,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    22,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    22,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    5,
+    5,
+    21,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    4,
+    22,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    21,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    5,
+    21,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    5,
+    4,
+    22,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    6,
+    23,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    5,
+    23,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    9,
+    20,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    11,
+    7,
+    17,
+    20
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "ink_bbox": [
+    8,
+    8,
+    20,
+    20
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    24,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    6,
+    22,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    27,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    9,
+    5,
+    22,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    5,
+    25,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    4,
+    24,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    9,
+    27,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    27,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    24,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    5,
+    25,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    25,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    4,
+    26,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    24,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    24,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    9,
+    27,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    4,
+    27,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 1.0,
+   "ink_bbox": [
+    5,
+    6,
+    26,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    6,
+    27,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    5,
+    27,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    10,
+    24,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    7,
+    20,
+    24
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    8,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    6,
+    19,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    5,
+    19,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    22,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    22,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    5,
+    5,
+    21,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    4,
+    22,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    21,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    5,
+    21,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    5,
+    4,
+    22,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    6,
+    23,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    5,
+    23,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    9,
+    20,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    11,
+    7,
+    17,
+    20
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "ink_bbox": [
+    8,
+    8,
+    20,
+    20
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    25,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    6,
+    23,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    28,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    6,
+    23,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    26,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    4,
+    25,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    9,
+    28,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    28,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    25,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    26,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    26,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    4,
+    27,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    25,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    25,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    9,
+    28,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    4,
+    28,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    5,
+    6,
+    27,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    7,
+    28,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    6,
+    28,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    7,
+    11,
+    25,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    7,
+    21,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    8,
+    24,
+    24
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    4,
+    29,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    6,
+    27,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    33,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    6,
+    27,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    31,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    8,
+    4,
+    29,
+    32
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    10,
+    33,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    33,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    4,
+    29,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    31,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    31,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    4,
+    32,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    30,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    6,
+    30,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    10,
+    32,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    4,
+    33,
+    32
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    5,
+    6,
+    32,
+    32
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    7,
+    33,
+    30
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    6,
+    32,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    8,
+    12,
+    29,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    13,
+    8,
+    24,
+    29
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    9,
+    28,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    4,
+    38,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    7,
+    35,
+    40
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    43,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    12,
+    6,
+    34,
+    40
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    6,
+    40,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    9,
+    5,
+    38,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    11,
+    43,
+    35
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    43,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    4,
+    38,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    6,
+    40,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    7,
+    40,
+    40
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    4,
+    42,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    4,
+    39,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    6,
+    39,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    12,
+    42,
+    35
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    5,
+    4,
+    43,
+    42
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.5,
+   "ink_bbox": [
+    5,
+    6,
+    41,
+    42
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    7,
+    43,
+    39
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    6,
+    42,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    9,
+    13,
+    38,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    16,
+    9,
+    31,
+    38
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    10,
+    10,
+    36,
+    36
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    4,
+    47,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    13,
+    7,
+    44,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    53,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    14,
+    7,
+    43,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    7,
+    50,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    5,
+    47,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    14,
+    53,
+    44
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    53,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    4,
+    47,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    7,
+    50,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    7,
+    50,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    4,
+    52,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    4,
+    48,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    7,
+    49,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    13,
+    52,
+    44
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    5,
+    4,
+    53,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    51,
+    51
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    9,
+    53,
+    49
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    7,
+    52,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    16,
+    47,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    19,
+    10,
+    38,
+    47
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    12,
+    46,
+    45
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    4,
+    55,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "page",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    15,
+    8,
+    52,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "dialpad",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    63,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "font",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    16,
+    8,
+    51,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "bold",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    8,
+    59,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "photo",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    5,
+    55,
+    62
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "caption",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    15,
+    63,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "table",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    63,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "library",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    4,
+    55,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "document",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    8,
+    59,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "save",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    8,
+    59,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "search",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    61,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "settings",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    4,
+    57,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "undo",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    8,
+    57,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "play",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    15,
+    62,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "view",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    5,
+    4,
+    63,
+    62
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "edit",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    6,
+    61,
+    60
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "warning",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    10,
+    63,
+    58
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "list",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    62,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "folder",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    18,
+    55,
+    49
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "check",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    22,
+    12,
+    45,
+    55
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "chevron_right",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "ink_bbox": [
+    14,
+    14,
+    54,
+    54
+   ],
+   "size_ok": true,
+   "family": "Segoe Fluent Icons",
+   "name": "clear",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    18,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    5,
+    16,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    17,
+    17
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.5,
+   "ink_bbox": [
+    7,
+    6,
+    15,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    6,
+    19,
+    17
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    5,
+    19,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    7,
+    19,
+    16
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    6,
+    18,
+    17
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    17,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    19,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    18,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    6,
+    4,
+    17,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    6,
+    15,
+    17
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    7,
+    19,
+    16
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    19,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 1.0,
+   "ink_bbox": [
+    5,
+    6,
+    19,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": false
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    8,
+    19,
+    16
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    17,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    8,
+    17,
+    15
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    5,
+    15,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    17,
+    17
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 16,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    21,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    5,
+    19,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    6,
+    7,
+    21,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    8,
+    6,
+    19,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    6,
+    23,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    5,
+    23,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    6,
+    22,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    22,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    6,
+    19,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 1.0,
+   "ink_bbox": [
+    5,
+    6,
+    22,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": false
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    9,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    9,
+    21,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    5,
+    18,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    7,
+    20,
+    20
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    25,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    5,
+    22,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    7,
+    25,
+    24
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    6,
+    22,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    7,
+    27,
+    24
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    6,
+    27,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    27,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    7,
+    26,
+    24
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    24,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    5,
+    25,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    27,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    27,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    4,
+    24,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    6,
+    22,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    9,
+    27,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    27,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 1.0,
+   "ink_bbox": [
+    6,
+    6,
+    26,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    9,
+    27,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    24,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    10,
+    24,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    5,
+    20,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    7,
+    24,
+    24
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 24,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    4,
+    21,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    5,
+    19,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    6,
+    7,
+    21,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    8,
+    6,
+    19,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    6,
+    23,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    5,
+    23,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    6,
+    22,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    22,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    6,
+    19,
+    21
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    23,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 1.0,
+   "ink_bbox": [
+    5,
+    6,
+    22,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": false
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    9,
+    23,
+    19
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    20,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    9,
+    21,
+    18
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    5,
+    18,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    7,
+    20,
+    20
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 20,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    26,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    6,
+    23,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    7,
+    26,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    9,
+    7,
+    23,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    7,
+    28,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    5,
+    28,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    9,
+    28,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    7,
+    27,
+    25
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    25,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    26,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    28,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    28,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    7,
+    4,
+    25,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    6,
+    23,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    9,
+    28,
+    24
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    28,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "ink_bbox": [
+    6,
+    6,
+    27,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    10,
+    28,
+    23
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    25,
+    28
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    10,
+    25,
+    22
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    5,
+    22,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    8,
+    24,
+    24
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 25,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    4,
+    30,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    6,
+    27,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    8,
+    30,
+    29
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    11,
+    7,
+    27,
+    30
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    8,
+    33,
+    29
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    6,
+    33,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    10,
+    33,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    8,
+    32,
+    29
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    4,
+    29,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    6,
+    31,
+    31
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    33,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    33,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    8,
+    4,
+    29,
+    32
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    7,
+    26,
+    30
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    10,
+    33,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    33,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    5,
+    6,
+    32,
+    32
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    11,
+    33,
+    27
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    4,
+    29,
+    33
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    11,
+    29,
+    26
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    11,
+    5,
+    25,
+    32
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    8,
+    29,
+    29
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 30,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    4,
+    39,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    6,
+    35,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    9,
+    40,
+    38
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "ink_bbox": [
+    12,
+    7,
+    34,
+    39
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    9,
+    43,
+    38
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    7,
+    43,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    11,
+    43,
+    36
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    9,
+    40,
+    38
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    4,
+    38,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    6,
+    40,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    43,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    43,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    9,
+    4,
+    38,
+    42
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    7,
+    35,
+    40
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    12,
+    43,
+    36
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    43,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    6,
+    6,
+    41,
+    42
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    12,
+    43,
+    34
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    4,
+    38,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    9,
+    14,
+    38,
+    34
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    14,
+    5,
+    33,
+    42
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    9,
+    38,
+    38
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 40,
+   "tol": 0.5,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    4,
+    49,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    13,
+    7,
+    44,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    10,
+    49,
+    47
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    15,
+    9,
+    42,
+    49
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    10,
+    53,
+    47
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    7,
+    53,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    13,
+    53,
+    44
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    6,
+    10,
+    50,
+    47
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    4,
+    47,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    7,
+    50,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    53,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    52,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    10,
+    4,
+    47,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    14,
+    8,
+    43,
+    49
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    13,
+    53,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    53,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 1.0,
+   "ink_bbox": [
+    6,
+    7,
+    51,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": false
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    15,
+    53,
+    43
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    4,
+    47,
+    53
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    10,
+    15,
+    47,
+    41
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    16,
+    5,
+    41,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    11,
+    47,
+    46
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 50,
+   "tol": 0.75,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    10,
+    4,
+    57,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "page",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    15,
+    8,
+    52,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "dialpad",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    9,
+    11,
+    58,
+    56
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "font",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "ink_bbox": [
+    17,
+    10,
+    51,
+    58
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "bold",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    11,
+    63,
+    56
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "photo",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    4,
+    7,
+    63,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "caption",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    15,
+    63,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "table",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    7,
+    11,
+    60,
+    56
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "library",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    4,
+    55,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "document",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    8,
+    8,
+    59,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "save",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    63,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "search",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    5,
+    5,
+    62,
+    62
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "settings",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    12,
+    4,
+    55,
+    62
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "undo",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "ink_bbox": [
+    15,
+    8,
+    51,
+    59
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "play",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    4,
+    16,
+    63,
+    52
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "view",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    4,
+    63,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "edit",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "ink_bbox": [
+    6,
+    7,
+    61,
+    61
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "warning",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    4,
+    17,
+    63,
+    50
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "list",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    4,
+    55,
+    63
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "folder",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "ink_bbox": [
+    11,
+    17,
+    56,
+    49
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "check",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    18,
+    5,
+    49,
+    62
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "chevron_right",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  },
+  {
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "ink_bbox": [
+    12,
+    12,
+    55,
+    55
+   ],
+   "size_ok": true,
+   "family": "Segoe MDL2 Assets",
+   "name": "clear",
+   "ppem": 60,
+   "tol": 1.0,
+   "pass": true
+  }
+ ]
+}

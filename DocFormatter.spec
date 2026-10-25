@@ -6,11 +6,8 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('formatter.py', '.'),
-        ('normalizer', 'normalizer'),
-        ('config_model.py', '.'),
-        ('paths.py', '.'),
         ('config.json', '.'),
+        ('config/templates', 'config/templates'),
         ('assets', 'assets'),
     ],
     hiddenimports=[],

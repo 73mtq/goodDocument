@@ -13,7 +13,6 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Pt
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 from tests._helpers import picture_sizes  # noqa: E402
@@ -95,7 +94,7 @@ class NormalizeDocxTests(unittest.TestCase):
             self.assertEqual(cell_para.paragraph_format.line_spacing, table_cfg["cellLineSpacing"])
 
     def test_normalize_docx_rejects_invalid_paths_and_overwrite(self):
-        from normalizer import normalize_docx, NormalizeError
+        from normalizer import NormalizeError, normalize_docx
 
         cfg = load_config()
         source = SAMPLE_DOCX
@@ -436,13 +435,17 @@ class NormalizeErrorTests(unittest.TestCase):
         self.assertIn("检查路径", s)
 
     def test_input_not_found_is_normalize_error(self):
-        from normalizer import NormalizeError, InputNotFoundError
+        from normalizer import InputNotFoundError, NormalizeError
         self.assertTrue(issubclass(InputNotFoundError, NormalizeError))
 
     def test_each_subclass_exists(self):
         from normalizer import (
-            NormalizeError, InputNotFoundError, InvalidFileTypeError,
-            CorruptDocxError, OutputNotWritableError, SameInputOutputError,
+            CorruptDocxError,
+            InputNotFoundError,
+            InvalidFileTypeError,
+            NormalizeError,
+            OutputNotWritableError,
+            SameInputOutputError,
         )
         for cls in (InputNotFoundError, InvalidFileTypeError, CorruptDocxError,
                     OutputNotWritableError, SameInputOutputError):
@@ -532,7 +535,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
             self.assertEqual(result, str(output))
 
     def test_return_result_returns_normalize_result(self):
-        from normalizer import normalize_docx, NormalizeResult
+        from normalizer import NormalizeResult, normalize_docx
         cfg = load_config()
         source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
@@ -542,7 +545,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
             self.assertEqual(result.input_path, str(source))
 
     def test_input_not_found_raises_typed_error(self):
-        from normalizer import normalize_docx, InputNotFoundError
+        from normalizer import InputNotFoundError, normalize_docx
         cfg = load_config()
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(InputNotFoundError):
@@ -562,7 +565,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
 
 class NormalizeErrorRaiseTests(unittest.TestCase):
     def test_input_not_found(self):
-        from normalizer import normalize_docx, InputNotFoundError
+        from normalizer import InputNotFoundError, normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(InputNotFoundError):
                 normalize_docx(load_config(),
@@ -570,7 +573,7 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
                                Path(tmp) / "out.docx")
 
     def test_invalid_file_type_for_txt(self):
-        from normalizer import normalize_docx, InvalidFileTypeError
+        from normalizer import InvalidFileTypeError, normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             txt = Path(tmp) / "fake.txt"
             txt.write_text("hi", encoding="utf-8")
@@ -578,7 +581,7 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
                 normalize_docx(load_config(), txt, Path(tmp) / "out.docx")
 
     def test_same_input_output(self):
-        from normalizer import normalize_docx, SameInputOutputError
+        from normalizer import SameInputOutputError, normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "same.docx"
             Document().save(src)
@@ -586,7 +589,7 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
                 normalize_docx(load_config(), src, src)
 
     def test_corrupt_docx_garbage(self):
-        from normalizer import normalize_docx, CorruptDocxError
+        from normalizer import CorruptDocxError, normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "garbage.docx"
             from tests._helpers import make_garbage_docx
@@ -595,7 +598,7 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
                 normalize_docx(load_config(), src, Path(tmp) / "out.docx")
 
     def test_corrupt_docx_truncated(self):
-        from normalizer import normalize_docx, CorruptDocxError
+        from normalizer import CorruptDocxError, normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "truncated.docx"
             from tests._helpers import make_corrupt_docx
@@ -604,7 +607,7 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
                 normalize_docx(load_config(), src, Path(tmp) / "out.docx")
 
     def test_output_not_writable(self):
-        from normalizer import normalize_docx, OutputNotWritableError
+        from normalizer import OutputNotWritableError, normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "ok.docx"
             Document().save(src)
@@ -650,7 +653,7 @@ class BackupAndDryRunTests(unittest.TestCase):
             self.assertFalse(output.exists())
 
     def test_dry_run_returns_normalize_result(self):
-        from normalizer import normalize_docx, NormalizeResult
+        from normalizer import NormalizeResult, normalize_docx
         cfg = load_config()
         source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
@@ -698,7 +701,7 @@ class EdgeCaseGracefulDegradationTests(unittest.TestCase):
             self.assertTrue((Path(tmp) / "out.docx").exists())
 
     def test_message_chinese_human_readable(self):
-        from normalizer import normalize_docx, NormalizeError
+        from normalizer import NormalizeError, normalize_docx
         with tempfile.TemporaryDirectory() as tmp:
             try:
                 normalize_docx(load_config(),
@@ -820,7 +823,7 @@ class HeaderFooterDetectionTests(unittest.TestCase):
 
 class InspectDocxErrorTests(unittest.TestCase):
     def test_inspect_docx_rejects_non_docx(self):
-        from normalizer import inspect_docx, InvalidFileTypeError
+        from normalizer import InvalidFileTypeError, inspect_docx
 
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, mode="w") as f:
             f.write("hi")
@@ -833,13 +836,32 @@ class InspectDocxErrorTests(unittest.TestCase):
 
 
 class ChangesCollectionTests(unittest.TestCase):
+    @staticmethod
+    def _build_scruffy_doc(path):
+        """未规范化的原始文档：默认样式、无题注格式、无表格格式。"""
+        doc = Document()
+        doc.add_paragraph("一、绪论")
+        doc.add_paragraph("正文内容，默认样式。")
+        doc.add_paragraph("图1  示意图")
+        doc.add_paragraph("表1  数据表")
+        doc.add_paragraph("参考文献")
+        doc.add_paragraph("[1] 张三. 某主题研究[J]. 某学报, 2020, 3: 1-9.")
+        tbl = doc.add_table(rows=2, cols=2)
+        tbl.rows[0].cells[0].text = "指标"
+        tbl.rows[0].cells[1].text = "数值"
+        tbl.rows[1].cells[0].text = "长度"
+        tbl.rows[1].cells[1].text = "12"
+        doc.save(path)
+
     def test_sample_changes_cover_headings_captions_references_tables(self):
         from normalizer import normalize_docx
 
         cfg = load_config()
         with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "scruffy.docx"
             output = Path(tmp) / "out.docx"
-            result = normalize_docx(cfg, SAMPLE_DOCX, output, return_result=True)
+            self._build_scruffy_doc(source)
+            result = normalize_docx(cfg, source, output, return_result=True)
             texts = "\n".join(result.changes)
             self.assertIn("级标题", texts)
             self.assertIn("图题注", texts)
@@ -1104,6 +1126,101 @@ class FigureCaptionPaginationTests(unittest.TestCase):
     def test_disabled_adds_no_keep_next(self):
         with tempfile.TemporaryDirectory() as tmp:
             self.assertEqual(self._run(tmp, "below", keep=False), [])
+
+
+class ChapterHeadingDetectionTests(unittest.TestCase):
+    """「第X章 / X.1 / X.1.1 / 未编号章」体系识别，且不误判正文小数。"""
+
+    @staticmethod
+    def _levels(*texts):
+        from normalizer.normalize import _detect_heading_level
+
+        doc = Document()
+        for text in texts:
+            doc.add_paragraph(text)
+        return [_detect_heading_level(p) for p in doc.paragraphs]
+
+    def test_chapter_section_clause_numbering(self):
+        self.assertEqual(self._levels("第1章 前言")[0], 1)
+        self.assertEqual(self._levels("第12章 结论与展望")[0], 1)
+        self.assertEqual(self._levels("第二章 相关技术")[0], 1)
+        self.assertEqual(self._levels("1.1 绪论")[0], 2)
+        self.assertEqual(self._levels("1.1.1 背景")[0], 3)
+        self.assertEqual(self._levels("1.1.1.1 细分要点")[0], 4)
+        self.assertEqual(self._levels("1.1.1背景")[0], 3)  # 规格范本里编号与标题可无空格
+
+    def test_unnumbered_chapter_titles(self):
+        for text in ("结论", "致谢", "参考文献", "附录", "摘要", "摘  要", "Abstract"):
+            self.assertEqual(self._levels(text)[0], 1, text)
+        # 带正文的句子不是未编号章标题
+        self.assertEqual(self._levels("结论表明该方法有效。")[0], 0)
+
+    def test_body_decimals_not_misjudged(self):
+        for text in ("1.1 是小数", "1.5 倍行距是最常见的选择。",
+                     "3.14 是圆周率的近似值。", "第1章已经完成。",
+                     "2023 年度报告", "见第1章。"):
+            self.assertEqual(self._levels(text)[0], 0, text)
+
+    def test_legacy_numbering_still_works(self):
+        levels = self._levels("一、一级", "（一）二级", "1. 三级", "（1）四级")
+        self.assertEqual(levels, [1, 2, 3, 4])
+
+    def test_chapter_headings_applied_end_to_end(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "thesis.docx"
+            output = Path(tmp) / "thesis_规范化.docx"
+            doc = Document()
+            for text in ("第1章  前言", "正文内容。", "1.1  研究背景", "1.1.1  研究意义", "结论"):
+                doc.add_paragraph(text)
+            doc.save(source)
+
+            normalize_docx(cfg, source, output)
+            normalized = Document(output)
+            styles = [p.style.name for p in normalized.paragraphs]
+            self.assertEqual(styles, ["Heading 1", "Normal", "Heading 2", "Heading 3", "Heading 1"])
+
+
+class NormalizeIdempotencyTests(unittest.TestCase):
+    """同一文件连续规范化两次，第二次「变更」计数为 0。"""
+
+    def test_second_normalize_reports_zero_changes(self):
+        from normalizer import normalize_docx
+
+        cfg = load_config()
+        with tempfile.TemporaryDirectory() as tmp:
+            out1 = Path(tmp) / "out1.docx"
+            out2 = Path(tmp) / "out2.docx"
+            first = normalize_docx(cfg, SAMPLE_DOCX, out1, return_result=True)
+            self.assertTrue(first.changes)
+
+            second = normalize_docx(cfg, out1, out2, return_result=True)
+            self.assertEqual(
+                second.changes, [],
+                "第二次规范化变更应为空，实际: " + json.dumps(second.changes, ensure_ascii=False))
+
+    def test_dry_run_lists_alignment_decisions_with_preset(self):
+        from config_model import load_preset
+        from normalizer import normalize_docx
+
+        cfg = load_preset("成都理工大学学士论文")["config"]
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "in.docx"
+            output = Path(tmp) / "out.docx"
+            doc = Document()
+            doc.add_paragraph("表1  实验数据")
+            tbl = doc.add_table(rows=2, cols=3)
+            for r, row in enumerate([["指标", "2024年", "备注"], ["长度", "12", "保持稳定"]]):
+                for c, text in enumerate(row):
+                    tbl.rows[r].cells[c].text = text
+            doc.save(source)
+
+            result = normalize_docx(cfg, source, output, dry_run=True, return_result=True)
+            self.assertFalse(output.exists())
+            self.assertTrue(any(
+                c.startswith("表格 0：") and "横+纵表头" in c for c in result.changes))
 
 
 if __name__ == "__main__":

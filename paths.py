@@ -26,6 +26,11 @@ def default_config_path():
     return os.path.join(bundled_dir(), "config.json")
 
 
+def templates_dir():
+    """config/templates —— 一键排版预设（只读资源，随程序打包）。"""
+    return os.path.join(bundled_dir(), "config", "templates")
+
+
 def assets_dir():
     p = os.path.join(app_dir(), "assets")
     if os.path.isdir(p):

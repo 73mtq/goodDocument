@@ -1,13 +1,14 @@
 """测试 fixture 辅助：构造特殊 docx 用于边界场景测试。"""
+import atexit
 import os
 import re
+import sys
 import tempfile
 import zipfile
 from pathlib import Path
 
 from docx import Document
 from docx.shared import Cm
-
 
 ROOT = Path(__file__).resolve().parents[1]
 FIGURE_PNG = ROOT / "assets" / "figure1.png"
@@ -156,3 +157,37 @@ def make_docx_with_unrecognized_paragraph(path):
     doc.add_paragraph("正常正文段落")
     doc.add_paragraph("12345")  # 纯数字，不匹配任何标题/正文模式
     doc.save(path)
+
+
+_TK_ROOT = None
+
+
+def tk_root():
+    """进程级单例 Tk root（withdraw 不销毁）。
+
+    Tcl 解释器在「全部 root 销毁后重建」时部分环境不可靠；且进程 DPI 上下文
+    随首个窗口锁定，故首次创建前先开 DPI 感知。失败（无显示环境）返回 None。
+    """
+    global _TK_ROOT
+    if _TK_ROOT is not None and bool(_TK_ROOT.winfo_exists()):
+        return _TK_ROOT
+        return _TK_ROOT
+    try:
+        import tkinter as tk
+
+        try:
+            sys_path = str(ROOT / "design" / "icon-metrics")
+            if sys_path not in sys.path:
+                sys.path.insert(0, sys_path)
+            from inklab import _make_dpi_aware
+
+            _make_dpi_aware()
+        except ImportError:
+            pass
+        _TK_ROOT = tk.Tk()
+        _TK_ROOT.withdraw()
+        atexit.register(lambda: _TK_ROOT.winfo_exists() and _TK_ROOT.destroy())
+        return _TK_ROOT
+    except Exception as exc:  # noqa: BLE001
+        print(f"tk_root 失败：{exc!r}", flush=True)
+        return None

@@ -41,3 +41,13 @@ unpacked/
 规范文档示例.docx
 规范文档示例_v2.docx
 tests/_corrupt_source.docx
+# hindsight MCP registration (machine-specific)
+.trae/mcp.json
+
+# Design audit screenshots & reference images (evidence only, not source)
+design/audit/
+design/ref/
+
+# Blind-test sheets contain crops of Apple copyrighted screenshots, keep local only
+design/blind-test-sheet*.png
+design/blind-test.pdf

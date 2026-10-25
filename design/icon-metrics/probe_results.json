@@ -1,0 +1,1602 @@
+[
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "check",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   6,
+   8,
+   17,
+   15
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "view",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   5,
+   7,
+   18,
+   16
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "table",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   4,
+   8,
+   19,
+   16
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "font",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   4,
+   5,
+   19,
+   19
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "settings",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   5,
+   4,
+   18,
+   19
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "chevron_right",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   9,
+   6,
+   14,
+   17
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "warning",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   5,
+   4,
+   19,
+   18
+  ],
+  "err_x": 0.5,
+  "err_y": -0.5,
+  "err": 0.71,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": false
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "play",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   6,
+   5,
+   18,
+   18
+  ],
+  "err_x": 0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "check",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   7,
+   10,
+   24,
+   21
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "view",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   4,
+   9,
+   27,
+   22
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "table",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   4,
+   9,
+   27,
+   23
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "font",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   4,
+   4,
+   27,
+   27
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "settings",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   5,
+   4,
+   26,
+   27
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "chevron_right",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   12,
+   7,
+   20,
+   24
+  ],
+  "err_x": 0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "warning",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   5,
+   6,
+   26,
+   27
+  ],
+  "err_x": 0.0,
+  "err_y": 1.0,
+  "err": 1.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": false
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "play",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   6,
+   6,
+   24,
+   25
+  ],
+  "err_x": -0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "check",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   8,
+   12,
+   29,
+   26
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "view",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   5,
+   10,
+   32,
+   27
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "table",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   4,
+   10,
+   33,
+   27
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "font",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   4,
+   4,
+   33,
+   33
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "settings",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   5,
+   4,
+   32,
+   33
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "chevron_right",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   13,
+   8,
+   24,
+   29
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "warning",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   5,
+   6,
+   32,
+   32
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "play",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   7,
+   6,
+   30,
+   31
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "check",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   12,
+   18,
+   55,
+   49
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "view",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   5,
+   15,
+   62,
+   52
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "table",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   4,
+   15,
+   63,
+   52
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "font",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   4,
+   4,
+   63,
+   63
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "settings",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   6,
+   4,
+   61,
+   63
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "chevron_right",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   22,
+   12,
+   45,
+   55
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "warning",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   7,
+   6,
+   61,
+   60
+  ],
+  "err_x": 0.5,
+  "err_y": -0.5,
+  "err": 0.71,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe Fluent Icons",
+  "name": "play",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   10,
+   8,
+   57,
+   59
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "check",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   6,
+   8,
+   17,
+   15
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "view",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   4,
+   7,
+   19,
+   16
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "table",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   4,
+   7,
+   19,
+   16
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "font",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   6,
+   6,
+   17,
+   17
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "settings",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   5,
+   5,
+   18,
+   18
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "chevron_right",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   9,
+   5,
+   15,
+   18
+  ],
+  "err_x": 0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "warning",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   5,
+   6,
+   19,
+   19
+  ],
+  "err_x": 0.5,
+  "err_y": 1.0,
+  "err": 1.12,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": false
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "play",
+  "size": 16,
+  "frame_px": [
+   24,
+   24
+  ],
+  "declared_px": [
+   24,
+   24
+  ],
+  "ink_bbox": [
+   7,
+   6,
+   15,
+   17
+  ],
+  "err_x": -0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.5,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "check",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   7,
+   10,
+   24,
+   21
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "view",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   4,
+   9,
+   27,
+   23
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "table",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   4,
+   8,
+   27,
+   23
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "font",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   6,
+   7,
+   25,
+   24
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "settings",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   4,
+   4,
+   27,
+   27
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "chevron_right",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   10,
+   5,
+   20,
+   26
+  ],
+  "err_x": -0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "warning",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   6,
+   6,
+   26,
+   27
+  ],
+  "err_x": 0.5,
+  "err_y": 1.0,
+  "err": 1.12,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": false
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "play",
+  "size": 24,
+  "frame_px": [
+   32,
+   32
+  ],
+  "declared_px": [
+   32,
+   32
+  ],
+  "ink_bbox": [
+   9,
+   6,
+   22,
+   25
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "check",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   7,
+   11,
+   29,
+   26
+  ],
+  "err_x": -0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "view",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   4,
+   10,
+   33,
+   27
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "table",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   4,
+   10,
+   33,
+   27
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "font",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   7,
+   8,
+   30,
+   29
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "settings",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   4,
+   4,
+   33,
+   33
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "chevron_right",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   11,
+   5,
+   25,
+   32
+  ],
+  "err_x": -0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "warning",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   5,
+   6,
+   32,
+   32
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "play",
+  "size": 30,
+  "frame_px": [
+   38,
+   38
+  ],
+  "declared_px": [
+   38,
+   38
+  ],
+  "ink_bbox": [
+   10,
+   7,
+   26,
+   30
+  ],
+  "err_x": -0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 0.75,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "check",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   11,
+   17,
+   56,
+   49
+  ],
+  "err_x": 0.0,
+  "err_y": -0.5,
+  "err": 0.5,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "view",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   4,
+   16,
+   63,
+   52
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "table",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   4,
+   15,
+   63,
+   52
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "font",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   9,
+   11,
+   58,
+   56
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "settings",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   5,
+   5,
+   62,
+   62
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "chevron_right",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   18,
+   5,
+   49,
+   62
+  ],
+  "err_x": 0.0,
+  "err_y": 0.0,
+  "err": 0.0,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "warning",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   6,
+   7,
+   61,
+   61
+  ],
+  "err_x": 0.0,
+  "err_y": 0.5,
+  "err": 0.5,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ },
+ {
+  "family": "Segoe MDL2 Assets",
+  "name": "play",
+  "size": 60,
+  "frame_px": [
+   68,
+   68
+  ],
+  "declared_px": [
+   68,
+   68
+  ],
+  "ink_bbox": [
+   15,
+   8,
+   51,
+   59
+  ],
+  "err_x": -0.5,
+  "err_y": 0.0,
+  "err": 0.5,
+  "tol": 1.0,
+  "size_ok": true,
+  "pass": true
+ }
+]

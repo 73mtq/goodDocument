@@ -1,0 +1,154 @@
+{
+  "_preset": {
+    "name": "成都理工大学学士论文",
+    "description": "按《学生学士学位论文（设计）编写格式》转录：A4、正文宋体小四 1.5 倍行距首行缩进 2 字、章标题小二黑体居中（段前 0.5 行）、表题上方五号黑体、表格五号宋体智能对齐、参考文献五号宋体。"
+  },
+  "_说明": "《成都理工大学学士学位论文编写格式》一键预设。每个参数对应规格条目：页面/正文→打印要求；表题/表内容→表格条；图题→图条；页眉→页眉条；章/节/条→范本第1章示例；参考文献→参考文献条。",
+  "page": {
+    "size": "A4",
+    "margins": {
+      "top": 2.54,
+      "bottom": 2.54,
+      "left": 2.54,
+      "right": 2.54,
+      "header": 1.5,
+      "footer": 1.75
+    }
+  },
+  "pageNumber": {
+    "enabled": true,
+    "align": "center",
+    "size": "小五",
+    "font": "宋体",
+    "asciiFont": "Times New Roman",
+    "onlyUpdateExisting": true
+  },
+  "header": {
+    "enabled": true,
+    "font": "宋体",
+    "asciiFont": "Times New Roman",
+    "size": "小五",
+    "align": "center"
+  },
+  "body": {
+    "font": "宋体",
+    "asciiFont": "Times New Roman",
+    "size": "小四",
+    "lineSpacing": 1.5,
+    "firstLineIndentChars": 2,
+    "align": "justify",
+    "spaceAfterPt": 0
+  },
+  "headings": {
+    "h1": {
+      "font": "黑体",
+      "asciiFont": "Times New Roman",
+      "size": "小二",
+      "lineSpacing": 1.5,
+      "bold": true,
+      "color": "000000",
+      "spaceBeforeLines": 0.5,
+      "spaceBeforePt": 8,
+      "spaceAfterPt": 6,
+      "align": "center"
+    },
+    "h2": {
+      "font": "黑体",
+      "asciiFont": "Times New Roman",
+      "size": "小三",
+      "lineSpacing": 1.5,
+      "bold": true,
+      "color": "000000",
+      "spaceBeforeLines": 0.5,
+      "spaceAfterLines": 0.5,
+      "spaceBeforePt": 8,
+      "spaceAfterPt": 8,
+      "align": "left"
+    },
+    "h3": {
+      "font": "黑体",
+      "asciiFont": "Times New Roman",
+      "size": "小四",
+      "lineSpacing": 1.5,
+      "bold": true,
+      "color": "000000",
+      "spaceBeforeLines": 0.5,
+      "spaceAfterLines": 0.5,
+      "spaceBeforePt": 8,
+      "spaceAfterPt": 8,
+      "align": "left"
+    },
+    "h4": {
+      "font": "黑体",
+      "asciiFont": "Times New Roman",
+      "size": "小四",
+      "lineSpacing": 1.5,
+      "bold": true,
+      "color": "000000",
+      "spaceBeforeLines": 0.5,
+      "spaceAfterLines": 0.5,
+      "spaceBeforePt": 8,
+      "spaceAfterPt": 8,
+      "align": "left"
+    }
+  },
+  "figure": {
+    "maxWidthCm": 15.9,
+    "maxHeightCm": 22,
+    "sizeMode": "fit",
+    "fixedWidthCm": 12,
+    "fixedHeightCm": 9,
+    "keepAspectRatio": false,
+    "clampToTextWidth": true,
+    "skipInTables": true,
+    "keepWithCaption": true,
+    "align": "center",
+    "captionPosition": "below",
+    "captionText": "黑体",
+    "captionAsciiFont": "Times New Roman",
+    "captionSize": "五号",
+    "captionBold": false,
+    "captionAlign": "center",
+    "captionLineSpacing": 1,
+    "noteSize": "小五",
+    "noteAlign": "left",
+    "noteLineSpacing": 1.0,
+    "prefix": "图"
+  },
+  "table": {
+    "align": "center",
+    "captionPosition": "above",
+    "captionText": "黑体",
+    "captionAsciiFont": "Times New Roman",
+    "captionSize": "五号",
+    "captionBold": false,
+    "captionAlign": "center",
+    "captionLineSpacing": 1,
+    "noteSize": "小五",
+    "noteAlign": "left",
+    "noteLineSpacing": 1.0,
+    "cellFont": "宋体",
+    "cellAsciiFont": "Times New Roman",
+    "cellSize": "五号",
+    "cellAlign": "smart",
+    "smartAlignThresholdChars": 6,
+    "cellVAlign": "center",
+    "cellLineSpacing": 1,
+    "headerBold": true,
+    "borderColor": "000000",
+    "borderSize": 4,
+    "prefix": "表"
+  },
+  "references": {
+    "style": "GB/T 7714",
+    "font": "宋体",
+    "asciiFont": "Times New Roman",
+    "size": "五号",
+    "lineSpacing": 1,
+    "align": "justify",
+    "hangingIndentPt": 21
+  },
+  "output": {
+    "filename": "成都理工学士论文示例.docx"
+  }
+}

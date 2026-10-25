@@ -5,7 +5,6 @@ from pathlib import Path
 
 from config_model import load_config_file, save_config_file, validate_config
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

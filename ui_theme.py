@@ -1,38 +1,61 @@
-"""朱批纸面主题：颜色与字体令牌、ttk 样式注册、取值中英映射。
+"""Apple 系统色主题：设计令牌、ttk 样式注册、取值中英映射。
 
-视觉规则：纸色打底、墨色承载信息、朱砂只出现在动作上；无阴影、1px 分隔线、
-以字号与字重建立层级。
+令牌数值全部来自一手测量，来源与计算见 design/apple-measurements.md（颜色）
+与 design/measurements.md（结构尺寸：行高、列宽、分隔节奏，标本为 macOS
+系统设置）。视觉规则：近白分组底、白卡片承载内容、近黑文字；全界面只有
+一个强调色，且只出现在「开始整理」与聚焦态；每组文字/背景对比度不低于
+4.5:1。无阴影、1px 分隔线、间距与行高全部来自令牌表且落在 4 的倍数；
+不用浅字重、不仿 macOS 窗口部件。
 """
 import tkinter.font as tkfont
 from tkinter import ttk
 
+import ui_icons
 
 COLORS = {
-    "bg": "#F5F1E8",
-    "surface": "#FBF9F4",
-    "surface_alt": "#EEE8DB",
-    "surface_hover": "#EFE9DC",
-    "surface_pressed": "#E6DECD",
-    "border": "#DED7C8",
-    "border_strong": "#C9C0AC",
-    "ink": "#211F1B",
-    "ink_muted": "#6B665C",
-    "ink_disabled": "#A9A296",
-    "accent": "#A8402F",
-    "accent_hover": "#93372A",
-    "accent_pressed": "#7E2F24",
-    "accent_soft": "#EBD8D2",
-    "accent_disabled_bg": "#D8C3BD",
-    "accent_disabled_fg": "#F2EAE4",
-    "success": "#2F6B4F",
-    "warning": "#9A6B1F",
-    "danger": "#8C2F24",
+    "bg": "#F7F7F7",
+    "surface": "#FFFFFF",
+    "surface_alt": "#EDEDED",
+    "surface_hover": "#F0F0F0",
+    "surface_pressed": "#E4E4E4",
+    "border": "#D8D8D8",
+    "border_strong": "#BEBEBE",
+    "ink": "#1F1F1F",
+    "ink_muted": "#636368",
+    "ink_disabled": "#BEBEBE",
+    "accent": "#2F6EED",
+    "accent_hover": "#2860D8",
+    "accent_pressed": "#2455C4",
+    "accent_soft": "#E5EEFD",
+    "accent_disabled_bg": "#C9D3EA",
+    "accent_disabled_fg": "#FBFCFE",
+    "success": "#187734",
+    "warning": "#7E560F",
+    "danger": "#C03527",
 }
 
 SPACING = {"xs": 4, "sm": 8, "md": 12, "lg": 16, "xl": 24, "xxl": 32}
 
+# 结构令牌（px）：量测依据与换算见 design/measurements.md。
+MEASUREMENTS = {
+    "row_height": 44,           # 设置行高（系统设置内容行距 34pt）
+    "group_header_height": 32,  # 组头高（侧栏行 25pt）
+    "control_height": 28,       # 尾部控件高（弹窗按钮 bezel 19-20pt）
+    "panel_width": 480,         # 高级设置面板宽
+    "name_column": 128,         # 行/主流程名称列宽
+    "group_gap": 24,            # 组卡间距
+    "separator_inset": 44,      # 行分隔线左缩进
+    "indent_step": 36,          # 主流程步骤名/设置行名文字列起点（12+16+8）
+    "indent_group": 40,         # 组头标题列起点（12+20+8）
+    "drop_height": 96,          # 拖放区高
+    "wrap_main": 760,           # 主卡说明折行宽
+    "wrap_panel": 440,          # 面板说明折行宽
+    "icon_group": 20,           # 组头图标（微软字体文档推荐档位）
+    "icon_row": 16,             # 行内图标
+    "icon_hero": 40,            # 拖放区主图
+}
+
 FAMILY_CANDIDATES = ("Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Segoe UI", "Helvetica")
-LIGHT_CANDIDATES = ("Microsoft YaHei UI Light", "Microsoft YaHei Light", "PingFang SC Light", "Segoe UI Light")
 MONO_CANDIDATES = ("Cascadia Mono", "Consolas", "Menlo", "Courier New")
 
 VALUE_LABELS = {
@@ -42,9 +65,10 @@ VALUE_LABELS = {
     "justify": "两端",
     "above": "上方",
     "below": "下方",
-    "top": "顶部",
+    "top": "靠上",
     "fit": "等比缩放",
     "fixed": "统一尺寸",
+    "smart": "智能识别",
 }
 LABEL_VALUES = {label: value for value, label in VALUE_LABELS.items()}
 
@@ -78,16 +102,16 @@ def option_values(values):
 def build_fonts(root):
     available = set(tkfont.families(root))
     family = next((f for f in FAMILY_CANDIDATES if f in available), "TkDefaultFont")
-    light = next((f for f in LIGHT_CANDIDATES if f in available), family)
     mono = next((f for f in MONO_CANDIDATES if f in available), "TkFixedFont")
     return {
-        "display": (light, 21),
-        "step": (light, 15),
-        "section": (family, 12, "bold"),
-        "body": (family, 10),
-        "body_bold": (family, 10, "bold"),
-        "caption": (family, 9),
-        "mono": (mono, 9),
+        "display": (family, 17),
+        "section": (family, 13, "bold"),
+        "body": (family, 13),
+        "body_bold": (family, 13, "bold"),
+        "caption": (family, 11),
+        "mono": (mono, 11),
+        # 图标字体族；检测不到时为 None，界面回退纯文字（见 ui_icons.py）。
+        "icon": ui_icons.select_icon_family(available),
     }
 
 
@@ -119,24 +143,29 @@ def _configure_base(style, fonts):
         fieldbackground=COLORS["surface"],
     )
     style.configure("TFrame", background=COLORS["bg"])
-    style.configure("Panel.TFrame", background=COLORS["surface"])
     style.configure("Card.TFrame", background=COLORS["surface"])
+    style.configure("Panel.TFrame", background=COLORS["bg"])
     style.configure("TLabel", background=COLORS["bg"], foreground=COLORS["ink"])
-    style.configure("Panel.TLabel", background=COLORS["surface"], foreground=COLORS["ink"])
+    style.configure("Card.TLabel", background=COLORS["surface"], foreground=COLORS["ink"])
+    style.configure("Panel.TLabel", background=COLORS["bg"], foreground=COLORS["ink"])
     style.configure("Display.TLabel", background=COLORS["bg"], foreground=COLORS["ink"],
                     font=fonts["display"])
-    style.configure("Step.TLabel", background=COLORS["bg"], foreground=COLORS["accent"],
-                    font=fonts["step"])
     style.configure("Section.TLabel", background=COLORS["bg"], foreground=COLORS["ink"],
                     font=fonts["section"])
-    style.configure("PanelSection.TLabel", background=COLORS["surface"], foreground=COLORS["ink"],
+    style.configure("CardSection.TLabel", background=COLORS["surface"], foreground=COLORS["ink"],
+                    font=fonts["section"])
+    style.configure("PanelSection.TLabel", background=COLORS["bg"], foreground=COLORS["ink"],
                     font=fonts["section"])
     style.configure("Muted.TLabel", background=COLORS["bg"], foreground=COLORS["ink_muted"])
-    style.configure("PanelMuted.TLabel", background=COLORS["surface"], foreground=COLORS["ink_muted"])
+    style.configure("CardMuted.TLabel", background=COLORS["surface"], foreground=COLORS["ink_muted"])
+    style.configure("PanelMuted.TLabel", background=COLORS["bg"], foreground=COLORS["ink_muted"])
     style.configure("Caption.TLabel", background=COLORS["bg"], foreground=COLORS["ink_muted"],
                     font=fonts["caption"])
-    style.configure("PanelCaption.TLabel", background=COLORS["surface"], foreground=COLORS["ink_muted"],
+    style.configure("CardCaption.TLabel", background=COLORS["surface"], foreground=COLORS["ink_muted"],
                     font=fonts["caption"])
+    style.configure("PanelCaption.TLabel", background=COLORS["bg"], foreground=COLORS["ink_muted"],
+                    font=fonts["caption"])
+    style.configure("Danger.TLabel", background=COLORS["bg"], foreground=COLORS["danger"])
     style.configure("Success.TLabel", background=COLORS["bg"], foreground=COLORS["success"])
     style.configure("TSeparator", background=COLORS["border"])
 
@@ -149,9 +178,9 @@ def _configure_buttons(style, fonts):
         bordercolor=COLORS["border"],
         lightcolor=COLORS["surface"],
         darkcolor=COLORS["border"],
-        padding=(14, 7),
+        padding=(16, 8),
         relief="flat",
-        font=fonts["body_bold"],
+        font=fonts["body"],
     )
     style.map(
         "TButton",
@@ -169,7 +198,7 @@ def _configure_buttons(style, fonts):
         bordercolor=COLORS["accent"],
         lightcolor=COLORS["accent"],
         darkcolor=COLORS["accent"],
-        padding=(20, 8),
+        padding=(24, 8),
         relief="flat",
         font=fonts["body_bold"],
     )
@@ -178,6 +207,27 @@ def _configure_buttons(style, fonts):
         background=[("disabled", COLORS["accent_disabled_bg"]), ("pressed", COLORS["accent_pressed"]),
                     ("active", COLORS["accent_hover"])],
         foreground=[("disabled", COLORS["accent_disabled_fg"])],
+        bordercolor=[("focus", COLORS["ink"]), ("disabled", COLORS["accent_disabled_bg"])],
+        lightcolor=[("pressed", COLORS["accent_pressed"]), ("active", COLORS["accent_hover"])],
+        darkcolor=[("pressed", COLORS["accent_pressed"]), ("active", COLORS["accent_hover"])],
+    )
+    style.configure(
+        "AccentLead.TButton",
+        background=COLORS["accent"],
+        foreground=COLORS["surface"],
+        bordercolor=COLORS["accent"],
+        lightcolor=COLORS["accent"],
+        darkcolor=COLORS["accent"],
+        padding=(8, 24),
+        relief="flat",
+        font=fonts["body_bold"],
+    )
+    style.map(
+        "AccentLead.TButton",
+        background=[("disabled", COLORS["accent_disabled_bg"]), ("pressed", COLORS["accent_pressed"]),
+                    ("active", COLORS["accent_hover"])],
+        foreground=[("disabled", COLORS["accent_disabled_fg"])],
+        bordercolor=[("focus", COLORS["ink"]), ("disabled", COLORS["accent_disabled_bg"])],
         lightcolor=[("pressed", COLORS["accent_pressed"]), ("active", COLORS["accent_hover"])],
         darkcolor=[("pressed", COLORS["accent_pressed"]), ("active", COLORS["accent_hover"])],
     )
@@ -188,7 +238,7 @@ def _configure_buttons(style, fonts):
         bordercolor=COLORS["bg"],
         lightcolor=COLORS["bg"],
         darkcolor=COLORS["bg"],
-        padding=(10, 6),
+        padding=(12, 8),
         relief="flat",
     )
     style.map(
@@ -199,45 +249,45 @@ def _configure_buttons(style, fonts):
     )
     style.configure(
         "PanelQuiet.TButton",
-        background=COLORS["surface"],
+        background=COLORS["bg"],
         foreground=COLORS["ink_muted"],
-        bordercolor=COLORS["surface"],
-        lightcolor=COLORS["surface"],
-        darkcolor=COLORS["surface"],
-        padding=(10, 6),
+        bordercolor=COLORS["bg"],
+        lightcolor=COLORS["bg"],
+        darkcolor=COLORS["bg"],
+        padding=(12, 8),
         relief="flat",
     )
     style.map(
         "PanelQuiet.TButton",
-        background=[("disabled", COLORS["surface"]), ("pressed", COLORS["surface_pressed"]),
-                    ("active", COLORS["surface_alt"])],
+        background=[("disabled", COLORS["bg"]), ("pressed", COLORS["surface_pressed"]),
+                    ("active", COLORS["surface"])],
         foreground=[("disabled", COLORS["ink_disabled"]), ("active", COLORS["ink"])],
     )
     style.configure(
-        "Group.TButton",
+        "CardQuiet.TButton",
         background=COLORS["surface"],
-        foreground=COLORS["ink"],
+        foreground=COLORS["ink_muted"],
         bordercolor=COLORS["surface"],
         lightcolor=COLORS["surface"],
         darkcolor=COLORS["surface"],
-        padding=(10, 8),
-        anchor="w",
+        padding=(8, 4),
         relief="flat",
-        font=fonts["section"],
+        font=fonts["caption"],
     )
     style.map(
-        "Group.TButton",
-        background=[("pressed", COLORS["surface_pressed"]), ("active", COLORS["surface_alt"])],
-        foreground=[("active", COLORS["accent"])],
+        "CardQuiet.TButton",
+        background=[("disabled", COLORS["surface"]), ("pressed", COLORS["surface_pressed"]),
+                    ("active", COLORS["surface_hover"])],
+        foreground=[("disabled", COLORS["ink_disabled"]), ("active", COLORS["ink"])],
     )
     style.configure(
         "Seg.TButton",
-        background=COLORS["surface_alt"],
+        background=COLORS["surface"],
         foreground=COLORS["ink_muted"],
-        bordercolor=COLORS["surface_alt"],
-        lightcolor=COLORS["surface_alt"],
-        darkcolor=COLORS["surface_alt"],
-        padding=(16, 7),
+        bordercolor=COLORS["border"],
+        lightcolor=COLORS["surface"],
+        darkcolor=COLORS["border"],
+        padding=(16, 8),
         relief="flat",
     )
     style.map(
@@ -245,14 +295,15 @@ def _configure_buttons(style, fonts):
         background=[("pressed", COLORS["surface_pressed"]), ("active", COLORS["surface_hover"])],
         foreground=[("active", COLORS["ink"])],
     )
+    # 选中态用中性灰 + 加粗，强调蓝只留给「开始整理」与聚焦态。
     style.configure(
         "SegActive.TButton",
-        background=COLORS["surface"],
-        foreground=COLORS["accent"],
-        bordercolor=COLORS["surface"],
-        lightcolor=COLORS["surface"],
-        darkcolor=COLORS["surface"],
-        padding=(16, 7),
+        background=COLORS["surface_pressed"],
+        foreground=COLORS["ink"],
+        bordercolor=COLORS["surface_pressed"],
+        lightcolor=COLORS["surface_pressed"],
+        darkcolor=COLORS["surface_pressed"],
+        padding=(16, 8),
         relief="flat",
         font=fonts["body_bold"],
     )
@@ -266,7 +317,7 @@ def _configure_fields(style, fonts):
         bordercolor=COLORS["border"],
         lightcolor=COLORS["border"],
         darkcolor=COLORS["border"],
-        padding=6,
+        padding=8,
     )
     style.map(
         "TEntry",
@@ -347,7 +398,7 @@ def _configure_misc(style):
         background=COLORS["bg"],
         foreground=COLORS["ink"],
         focuscolor=COLORS["accent"],
-        padding=2,
+        padding=0,
     )
     style.map(
         "TCheckbutton",
@@ -360,7 +411,7 @@ def _configure_misc(style):
         background=COLORS["surface"],
         foreground=COLORS["ink"],
         focuscolor=COLORS["accent"],
-        padding=2,
+        padding=0,
     )
     style.map(
         "Panel.TCheckbutton",
@@ -373,7 +424,7 @@ def _configure_misc(style):
 def _configure_popdown(root):
     root.option_add("*TCombobox*Listbox.background", COLORS["surface"])
     root.option_add("*TCombobox*Listbox.foreground", COLORS["ink"])
-    root.option_add("*TCombobox*Listbox.selectBackground", COLORS["accent_soft"])
+    root.option_add("*TCombobox*Listbox.selectBackground", COLORS["surface_hover"])
     root.option_add("*TCombobox*Listbox.selectForeground", COLORS["ink"])
     root.option_add("*TCombobox*Listbox.borderWidth", 0)
     root.option_add("*TCombobox*Listbox.highlightThickness", 1)

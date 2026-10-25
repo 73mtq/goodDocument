@@ -1,0 +1,1787 @@
+{
+ "family": "Segoe Fluent Icons",
+ "rows": [
+  {
+   "name": "page",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 16,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 16,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 16,
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 16,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 16,
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "page",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 20,
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 20,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 20,
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "page",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 24,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 24,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 24,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 24,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "page",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 20,
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 20,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 20,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 20,
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "page",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 25,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 25,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 25,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 25,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 25,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "page",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 30,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 30,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "page",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 40,
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 40,
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 40,
+   "err_x": -0.5,
+   "err_y": 0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 40,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 40,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 40,
+   "err_x": -0.5,
+   "err_y": -0.5,
+   "tol": 0.5,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "page",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 50,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 50,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 50,
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 50,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 50,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 50,
+   "err_x": 0.5,
+   "err_y": 0.0,
+   "tol": 0.75,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "page",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "dialpad",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "font",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "bold",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "photo",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "caption",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "table",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "library",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "document",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "save",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "search",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "settings",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "undo",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "play",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "view",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "edit",
+   "ppem": 60,
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "warning",
+   "ppem": 60,
+   "err_x": 0.5,
+   "err_y": -0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "list",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "folder",
+   "ppem": 60,
+   "err_x": -0.5,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "check",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "chevron_right",
+   "ppem": 60,
+   "err_x": 0.0,
+   "err_y": 0.0,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  },
+  {
+   "name": "clear",
+   "ppem": 60,
+   "err_x": 0.5,
+   "err_y": 0.5,
+   "tol": 1.0,
+   "size_ok": true,
+   "pass": true
+  }
+ ]
+}
