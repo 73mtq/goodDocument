@@ -3,6 +3,7 @@
 
 不依赖观感：直接扫描 app.py / ui_theme.py / ui_icons.py 的字符串字面量与源码模式。
 """
+
 import ast
 import re
 import unittest
@@ -12,7 +13,7 @@ import ui_icons
 import ui_theme
 
 ROOT = Path(__file__).resolve().parents[1]
-UI_FILES = ("app.py", "ui_theme.py")
+UI_FILES = ("app.py", "settings_model.py", "ui_theme.py")
 
 # em-dash U+2014、en-dash U+2013、箭头 U+2192、半角/全角感叹号
 BANNED_CHARS = "\u2014\u2013\u2192!\uff01"
@@ -35,8 +36,7 @@ def string_literals(path):
 
 
 def art_problems(text):
-    return [hex(ord(ch)) for ch in text
-            if any(lo <= ord(ch) <= hi for lo, hi in ART_RANGES)]
+    return [hex(ord(ch)) for ch in text if any(lo <= ord(ch) <= hi for lo, hi in ART_RANGES)]
 
 
 class CopyLintTests(unittest.TestCase):
@@ -68,8 +68,7 @@ class CopyLintTests(unittest.TestCase):
         problems = []
         for name in UI_FILES:
             for text in string_literals(ROOT / name):
-                hits = [hex(ord(ch)) for ch in text
-                        if ui_icons.PUA_RANGE[0] <= ord(ch) <= ui_icons.PUA_RANGE[1]]
+                hits = [hex(ord(ch)) for ch in text if ui_icons.PUA_RANGE[0] <= ord(ch) <= ui_icons.PUA_RANGE[1]]
                 if hits:
                     problems.append((name, hits, text[:40]))
         self.assertEqual(problems, [])
@@ -88,8 +87,7 @@ class SourcePatternLintTests(unittest.TestCase):
 class SpacingLintTests(unittest.TestCase):
     def test_spacing_values_come_from_token_table(self):
         allowed = set(ui_theme.SPACING.values()) | {0}
-        pattern = re.compile(
-            r"\b(?:padx|pady|padding|spacing1|spacing3)\s*=\s*(?:\(([^)]*)\)|([-0-9]+))")
+        pattern = re.compile(r"\b(?:padx|pady|padding|spacing1|spacing3)\s*=\s*(?:\(([^)]*)\)|([-0-9]+))")
         problems = []
         for name in UI_FILES:
             source = (ROOT / name).read_text(encoding="utf-8")
@@ -113,8 +111,7 @@ class SpacingLintTests(unittest.TestCase):
                     if keyword.arg not in ("height", "wraplength"):
                         continue
                     value = keyword.value
-                    if (isinstance(value, ast.Constant) and isinstance(value.value, int)
-                            and value.value not in allowed):
+                    if isinstance(value, ast.Constant) and isinstance(value.value, int) and value.value not in allowed:
                         problems.append((name, keyword.arg, value.value))
         self.assertEqual(problems, [])
 

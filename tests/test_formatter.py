@@ -59,21 +59,30 @@ class FigureSizeTests(unittest.TestCase):
 
     def test_fixed_mode_forced_size_ignores_ratio(self):
         width, height = self._formatter(
-            sizeMode="fixed", fixedWidthCm=12, fixedHeightCm=9, keepAspectRatio=False,
+            sizeMode="fixed",
+            fixedWidthCm=12,
+            fixedHeightCm=9,
+            keepAspectRatio=False,
         )._figure_size(str(ROOT / "assets" / "figure1.png"))
         self.assertAlmostEqual(width, 12, delta=0.01)
         self.assertAlmostEqual(height, 9, delta=0.01)
 
     def test_fixed_mode_uniform_width_keeps_ratio(self):
         width, height = self._formatter(
-            sizeMode="fixed", fixedWidthCm=10, fixedHeightCm=None, keepAspectRatio=True,
+            sizeMode="fixed",
+            fixedWidthCm=10,
+            fixedHeightCm=None,
+            keepAspectRatio=True,
         )._figure_size(str(ROOT / "assets" / "figure1.png"))
         self.assertAlmostEqual(width, 10, delta=0.01)
         self.assertAlmostEqual(height, 10 * 2 / 3, delta=0.01)
 
     def test_fixed_mode_width_clamped_to_text_width(self):
         width, _ = self._formatter(
-            sizeMode="fixed", fixedWidthCm=20, fixedHeightCm=None, keepAspectRatio=True,
+            sizeMode="fixed",
+            fixedWidthCm=20,
+            fixedHeightCm=None,
+            keepAspectRatio=True,
         )._figure_size(str(ROOT / "assets" / "figure1.png"))
         self.assertAlmostEqual(width, 15.5, delta=0.01)
 

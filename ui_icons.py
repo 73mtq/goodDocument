@@ -7,32 +7,33 @@
 不捆绑字体文件：系统字体授权跟随 Windows，随包分发违约，所以缺失就退到纯文字。
 图标统一 20px 网格（行内 16、组头 20、拖放区主图 40），颜色跟随所在文字色。
 """
+
 ICON_FAMILIES = ("Segoe Fluent Icons", "Segoe MDL2 Assets")
 
 # 名称 → 字形。用途注释标在右侧；禁止在此之外出现私用区字符。
 ICONS = {
-    "page": "\ue7c3",           # Page        设置组「页面」
-    "dialpad": "\ue75f",        # Dialpad     设置组「页码」（数字盘）
-    "font": "\ue8d2",           # Font        设置组「正文」
-    "bold": "\ue8dd",           # Bold        设置组「标题」（加粗 B，四个标题级共用）
-    "photo": "\ue91b",          # Photo       设置组「图片」
-    "caption": "\ue8ba",        # Caption     设置组「图题与说明」
-    "table": "\ue8fd",          # BulletedList 设置组「表格」
-    "library": "\ue8f1",        # Library     设置组「参考文献」；主流程「学校模板」
-    "document": "\ue8a5",       # Document    主流程「选文档」；拖放区主图
-    "save": "\ue74e",           # Save        主流程「保存位置」
-    "search": "\ue721",         # Search      过滤框
-    "settings": "\ue713",       # Settings    「高级设置」入口
-    "undo": "\ue7a7",           # Undo        组头「恢复默认」
-    "play": "\ue768",           # Play        「开始整理」
-    "view": "\ue890",           # View        「预览改动」
-    "edit": "\ue70f",           # Edit        结果区「改动」
-    "warning": "\ue7ba",        # Warning     结果区「提醒」
-    "list": "\uea37",           # List        结果区「记录」
-    "folder": "\ue838",         # FolderOpen  「打开所在文件夹」
-    "check": "\ue73e",          # CheckMark   完成
+    "page": "\ue7c3",  # Page        设置组「页面」
+    "dialpad": "\ue75f",  # Dialpad     设置组「页码」（数字盘）
+    "font": "\ue8d2",  # Font        设置组「正文」
+    "bold": "\ue8dd",  # Bold        设置组「标题」（加粗 B，四个标题级共用）
+    "photo": "\ue91b",  # Photo       设置组「图片」
+    "caption": "\ue8ba",  # Caption     设置组「图题与说明」
+    "table": "\ue8fd",  # BulletedList 设置组「表格」
+    "library": "\ue8f1",  # Library     设置组「参考文献」；主流程「学校模板」
+    "document": "\ue8a5",  # Document    主流程「选文档」；拖放区主图
+    "save": "\ue74e",  # Save        主流程「保存位置」
+    "search": "\ue721",  # Search      过滤框
+    "settings": "\ue713",  # Settings    「高级设置」入口
+    "undo": "\ue7a7",  # Undo        组头「恢复默认」
+    "play": "\ue768",  # Play        「开始整理」
+    "view": "\ue890",  # View        「预览改动」
+    "edit": "\ue70f",  # Edit        结果区「改动」
+    "warning": "\ue7ba",  # Warning     结果区「提醒」
+    "list": "\uea37",  # List        结果区「记录」
+    "folder": "\ue838",  # FolderOpen  「打开所在文件夹」
+    "check": "\ue73e",  # CheckMark   完成
     "chevron_right": "\ue76c",  # ChevronRight 收起面板
-    "clear": "\ue711",          # Cancel      清除过滤
+    "clear": "\ue711",  # Cancel      清除过滤
 }
 
 # 私用区（PUA）判定，供 lint 与测试用：E000-F8FF。

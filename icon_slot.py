@@ -14,6 +14,7 @@
 墨迹表与校准表由 design/icon-metrics/build_icon_data.py 生成到 icon_slot_data.py，
 禁止手改；字形码点仍以 ui_icons.ICONS 为唯一来源（PUA 纪律）。
 """
+
 import tkinter as tk
 
 import icon_slot_data
@@ -45,9 +46,9 @@ class IconCell:
         if placement is None:
             return
         x, y, glyph = placement
-        self._item = canvas.create_text(x, y, text=glyph, fill=self._fg,
-                                        font=(self._renderer.family, -self._size),
-                                        anchor="nw")
+        self._item = canvas.create_text(
+            x, y, text=glyph, fill=self._fg, font=(self._renderer.family, -self._size), anchor="nw"
+        )
 
     def set_icon(self, name):
         self._name = name
@@ -88,8 +89,8 @@ class IconRenderer:
         x0, y0, x1, y1 = entry
         upm = font_data["upm"]
         s = size_px
-        cx = (x0 + x1) / 2 * s / upm          # 墨迹中心（相对行盒左上）
-        cy = s - (y0 + y1) / 2 * s / upm      # 纵向：基线在行盒底，y 向下
+        cx = (x0 + x1) / 2 * s / upm  # 墨迹中心（相对行盒左上）
+        cy = s - (y0 + y1) / 2 * s / upm  # 纵向：基线在行盒底，y 向下
         corr_x, corr_y = icon_slot_data.correction(self.family, name, s)
         return s / 2 - cx - corr_x, s / 2 - cy - corr_y, glyph
 
@@ -99,12 +100,11 @@ class IconRenderer:
             return None
         if ui_icons.glyph(name) is None:
             return None
-        if self.text_placement(name, self.size_px(token)) is None:
+        size_px = self.size_px(token)
+        if self.text_placement(name, size_px) is None:
             return None
-        s = self.size_px(token)
-        canvas = tk.Canvas(parent, width=s, height=s, bg=bg, highlightthickness=0,
-                           borderwidth=0)
-        return IconCell(canvas, self, name, s, fg)
+        canvas = tk.Canvas(parent, width=size_px, height=size_px, bg=bg, highlightthickness=0, borderwidth=0)
+        return IconCell(canvas, self, name, size_px, fg)
 
     def text_pos(self, center_x, center_y, name, token):
         """既有画布内嵌图标（如拖放区主图）的摆位：墨迹盒中心落在 (center_x, center_y)。

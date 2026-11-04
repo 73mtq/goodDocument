@@ -190,12 +190,9 @@ class NormalizeDocxTests(unittest.TestCase):
             self.assertEqual(ind.get(qn("w:left")), "0")
             self.assertEqual(ind.get(qn("w:right")), "0")
             # 三个字符单位属性必须被清掉（OOXML 中字符单位优先于数值单位，残留会导致 bug）
-            self.assertIsNone(ind.get(qn("w:firstLineChars")),
-                              "firstLineChars 残留会导致 Word 仍按字符数缩进")
-            self.assertIsNone(ind.get(qn("w:leftChars")),
-                              "leftChars 残留会导致 Word 仍按字符数缩进")
-            self.assertIsNone(ind.get(qn("w:rightChars")),
-                              "rightChars 残留会导致 Word 仍按字符数缩进")
+            self.assertIsNone(ind.get(qn("w:firstLineChars")), "firstLineChars 残留会导致 Word 仍按字符数缩进")
+            self.assertIsNone(ind.get(qn("w:leftChars")), "leftChars 残留会导致 Word 仍按字符数缩进")
+            self.assertIsNone(ind.get(qn("w:rightChars")), "rightChars 残留会导致 Word 仍按字符数缩进")
 
     def test_normalize_docx_clears_first_line_chars_in_normal_style(self):
         """回归测试：Normal 样式里的 firstLineChars 必须清掉。
@@ -233,8 +230,9 @@ class NormalizeDocxTests(unittest.TestCase):
             ind = pPr.find(qn("w:ind")) if pPr is not None else None
             # 关键断言：Normal 样式里 firstLineChars 必须清掉
             if ind is not None:
-                self.assertIsNone(ind.get(qn("w:firstLineChars")),
-                                  "Normal 样式的 firstLineChars 必须清掉，否则表格段落会继承")
+                self.assertIsNone(
+                    ind.get(qn("w:firstLineChars")), "Normal 样式的 firstLineChars 必须清掉，否则表格段落会继承"
+                )
 
 
 def _add_page_field(paragraph):
@@ -428,6 +426,7 @@ class NormalizeCoverAndTocTests(unittest.TestCase):
 class NormalizeErrorTests(unittest.TestCase):
     def test_normalize_error_includes_message_cause_hint(self):
         from normalizer import NormalizeError
+
         e = NormalizeError("找不到文件", cause=FileNotFoundError("x"), hint="检查路径")
         s = str(e)
         self.assertIn("找不到文件", s)
@@ -436,6 +435,7 @@ class NormalizeErrorTests(unittest.TestCase):
 
     def test_input_not_found_is_normalize_error(self):
         from normalizer import InputNotFoundError, NormalizeError
+
         self.assertTrue(issubclass(InputNotFoundError, NormalizeError))
 
     def test_each_subclass_exists(self):
@@ -447,8 +447,14 @@ class NormalizeErrorTests(unittest.TestCase):
             OutputNotWritableError,
             SameInputOutputError,
         )
-        for cls in (InputNotFoundError, InvalidFileTypeError, CorruptDocxError,
-                    OutputNotWritableError, SameInputOutputError):
+
+        for cls in (
+            InputNotFoundError,
+            InvalidFileTypeError,
+            CorruptDocxError,
+            OutputNotWritableError,
+            SameInputOutputError,
+        ):
             self.assertTrue(issubclass(cls, NormalizeError))
 
 
@@ -456,6 +462,7 @@ class ValidatePathsTests(unittest.TestCase):
     def test_raises_input_not_found(self):
         from normalizer import InputNotFoundError
         from normalizer.paths import _validate_paths
+
         with self.assertRaises(InputNotFoundError) as ctx:
             _validate_paths("Z:/nonexistent-xyz-9999.docx", "Z:/out.docx")
         self.assertIn("找不到文件", str(ctx.exception))
@@ -463,6 +470,7 @@ class ValidatePathsTests(unittest.TestCase):
     def test_raises_invalid_file_type(self):
         from normalizer import InvalidFileTypeError
         from normalizer.paths import _validate_paths
+
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False, mode="w") as f:
             f.write("hi")
             p = f.name
@@ -476,6 +484,7 @@ class ValidatePathsTests(unittest.TestCase):
     def test_raises_same_input_output(self):
         from normalizer import SameInputOutputError
         from normalizer.paths import _validate_paths
+
         with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
             p = f.name
         try:
@@ -488,6 +497,7 @@ class ValidatePathsTests(unittest.TestCase):
 class BackupSourceTests(unittest.TestCase):
     def test_creates_bak_file(self):
         from normalizer.paths import _backup_source
+
         with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
             f.write(b"x")
             p = f.name
@@ -503,6 +513,7 @@ class BackupSourceTests(unittest.TestCase):
 
     def test_uses_incremented_name_when_bak_exists(self):
         from normalizer.paths import _backup_source
+
         with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
             f.write(b"x")
             p = f.name
@@ -519,6 +530,7 @@ class BackupSourceTests(unittest.TestCase):
 
     def test_returns_none_on_missing_input(self):
         from normalizer.paths import _backup_source
+
         result = _backup_source("Z:/nonexistent-xyz-qq-9999/doc.docx")
         self.assertIsNone(result)
 
@@ -526,6 +538,7 @@ class BackupSourceTests(unittest.TestCase):
 class NormalizeDocxNewSignatureTests(unittest.TestCase):
     def test_default_returns_str_backward_compat(self):
         from normalizer import normalize_docx
+
         cfg = load_config()
         source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
@@ -536,6 +549,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
 
     def test_return_result_returns_normalize_result(self):
         from normalizer import NormalizeResult, normalize_docx
+
         cfg = load_config()
         source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
@@ -546,6 +560,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
 
     def test_input_not_found_raises_typed_error(self):
         from normalizer import InputNotFoundError, normalize_docx
+
         cfg = load_config()
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(InputNotFoundError):
@@ -553,6 +568,7 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
 
     def test_dry_run_does_not_write(self):
         from normalizer import normalize_docx
+
         cfg = load_config()
         source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
@@ -566,14 +582,14 @@ class NormalizeDocxNewSignatureTests(unittest.TestCase):
 class NormalizeErrorRaiseTests(unittest.TestCase):
     def test_input_not_found(self):
         from normalizer import InputNotFoundError, normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(InputNotFoundError):
-                normalize_docx(load_config(),
-                               Path(tmp) / "missing-xyz-9999.docx",
-                               Path(tmp) / "out.docx")
+                normalize_docx(load_config(), Path(tmp) / "missing-xyz-9999.docx", Path(tmp) / "out.docx")
 
     def test_invalid_file_type_for_txt(self):
         from normalizer import InvalidFileTypeError, normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             txt = Path(tmp) / "fake.txt"
             txt.write_text("hi", encoding="utf-8")
@@ -582,6 +598,7 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
 
     def test_same_input_output(self):
         from normalizer import SameInputOutputError, normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "same.docx"
             Document().save(src)
@@ -590,24 +607,29 @@ class NormalizeErrorRaiseTests(unittest.TestCase):
 
     def test_corrupt_docx_garbage(self):
         from normalizer import CorruptDocxError, normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "garbage.docx"
             from tests._helpers import make_garbage_docx
+
             make_garbage_docx(str(src))
             with self.assertRaises(CorruptDocxError):
                 normalize_docx(load_config(), src, Path(tmp) / "out.docx")
 
     def test_corrupt_docx_truncated(self):
         from normalizer import CorruptDocxError, normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "truncated.docx"
             from tests._helpers import make_corrupt_docx
+
             make_corrupt_docx(str(src))
             with self.assertRaises(CorruptDocxError):
                 normalize_docx(load_config(), src, Path(tmp) / "out.docx")
 
     def test_output_not_writable(self):
         from normalizer import OutputNotWritableError, normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "ok.docx"
             Document().save(src)
@@ -619,6 +641,7 @@ class BackupAndDryRunTests(unittest.TestCase):
     def test_default_no_backup_does_not_create_bak(self):
         """0.2.1+ 默认 backup=False,不产生 .bak。"""
         from normalizer import normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "doc.docx"
             Document().save(src)
@@ -627,6 +650,7 @@ class BackupAndDryRunTests(unittest.TestCase):
 
     def test_backup_true_creates_bak_file(self):
         from normalizer import normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "doc.docx"
             Document().save(src)
@@ -635,6 +659,7 @@ class BackupAndDryRunTests(unittest.TestCase):
 
     def test_backup_true_increments_when_exists(self):
         from normalizer import normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "doc.docx"
             Document().save(src)
@@ -644,6 +669,7 @@ class BackupAndDryRunTests(unittest.TestCase):
 
     def test_dry_run_does_not_write_output(self):
         from normalizer import normalize_docx
+
         cfg = load_config()
         source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
@@ -654,6 +680,7 @@ class BackupAndDryRunTests(unittest.TestCase):
 
     def test_dry_run_returns_normalize_result(self):
         from normalizer import NormalizeResult, normalize_docx
+
         cfg = load_config()
         source = SAMPLE_DOCX
         with tempfile.TemporaryDirectory() as tmp:
@@ -664,6 +691,7 @@ class BackupAndDryRunTests(unittest.TestCase):
 
     def test_backup_false_explicit_skips_backup(self):
         from normalizer import normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             src = Path(tmp) / "doc.docx"
             Document().save(src)
@@ -674,8 +702,10 @@ class BackupAndDryRunTests(unittest.TestCase):
 class EdgeCaseGracefulDegradationTests(unittest.TestCase):
     def test_continues_with_unrecognized_paragraph(self):
         from normalizer import normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             from tests._helpers import make_docx_with_unrecognized_paragraph
+
             src = Path(tmp) / "doc.docx"
             make_docx_with_unrecognized_paragraph(str(src))
             result = normalize_docx(load_config(), src, Path(tmp) / "out.docx", return_result=True)
@@ -684,8 +714,10 @@ class EdgeCaseGracefulDegradationTests(unittest.TestCase):
 
     def test_handles_nested_table(self):
         from normalizer import normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             from tests._helpers import make_docx_with_nested_table
+
             src = Path(tmp) / "nested.docx"
             make_docx_with_nested_table(str(src))
             normalize_docx(load_config(), src, Path(tmp) / "out.docx")
@@ -693,8 +725,10 @@ class EdgeCaseGracefulDegradationTests(unittest.TestCase):
 
     def test_handles_empty_table(self):
         from normalizer import normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             from tests._helpers import make_docx_with_empty_table
+
             src = Path(tmp) / "empty_tbl.docx"
             make_docx_with_empty_table(str(src))
             normalize_docx(load_config(), src, Path(tmp) / "out.docx")
@@ -702,11 +736,10 @@ class EdgeCaseGracefulDegradationTests(unittest.TestCase):
 
     def test_message_chinese_human_readable(self):
         from normalizer import NormalizeError, normalize_docx
+
         with tempfile.TemporaryDirectory() as tmp:
             try:
-                normalize_docx(load_config(),
-                               Path(tmp) / "missing-9999.docx",
-                               Path(tmp) / "out.docx")
+                normalize_docx(load_config(), Path(tmp) / "missing-9999.docx", Path(tmp) / "out.docx")
             except NormalizeError as e:
                 s = str(e)
                 self.assertIn("找不到文件", s)
@@ -781,10 +814,7 @@ class PageNumberFooterTests(unittest.TestCase):
             normalized = Document(output)
             footer = normalized.sections[0].footer
             self.assertEqual((footer.paragraphs[0].text or "").strip(), "页脚说明文字")
-            page_fields = [
-                el.text for el in footer._element.iter(qn("w:instrText"))
-                if el.text and "PAGE" in el.text
-            ]
+            page_fields = [el.text for el in footer._element.iter(qn("w:instrText")) if el.text and "PAGE" in el.text]
             self.assertEqual(len(page_fields), 1)
 
 
@@ -882,9 +912,7 @@ class ChangesCollectionTests(unittest.TestCase):
             self.assertEqual(result.paragraphs_processed, 2)
             self.assertEqual(result.tables_processed, 0)
             self.assertTrue(any("1 级标题" in c for c in result.changes))
-            self.assertFalse(any(
-                c.startswith("段落 0") or c.startswith("段落 1") for c in result.changes
-            ))
+            self.assertFalse(any(c.startswith("段落 0") or c.startswith("段落 1") for c in result.changes))
 
     def test_dry_run_without_result_returns_none(self):
         from normalizer import normalize_docx
@@ -913,7 +941,10 @@ class WarningCollectionTests(unittest.TestCase):
 
             received = []
             result = normalize_docx(
-                cfg, source, output, return_result=True,
+                cfg,
+                source,
+                output,
+                return_result=True,
                 on_warning=lambda msg, location=None: received.append((msg, location)),
             )
             self.assertTrue(any("尺寸无效" in msg for msg in result.warnings))
@@ -940,7 +971,10 @@ class ImageSizingTests(unittest.TestCase):
         output = Path(tmp) / "out.docx"
         warnings = []
         result = normalize_docx(
-            cfg, source, output, return_result=True,
+            cfg,
+            source,
+            output,
+            return_result=True,
             on_warning=lambda msg, location=None: warnings.append(msg),
         )
         return result, picture_sizes(output), warnings
@@ -966,7 +1000,11 @@ class ImageSizingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12), (3, 2)])
             result, sizes, _ = self._normalize(
-                tmp, source, sizeMode="fixed", fixedWidthCm=12, fixedHeightCm=9,
+                tmp,
+                source,
+                sizeMode="fixed",
+                fixedWidthCm=12,
+                fixedHeightCm=9,
                 keepAspectRatio=False,
             )
 
@@ -982,7 +1020,11 @@ class ImageSizingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12), (3, 2)])
             result, sizes, _ = self._normalize(
-                tmp, source, sizeMode="fixed", fixedWidthCm=10, fixedHeightCm=None,
+                tmp,
+                source,
+                sizeMode="fixed",
+                fixedWidthCm=10,
+                fixedHeightCm=None,
                 keepAspectRatio=True,
             )
 
@@ -999,8 +1041,13 @@ class ImageSizingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)])
             result, sizes, warnings = self._normalize(
-                tmp, source, sizeMode="fixed", fixedWidthCm=20, fixedHeightCm=None,
-                keepAspectRatio=True, clampToTextWidth=True,
+                tmp,
+                source,
+                sizeMode="fixed",
+                fixedWidthCm=20,
+                fixedHeightCm=None,
+                keepAspectRatio=True,
+                clampToTextWidth=True,
             )
 
             self.assertCm(sizes[0][1], 15.5)
@@ -1014,8 +1061,13 @@ class ImageSizingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)])
             _, sizes, _ = self._normalize(
-                tmp, source, sizeMode="fixed", fixedWidthCm=20, fixedHeightCm=None,
-                keepAspectRatio=True, clampToTextWidth=False,
+                tmp,
+                source,
+                sizeMode="fixed",
+                fixedWidthCm=20,
+                fixedHeightCm=None,
+                keepAspectRatio=True,
+                clampToTextWidth=False,
             )
 
             self.assertCm(sizes[0][1], 20)
@@ -1027,7 +1079,11 @@ class ImageSizingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)])
             _, sizes, _ = self._normalize(
-                tmp, source, sizeMode="fixed", fixedWidthCm=12, fixedHeightCm=9,
+                tmp,
+                source,
+                sizeMode="fixed",
+                fixedWidthCm=12,
+                fixedHeightCm=9,
                 keepAspectRatio=False,
             )
 
@@ -1063,7 +1119,11 @@ class ImageSizingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)], table_image=True)
             result, sizes, _ = self._normalize(
-                tmp, source, sizeMode="fixed", fixedWidthCm=10, fixedHeightCm=None,
+                tmp,
+                source,
+                sizeMode="fixed",
+                fixedWidthCm=10,
+                fixedHeightCm=None,
                 keepAspectRatio=True,
             )
 
@@ -1077,8 +1137,13 @@ class ImageSizingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             source = make_docx_with_images(Path(tmp) / "in.docx", [(18, 12)], table_image=True)
             result, sizes, _ = self._normalize(
-                tmp, source, sizeMode="fixed", fixedWidthCm=10, fixedHeightCm=None,
-                keepAspectRatio=True, skipInTables=False,
+                tmp,
+                source,
+                sizeMode="fixed",
+                fixedWidthCm=10,
+                fixedHeightCm=None,
+                keepAspectRatio=True,
+                skipInTables=False,
             )
 
             self.assertEqual(result.images_processed, 2)
@@ -1107,8 +1172,7 @@ class FigureCaptionPaginationTests(unittest.TestCase):
         cfg = load_config()
         cfg["figure"]["captionPosition"] = caption_position
         cfg["figure"]["keepWithCaption"] = keep
-        source = make_docx_with_images(
-            Path(tmp) / "in.docx", [(10, 7)], caption_position=caption_position)
+        source = make_docx_with_images(Path(tmp) / "in.docx", [(10, 7)], caption_position=caption_position)
         output = Path(tmp) / "out.docx"
         normalize_docx(cfg, source, output)
         return self._keep_next_paragraphs(output)
@@ -1156,9 +1220,14 @@ class ChapterHeadingDetectionTests(unittest.TestCase):
         self.assertEqual(self._levels("结论表明该方法有效。")[0], 0)
 
     def test_body_decimals_not_misjudged(self):
-        for text in ("1.1 是小数", "1.5 倍行距是最常见的选择。",
-                     "3.14 是圆周率的近似值。", "第1章已经完成。",
-                     "2023 年度报告", "见第1章。"):
+        for text in (
+            "1.1 是小数",
+            "1.5 倍行距是最常见的选择。",
+            "3.14 是圆周率的近似值。",
+            "第1章已经完成。",
+            "2023 年度报告",
+            "见第1章。",
+        ):
             self.assertEqual(self._levels(text)[0], 0, text)
 
     def test_legacy_numbering_still_works(self):
@@ -1198,8 +1267,8 @@ class NormalizeIdempotencyTests(unittest.TestCase):
 
             second = normalize_docx(cfg, out1, out2, return_result=True)
             self.assertEqual(
-                second.changes, [],
-                "第二次规范化变更应为空，实际: " + json.dumps(second.changes, ensure_ascii=False))
+                second.changes, [], "第二次规范化变更应为空，实际: " + json.dumps(second.changes, ensure_ascii=False)
+            )
 
     def test_dry_run_lists_alignment_decisions_with_preset(self):
         from config_model import load_preset
@@ -1219,8 +1288,7 @@ class NormalizeIdempotencyTests(unittest.TestCase):
 
             result = normalize_docx(cfg, source, output, dry_run=True, return_result=True)
             self.assertFalse(output.exists())
-            self.assertTrue(any(
-                c.startswith("表格 0：") and "横+纵表头" in c for c in result.changes))
+            self.assertTrue(any(c.startswith("表格 0：") and "横+纵表头" in c for c in result.changes))
 
 
 if __name__ == "__main__":

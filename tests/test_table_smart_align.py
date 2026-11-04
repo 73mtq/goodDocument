@@ -5,6 +5,7 @@
 只加表头行、决策报告文案、幂等（第二次规范化变更数为 0 且对齐不变）、
 表格独立于正文（Normal/自定义样式缩进清零、底纹清除、边框恢复黑色、五号宋体）。
 """
+
 import json
 import tempfile
 import unittest
@@ -54,6 +55,7 @@ def normalize_with_preset(tmp, doc, filename="in.docx"):
 
 # ----- 内容分类器 -----
 
+
 class ClassifierTests(unittest.TestCase):
     def test_numeric_forms(self):
         from normalizer.table_align import is_numeric
@@ -84,12 +86,13 @@ class ClassifierTests(unittest.TestCase):
     def test_display_width(self):
         from normalizer.table_align import display_width
 
-        self.assertEqual(display_width("指标名称"), 4.0)      # 全中文
-        self.assertEqual(display_width("ABC"), 1.5)          # 半角
-        self.assertEqual(display_width("图1"), 1.5)          # 中英混合
+        self.assertEqual(display_width("指标名称"), 4.0)  # 全中文
+        self.assertEqual(display_width("ABC"), 1.5)  # 半角
+        self.assertEqual(display_width("图1"), 1.5)  # 中英混合
 
 
 # ----- 对齐优先级（横+纵表头 + 合并 + 占位 + 日期） -----
+
 
 class SmartAlignmentPriorityTests(unittest.TestCase):
     def _build(self):
@@ -169,10 +172,10 @@ class SmartAlignmentRowHeaderOnlyTests(unittest.TestCase):
 
             self.assertEqual([a for _, a in grid[0]], ["center"] * 4)
             for r in (1, 2, 3):
-                self.assertEqual(grid[r][0], (str(r), "right"))     # 序号列数字右对齐
-                self.assertEqual(grid[r][1][1], "center")           # 短文本（3 字）居中
-                self.assertEqual(grid[r][2][1], "right")            # 千分位金额右对齐
-                self.assertEqual(grid[r][3][1], "center")           # 状态标签居中
+                self.assertEqual(grid[r][0], (str(r), "right"))  # 序号列数字右对齐
+                self.assertEqual(grid[r][1][1], "center")  # 短文本（3 字）居中
+                self.assertEqual(grid[r][2][1], "right")  # 千分位金额右对齐
+                self.assertEqual(grid[r][3][1], "center")  # 状态标签居中
             report = next(c for c in result.changes if c.startswith("表格 0"))
             self.assertIn("横表头", report)
             self.assertIn("数字 2 列右对齐", report)
@@ -258,6 +261,7 @@ class TblHeaderFlagTests(unittest.TestCase):
 
 # ----- 幂等：同一表格跑两次结果一致；第二次变更数为 0 -----
 
+
 class SmartAlignIdempotencyTests(unittest.TestCase):
     def _doc_with_everything(self):
         doc = Document()
@@ -291,15 +295,19 @@ class SmartAlignIdempotencyTests(unittest.TestCase):
 
             second = normalize_docx(preset_config(), out1, out2, return_result=True)
             self.assertEqual(
-                second.changes, [],
-                "第二次规范化「变更」计数应为 0，实际: " + json.dumps(second.changes, ensure_ascii=False))
+                second.changes,
+                [],
+                "第二次规范化「变更」计数应为 0，实际: " + json.dumps(second.changes, ensure_ascii=False),
+            )
             self.assertEqual(
                 [row[:] for row in grid_of(Document(out1))],
                 [row[:] for row in grid_of(Document(out2))],
-                "同一表格跑两次，对齐结果必须一致")
+                "同一表格跑两次，对齐结果必须一致",
+            )
 
 
 # ----- 表格独立于正文（样式级修复） -----
+
 
 class TableIndependenceTests(unittest.TestCase):
     def _build_colored_indented(self):
@@ -419,9 +427,7 @@ class FullTableShadingNotColHeaderTests(unittest.TestCase):
     def test_uniform_shading_does_not_mark_first_column(self):
         doc = Document()
         tbl = doc.add_table(rows=3, cols=3)
-        rows = [["序号", "项目", "结果"],
-                ["1", "采样", "0.95"],
-                ["2", "分析", "0.88"]]
+        rows = [["序号", "项目", "结果"], ["1", "采样", "0.95"], ["2", "分析", "0.88"]]
         for r, row in enumerate(rows):
             for c, text in enumerate(row):
                 tbl.rows[r].cells[c].text = text

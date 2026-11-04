@@ -14,6 +14,7 @@ Assets），运行时检测字体，缺失即纯文字回退；不捆绑字体�
 用法：
     python app.py
 """
+
 import copy
 import os
 import queue
@@ -29,29 +30,23 @@ from tkinterdnd2 import DND_FILES, TkinterDnD
 import icon_slot
 import ui_icons
 import ui_theme
-from config_model import SIZE_NAME_TO_PT, list_presets, load_config_file, save_config_file
+from config_model import list_presets, load_config_file, save_config_file
 from paths import app_dir, assets_dir, bundled_dir, config_path, default_config_path, make_normalized_output_path
+from settings_model import (
+    SETTING_GROUPS,
+    cfg_get,
+    fmt_number,
+    humanize_value,
+    raw_equal,
+    spec_default,
+    text_to_config_value,
+)
 
 # 导入核心库
 sys.path.insert(0, bundled_dir())
 from formatter import build_sample_content, generate  # noqa: E402
 from normalizer import NormalizeError, inspect_docx, normalize_docx  # noqa: E402
 from version import __version__  # noqa: E402
-
-SIZE_OPTIONS = [
-    "初号", "小初", "一号", "小一", "二号", "小二",
-    "三号", "小三", "四号", "小四", "五号", "小五",
-    "六号", "小六", "七号", "八号",
-]
-ALIGN_OPTIONS = ["left", "center", "right", "justify"]
-CELL_ALIGN_OPTIONS = ALIGN_OPTIONS + ["smart"]
-FONT_ZH_OPTIONS = ["宋体", "黑体", "楷体", "仿宋", "微软雅黑"]
-FONT_EN_OPTIONS = ["Times New Roman", "Arial", "Calibri", "Cambria"]
-POSITION_OPTIONS = ["above", "below"]
-VALIGN_OPTIONS = ["center", "top"]
-SIZE_MODE_OPTIONS = ["fit", "fixed"]
-FIGURE_PREFIX_OPTIONS = ["图", "Figure", "Fig"]
-TABLE_PREFIX_OPTIONS = ["表", "Table"]
 
 CUSTOM_PRESET = "自定义"
 
@@ -69,195 +64,6 @@ FILTER_EMPTY_TEXT = "没有匹配的设置"
 TAG_FROM_TEMPLATE = "按学校模板"
 TAG_MODIFIED = "已修改"
 RESET_GROUP_TEXT = "恢复默认"
-
-
-def _heading_rows(level):
-    prefix = ("headings", "h" + str(level))
-    return [
-        {"name": "中文字体", "key": (*prefix, "font"), "kind": "enum", "options": FONT_ZH_OPTIONS},
-        {"name": "英文字体", "key": (*prefix, "asciiFont"), "kind": "enum", "options": FONT_EN_OPTIONS},
-        {"name": "字号", "key": (*prefix, "size"), "kind": "size", "options": SIZE_OPTIONS},
-        {"name": "行距", "key": (*prefix, "lineSpacing"), "kind": "number",
-         "unit": "倍", "lo": 1.0, "hi": 3.0, "step": 0.5},
-        {"name": "加粗", "key": (*prefix, "bold"), "kind": "bool"},
-        {"name": "段前间距", "key": (*prefix, "spaceBeforePt"), "kind": "number",
-         "unit": "磅", "lo": 0, "hi": 40, "step": 1},
-        {"name": "段后间距", "key": (*prefix, "spaceAfterPt"), "kind": "number",
-         "unit": "磅", "lo": 0, "hi": 40, "step": 1},
-        {"name": "对齐", "key": (*prefix, "align"), "kind": "enum", "options": ALIGN_OPTIONS},
-    ]
-
-
-# 高级设置信息架构：按用户目的分 11 组（卡片分类过程见 design/ia-regroup.md）。
-# kind: number(数字+单位) / bool(开关) / enum(下拉) / size(下拉+磅值对照)。
-SETTING_GROUPS = [
-    {"id": "page", "title": "页面", "icon": "page", "about": "纸张四边的空白宽度。",
-     "rows": [
-         {"name": "上边距", "key": ("page", "margins", "top"), "kind": "number",
-          "unit": "厘米", "lo": 0, "hi": 15, "step": 0.5},
-         {"name": "下边距", "key": ("page", "margins", "bottom"), "kind": "number",
-          "unit": "厘米", "lo": 0, "hi": 15, "step": 0.5},
-         {"name": "左边距", "key": ("page", "margins", "left"), "kind": "number",
-          "unit": "厘米", "lo": 0, "hi": 15, "step": 0.5},
-         {"name": "右边距", "key": ("page", "margins", "right"), "kind": "number",
-          "unit": "厘米", "lo": 0, "hi": 15, "step": 0.5},
-     ]},
-    {"id": "pageNumber", "title": "页码", "icon": "dialpad", "about": "页码放哪、多大、用什么字体。",
-     "rows": [
-         {"name": "显示页码", "key": ("pageNumber", "enabled"), "kind": "bool"},
-         {"name": "只更新已有页码", "key": ("pageNumber", "onlyUpdateExisting"), "kind": "bool"},
-         {"name": "页码位置", "key": ("pageNumber", "align"), "kind": "enum", "options": ALIGN_OPTIONS},
-         {"name": "页码大小", "key": ("pageNumber", "size"), "kind": "size", "options": SIZE_OPTIONS},
-         {"name": "中文字体", "key": ("pageNumber", "font"), "kind": "enum", "options": FONT_ZH_OPTIONS},
-         {"name": "英文字体", "key": ("pageNumber", "asciiFont"), "kind": "enum", "options": FONT_EN_OPTIONS},
-     ]},
-    {"id": "body", "title": "正文", "icon": "font", "about": "论文主体文字的样子。",
-     "rows": [
-         {"name": "中文字体", "key": ("body", "font"), "kind": "enum", "options": FONT_ZH_OPTIONS},
-         {"name": "英文字体", "key": ("body", "asciiFont"), "kind": "enum", "options": FONT_EN_OPTIONS},
-         {"name": "字号", "key": ("body", "size"), "kind": "size", "options": SIZE_OPTIONS},
-         {"name": "行距", "key": ("body", "lineSpacing"), "kind": "number",
-          "unit": "倍", "lo": 1.0, "hi": 3.0, "step": 0.5},
-         {"name": "段首缩进", "key": ("body", "firstLineIndentChars"), "kind": "number",
-          "unit": "字", "lo": 0, "hi": 10, "step": 1},
-         {"name": "对齐", "key": ("body", "align"), "kind": "enum", "options": ALIGN_OPTIONS},
-         {"name": "段后间距", "key": ("body", "spaceAfterPt"), "kind": "number",
-          "unit": "磅", "lo": 0, "hi": 30, "step": 1},
-     ]},
-    {"id": "h1", "title": "章标题（第1章）", "icon": "bold", "about": "一级标题（第1章）的样式。",
-     "rows": _heading_rows(1)},
-    {"id": "h2", "title": "节标题（1.1）", "icon": "bold", "about": "二级标题（1.1）的样式。",
-     "rows": _heading_rows(2)},
-    {"id": "h3", "title": "条标题（1.1.1）", "icon": "bold", "about": "三级标题（1.1.1）的样式。",
-     "rows": _heading_rows(3)},
-    {"id": "h4", "title": "四级标题（1.1.1.1）", "icon": "bold", "about": "四级标题（1.1.1.1）的样式。",
-     "rows": _heading_rows(4)},
-    {"id": "figure", "title": "图片", "icon": "photo", "about": "图片统一成多大。",
-     "rows": [
-         {"name": "图片大小方式", "key": ("figure", "sizeMode"), "kind": "enum",
-          "options": SIZE_MODE_OPTIONS},
-         {"name": "等比最大宽度", "key": ("figure", "maxWidthCm"), "kind": "number",
-          "unit": "厘米", "lo": 5, "hi": 25, "step": 0.5},
-         {"name": "等比最大高度", "key": ("figure", "maxHeightCm"), "kind": "number",
-          "unit": "厘米", "lo": 5, "hi": 30, "step": 0.5},
-         {"name": "统一宽度", "key": ("figure", "fixedWidthCm"), "kind": "number",
-          "unit": "厘米", "lo": 1, "hi": 25, "step": 0.5},
-         {"name": "统一高度", "key": ("figure", "fixedHeightCm"), "kind": "number",
-          "unit": "厘米", "lo": 1, "hi": 30, "step": 0.5},
-         {"name": "统一时保持比例", "key": ("figure", "keepAspectRatio"), "kind": "bool"},
-         {"name": "宽度不超正文", "key": ("figure", "clampToTextWidth"), "kind": "bool"},
-         {"name": "跳过表格内图片", "key": ("figure", "skipInTables"), "kind": "bool"},
-         {"name": "图和图题不分开", "key": ("figure", "keepWithCaption"), "kind": "bool"},
-     ]},
-    {"id": "figureCaption", "title": "图题与说明", "icon": "caption",
-     "about": "图下面「图1 …」和说明文字的样式。",
-     "rows": [
-         {"name": "图题位置", "key": ("figure", "captionPosition"), "kind": "enum",
-          "options": POSITION_OPTIONS},
-         {"name": "图题字号", "key": ("figure", "captionSize"), "kind": "size", "options": SIZE_OPTIONS},
-         {"name": "图题加粗", "key": ("figure", "captionBold"), "kind": "bool"},
-         {"name": "图题对齐", "key": ("figure", "captionAlign"), "kind": "enum", "options": ALIGN_OPTIONS},
-         {"name": "图题行距", "key": ("figure", "captionLineSpacing"), "kind": "number",
-          "unit": "倍", "lo": 1.0, "hi": 3.0, "step": 0.5},
-         {"name": "注释字号", "key": ("figure", "noteSize"), "kind": "size", "options": SIZE_OPTIONS},
-         {"name": "注释对齐", "key": ("figure", "noteAlign"), "kind": "enum", "options": ALIGN_OPTIONS},
-         {"name": "编号开头", "key": ("figure", "prefix"), "kind": "enum",
-          "options": FIGURE_PREFIX_OPTIONS},
-     ]},
-    {"id": "table", "title": "表格", "icon": "table", "about": "表格、表题与表内文字的样式。",
-     "rows": [
-         {"name": "表题位置", "key": ("table", "captionPosition"), "kind": "enum",
-          "options": POSITION_OPTIONS},
-         {"name": "表题字号", "key": ("table", "captionSize"), "kind": "size", "options": SIZE_OPTIONS},
-         {"name": "表题加粗", "key": ("table", "captionBold"), "kind": "bool"},
-         {"name": "表题对齐", "key": ("table", "captionAlign"), "kind": "enum", "options": ALIGN_OPTIONS},
-         {"name": "表题行距", "key": ("table", "captionLineSpacing"), "kind": "number",
-          "unit": "倍", "lo": 1.0, "hi": 3.0, "step": 0.5},
-         {"name": "注释字号", "key": ("table", "noteSize"), "kind": "size", "options": SIZE_OPTIONS},
-         {"name": "注释对齐", "key": ("table", "noteAlign"), "kind": "enum", "options": ALIGN_OPTIONS},
-         {"name": "内容字号", "key": ("table", "cellSize"), "kind": "size", "options": SIZE_OPTIONS},
-         {"name": "内容对齐", "key": ("table", "cellAlign"), "kind": "enum",
-          "options": CELL_ALIGN_OPTIONS},
-         {"name": "上下位置", "key": ("table", "cellVAlign"), "kind": "enum", "options": VALIGN_OPTIONS},
-         {"name": "内容行距", "key": ("table", "cellLineSpacing"), "kind": "number",
-          "unit": "倍", "lo": 1.0, "hi": 3.0, "step": 0.5},
-         {"name": "表头加粗", "key": ("table", "headerBold"), "kind": "bool"},
-         {"name": "编号开头", "key": ("table", "prefix"), "kind": "enum",
-          "options": TABLE_PREFIX_OPTIONS},
-     ]},
-    {"id": "references", "title": "参考文献", "icon": "library",
-     "about": "参考文献列表的样式；条目缩进指第二条起相对第一条缩进的距离。",
-     "rows": [
-         {"name": "中文字体", "key": ("references", "font"), "kind": "enum", "options": FONT_ZH_OPTIONS},
-         {"name": "英文字体", "key": ("references", "asciiFont"), "kind": "enum",
-          "options": FONT_EN_OPTIONS},
-         {"name": "字号", "key": ("references", "size"), "kind": "size", "options": SIZE_OPTIONS},
-         {"name": "行距", "key": ("references", "lineSpacing"), "kind": "number",
-          "unit": "倍", "lo": 1.0, "hi": 3.0, "step": 0.5},
-         {"name": "对齐", "key": ("references", "align"), "kind": "enum", "options": ALIGN_OPTIONS},
-         {"name": "条目缩进", "key": ("references", "hangingIndentPt"), "kind": "number",
-          "unit": "磅", "lo": 0, "hi": 60, "step": 1},
-     ]},
-]
-
-
-def spec_default(spec):
-    if spec["kind"] == "bool":
-        return False
-    if spec["kind"] == "number":
-        return spec.get("lo", 0)
-    if "options" in spec:
-        return spec["options"][0]
-    return ""
-
-
-def fmt_number(value):
-    try:
-        number = float(value)
-    except (TypeError, ValueError):
-        return str(value)
-    if number == int(number):
-        return str(int(number))
-    return str(number)
-
-
-def humanize_value(spec, raw):
-    """当前生效值的人话展示：附单位说明（磅/厘米/倍/字），字号补磅值对照。"""
-    kind = spec["kind"]
-    if kind == "bool":
-        return "开" if raw else "关"
-    if kind == "number":
-        return fmt_number(raw) + " " + spec.get("unit", "")
-    if kind == "size":
-        text = str(raw)
-        pt = SIZE_NAME_TO_PT.get(text)
-        if pt is not None:
-            return text + " · " + fmt_number(pt) + " 磅"
-        return text
-    return ui_theme.display_label(str(raw))
-
-
-def raw_equal(spec, first, second):
-    """两个配置取值是否等价（数字按值比较，枚举按字符串比较）。"""
-    if first is None or second is None:
-        return first is None and second is None
-    if spec["kind"] == "number":
-        try:
-            return abs(float(first) - float(second)) < 1e-9
-        except (TypeError, ValueError):
-            return str(first) == str(second)
-    if spec["kind"] == "bool":
-        return bool(first) == bool(second)
-    return str(first) == str(second)
-
-
-def cfg_get(cfg, chain, default=None):
-    current = cfg
-    for key in chain:
-        if not isinstance(current, dict) or key not in current:
-            return default
-        current = current[key]
-    return current
 
 
 class App:
@@ -313,7 +119,11 @@ class App:
         if not os.path.exists(path):
             self.cfg = {}
         else:
-            self.cfg = load_config_file(path)
+            try:
+                self.cfg = load_config_file(path)
+            except (OSError, ValueError) as exc:
+                self.cfg = self._builtin_default_cfg()
+                self._status.set("设置文件读取失败，已使用默认设置：" + str(exc))
         self._preset_active = False
         self._baseline_cfg = self._builtin_default_cfg()
 
@@ -328,7 +138,14 @@ class App:
             return {}
 
     def _save_config(self):
-        save_config_file(self.cfg, config_path())
+        """保存配置；失败时写入「记录」并返回 False，让调用方决定是否继续。"""
+        try:
+            save_config_file(self.cfg, config_path())
+        except OSError as exc:
+            self._add_result("记录", "设置没有保存：" + str(exc), "error")
+            self._render_results()
+            return False
+        return True
 
     # ---- 窗口与菜单 ----
     def _configure_root(self):
@@ -347,9 +164,15 @@ class App:
         self._menubar = tk.Menu(self.root, tearoff=0)
         more = tk.Menu(self._menubar, tearoff=0)
         for menu in (self._menubar, more):
-            menu.configure(bg=colors["surface"], fg=colors["ink"],
-                           activebackground=colors["surface_hover"], activeforeground=colors["ink"],
-                           bd=0, relief="flat", font=self._fonts["body"])
+            menu.configure(
+                bg=colors["surface"],
+                fg=colors["ink"],
+                activebackground=colors["surface_hover"],
+                activeforeground=colors["ink"],
+                bd=0,
+                relief="flat",
+                font=self._fonts["body"],
+            )
         more.add_command(label="生成示例文档", command=self._on_generate)
         more.add_command(label="保存设置", command=self._on_save_cfg)
         more.add_separator()
@@ -383,12 +206,13 @@ class App:
         self._advanced_button_frame = ttk.Frame(head)
         self._advanced_button_frame.pack(side="right", pady=(8, 0))
         self._advanced_button_icon = self._make_icon_cell(
-            self._advanced_button_frame, "settings", ui_theme.MEASUREMENTS["icon_row"],
-            bg=colors["bg"])
+            self._advanced_button_frame, "settings", ui_theme.MEASUREMENTS["icon_row"], bg=colors["bg"]
+        )
         if self._advanced_button_icon is not None:
             self._advanced_button_icon.canvas.pack(side="left", padx=(0, 4))
-        self._advanced_button = ttk.Button(self._advanced_button_frame, text="高级设置",
-                                           style="Quiet.TButton", command=self._toggle_advanced)
+        self._advanced_button = ttk.Button(
+            self._advanced_button_frame, text="高级设置", style="Quiet.TButton", command=self._toggle_advanced
+        )
         self._advanced_button.pack(side="left")
         self._action_widgets.append(self._advanced_button)
 
@@ -399,8 +223,9 @@ class App:
         card = ttk.Frame(parent, style="Card.TFrame", padding=(16, 16))
         card.pack(fill="x", pady=(16, 0))
 
-        self._drop = tk.Canvas(card, height=m["drop_height"], highlightthickness=0,
-                               cursor="hand2", bg=colors["surface"], takefocus=1)
+        self._drop = tk.Canvas(
+            card, height=m["drop_height"], highlightthickness=0, cursor="hand2", bg=colors["surface"], takefocus=1
+        )
         self._drop.pack(fill="x")
         self._drop.bind("<Configure>", lambda event: self._draw_drop())
         self._drop.bind("<Button-1>", lambda event: self._browse_input())
@@ -424,18 +249,25 @@ class App:
         self._select_button = ttk.Button(info, text="选择文档…", command=self._browse_input)
         self._select_button.pack(side="right")
         self._action_widgets.append(self._select_button)
-        ttk.Label(card, textvariable=self._file_meta, style="CardCaption.TLabel",
-                  wraplength=m["wrap_main"]).pack(anchor="w", pady=(4, 0))
+        ttk.Label(card, textvariable=self._file_meta, style="CardCaption.TLabel", wraplength=m["wrap_main"]).pack(
+            anchor="w", pady=(4, 0)
+        )
 
         ttk.Separator(card).pack(fill="x", pady=(8, 8))
 
         # 学校模板
         self._presets = list_presets()
-        self._step_row(card, "library", "学校模板", self._build_preset_control,
-                       "选好学校，格式就按学校的规定来；没有的学校选「自定义」。")
+        self._step_row(
+            card,
+            "library",
+            "学校模板",
+            self._build_preset_control,
+            "选好学校，格式就按学校的规定来；没有的学校选「自定义」。",
+        )
         # 保存位置
-        self._step_row(card, "save", "保存位置", self._build_output_control,
-                       "整理结果保存为新文件，原来的论文不会被改动。")
+        self._step_row(
+            card, "save", "保存位置", self._build_output_control, "整理结果保存为新文件，原来的论文不会被改动。"
+        )
 
     def _step_row(self, parent, icon_name, name, control_builder, caption):
         """主流程步骤行：图标 + 步骤名（固定列宽）+ 尾部控件，说明一句话换行放行下。"""
@@ -445,21 +277,29 @@ class App:
         frame.pack(fill="x")
         icon = self._make_icon_cell(frame, icon_name, m["icon_row"])
         if icon is not None:
-            icon.canvas.place(x=ui_theme.SPACING["sm"] + ui_theme.SPACING["xs"],
-                              rely=0.5, anchor="w")
-        label = tk.Label(frame, text=name, font=self._fonts["body_bold"],
-                         fg=colors["ink"], bg=colors["surface"], anchor="w")
+            icon.canvas.place(x=ui_theme.SPACING["sm"] + ui_theme.SPACING["xs"], rely=0.5, anchor="w")
+        label = tk.Label(
+            frame, text=name, font=self._fonts["body_bold"], fg=colors["ink"], bg=colors["surface"], anchor="w"
+        )
         label.place(x=m["indent_step"], rely=0.5, anchor="w", width=m["name_column"])
         control_builder(frame)
-        tip = tk.Label(parent, text=caption, font=self._fonts["caption"],
-                       fg=colors["ink_muted"], bg=colors["surface"], anchor="w",
-                       justify="left", wraplength=m["wrap_main"])
+        tip = tk.Label(
+            parent,
+            text=caption,
+            font=self._fonts["caption"],
+            fg=colors["ink_muted"],
+            bg=colors["surface"],
+            anchor="w",
+            justify="left",
+            wraplength=m["wrap_main"],
+        )
         tip.pack(anchor="w", padx=(m["indent_step"], 0), pady=(ui_theme.SPACING["xs"], 0))
 
     def _build_preset_control(self, frame):
         names = [CUSTOM_PRESET] + [preset["name"] for preset in self._presets]
-        combo = ttk.Combobox(frame, textvariable=self._preset_var, values=names,
-                             state="readonly", width=28, font=self._fonts["body"])
+        combo = ttk.Combobox(
+            frame, textvariable=self._preset_var, values=names, state="readonly", width=28, font=self._fonts["body"]
+        )
         combo.pack(side="right", padx=(0, ui_theme.SPACING["md"]))
         combo.bind("<<ComboboxSelected>>", lambda event: self._on_preset_selected())
         self._register_panel_control(combo, "readonly")
@@ -471,9 +311,13 @@ class App:
         spacer.pack(side="left")
         entry = ttk.Entry(frame, textvariable=self._output_path, font=self._fonts["body"])
         entry.pack(side="left", fill="x", expand=True, padx=(0, ui_theme.SPACING["sm"]))
-        self._output_ghost = tk.Label(frame, text="选好论文后自动填写",
-                                      font=self._fonts["caption"], fg=colors["ink_disabled"],
-                                      bg=colors["surface"])
+        self._output_ghost = tk.Label(
+            frame,
+            text="选好论文后自动填写",
+            font=self._fonts["caption"],
+            fg=colors["ink_disabled"],
+            bg=colors["surface"],
+        )
         self._output_ghost.place(in_=entry, x=ui_theme.SPACING["sm"], rely=0.5, anchor="w")
         self._output_entry = entry
         self._sync_output_ghost()
@@ -487,8 +331,7 @@ class App:
         if self._output_path.get().strip():
             self._output_ghost.place_forget()
         else:
-            self._output_ghost.place(in_=self._output_entry, x=ui_theme.SPACING["sm"],
-                                     rely=0.5, anchor="w")
+            self._output_ghost.place(in_=self._output_entry, x=ui_theme.SPACING["sm"], rely=0.5, anchor="w")
 
     def _build_action_row(self, parent):
         row = ttk.Frame(parent)
@@ -505,14 +348,14 @@ class App:
         m = ui_theme.MEASUREMENTS
         shell = tk.Frame(parent, bg=colors["accent"])
         self._normalize_shell = shell
-        self._normalize_icon = self._make_icon_cell(shell, "play", m["icon_row"],
-                                                    fg=colors["surface"])
+        self._normalize_icon = self._make_icon_cell(shell, "play", m["icon_row"], fg=colors["surface"])
         if self._normalize_icon is not None:
             self._normalize_icon.canvas.pack(
-                side="left", padx=(ui_theme.SPACING["lg"], 0),
-                pady=(ui_theme.SPACING["sm"], ui_theme.SPACING["sm"]))
-        self._normalize_button = ttk.Button(shell, text="开始整理", style="AccentLead.TButton",
-                                            command=self._on_normalize)
+                side="left", padx=(ui_theme.SPACING["lg"], 0), pady=(ui_theme.SPACING["sm"], ui_theme.SPACING["sm"])
+            )
+        self._normalize_button = ttk.Button(
+            shell, text="开始整理", style="AccentLead.TButton", command=self._on_normalize
+        )
         self._normalize_button.pack(side="left", padx=(0, ui_theme.SPACING["lg"]))
         self._action_widgets.append(self._normalize_button)
         self._sync_accent_shell()
@@ -526,7 +369,8 @@ class App:
         colors = ui_theme.COLORS
         if visual is None:
             pointer = self._normalize_shell.winfo_containing(
-                self._normalize_shell.winfo_pointerx(), self._normalize_shell.winfo_pointery())
+                self._normalize_shell.winfo_pointerx(), self._normalize_shell.winfo_pointery()
+            )
             if pointer is not None and self._widget_inside(pointer, self._normalize_shell):
                 visual = "active"
             else:
@@ -554,22 +398,34 @@ class App:
             icon = self._make_icon_cell(pair, icon_name, ui_theme.MEASUREMENTS["icon_row"])
             if icon is not None:
                 icon.canvas.pack(side="left", padx=(ui_theme.SPACING["xs"], 0))
-                icon.canvas.bind("<Button-1>",
-                                 lambda event, item=name: self._select_segment(item))
+                icon.canvas.bind("<Button-1>", lambda event, item=name: self._select_segment(item))
                 self._segment_icons[name] = icon
-            button = ttk.Button(pair, text=name, style="Seg.TButton",
-                                command=lambda item=name: self._select_segment(item))
+            button = ttk.Button(
+                pair, text=name, style="Seg.TButton", command=lambda item=name: self._select_segment(item)
+            )
             button.pack(side="left")
             self._segment_buttons[name] = button
         body = ttk.Frame(area, style="Card.TFrame")
         body.pack(fill="both", expand=True, pady=(8, 0))
-        self._text = tk.Text(body, wrap="word", relief="flat", highlightthickness=1,
-                             highlightbackground=colors["border"], highlightcolor=colors["accent"],
-                             bg=colors["surface"], fg=colors["ink"],
-                             insertbackground=colors["ink"],
-                             selectbackground=colors["surface_pressed"], selectforeground=colors["ink"],
-                             font=self._fonts["body"], padx=12, pady=12,
-                             spacing1=4, spacing3=4, state="disabled")
+        self._text = tk.Text(
+            body,
+            wrap="word",
+            relief="flat",
+            highlightthickness=1,
+            highlightbackground=colors["border"],
+            highlightcolor=colors["accent"],
+            bg=colors["surface"],
+            fg=colors["ink"],
+            insertbackground=colors["ink"],
+            selectbackground=colors["surface_pressed"],
+            selectforeground=colors["ink"],
+            font=self._fonts["body"],
+            padx=12,
+            pady=12,
+            spacing1=4,
+            spacing3=4,
+            state="disabled",
+        )
         scrollbar = ttk.Scrollbar(body, orient="vertical", command=self._text.yview)
         self._text.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right", fill="y")
@@ -590,15 +446,15 @@ class App:
         self._status_label.pack(side="left")
         open_frame = ttk.Frame(inner)
         open_frame.pack(side="right")
-        self._open_icon = self._make_icon_cell(open_frame, "folder",
-                                               ui_theme.MEASUREMENTS["icon_row"],
-                                               bg=ui_theme.COLORS["bg"])
+        self._open_icon = self._make_icon_cell(
+            open_frame, "folder", ui_theme.MEASUREMENTS["icon_row"], bg=ui_theme.COLORS["bg"]
+        )
         if self._open_icon is not None:
             self._open_icon.canvas.pack(side="left", padx=(0, ui_theme.SPACING["xs"]))
-            self._open_icon.canvas.bind("<Button-1>",
-                                        lambda event: self._open_folder_clicked())
-        self._open_button = ttk.Button(open_frame, text="打开所在文件夹", style="Quiet.TButton",
-                                       command=self._open_folder_clicked)
+            self._open_icon.canvas.bind("<Button-1>", lambda event: self._open_folder_clicked())
+        self._open_button = ttk.Button(
+            open_frame, text="打开所在文件夹", style="Quiet.TButton", command=self._open_folder_clicked
+        )
         self._progress = ttk.Progressbar(inner, mode="indeterminate", length=140)
 
     # ---- 图标辅助 ----
@@ -606,9 +462,9 @@ class App:
         """图标槽（唯一排版入口，见 icon_slot.py）；字体/字形缺失返回 None，
         调用方跳过布局。返回 IconCell：摆放用 .canvas，换色/换形用 set_* 方法。"""
         colors = ui_theme.COLORS
-        return self._icons.cell(parent, name, size,
-                                colors["surface"] if bg is None else bg,
-                                colors["ink_muted"] if fg is None else fg)
+        return self._icons.cell(
+            parent, name, size, colors["surface"] if bg is None else bg, colors["ink_muted"] if fg is None else fg
+        )
 
     # ---- 高级设置面板 ----
     def _build_advanced_panel(self):
@@ -622,46 +478,50 @@ class App:
         head = ttk.Frame(content, style="Panel.TFrame")
         head.pack(fill="x")
         ttk.Label(head, text="高级设置", style="PanelSection.TLabel").pack(side="left")
-        ttk.Button(head, text="收起", style="PanelQuiet.TButton",
-                   command=self._toggle_advanced).pack(side="right")
+        ttk.Button(head, text="收起", style="PanelQuiet.TButton", command=self._toggle_advanced).pack(side="right")
 
         filter_row = ttk.Frame(content, style="Panel.TFrame")
         filter_row.pack(fill="x", pady=(8, 0))
-        search_icon = self._make_icon_cell(filter_row, "search", m["icon_row"],
-                                           bg=colors["bg"])
+        search_icon = self._make_icon_cell(filter_row, "search", m["icon_row"], bg=colors["bg"])
         if search_icon is not None:
             search_icon.canvas.pack(side="left", padx=(0, ui_theme.SPACING["xs"]))
-        self._filter_entry = ttk.Entry(filter_row, textvariable=self._filter_var,
-                                       font=self._fonts["body"])
+        self._filter_entry = ttk.Entry(filter_row, textvariable=self._filter_var, font=self._fonts["body"])
         self._filter_entry.pack(side="left", fill="x", expand=True)
-        self._filter_ghost = tk.Label(filter_row, text=FILTER_PLACEHOLDER,
-                                      font=self._fonts["caption"], fg=colors["ink_disabled"],
-                                      bg=colors["surface"])
-        self._filter_ghost.place(in_=self._filter_entry, x=ui_theme.SPACING["sm"],
-                                 rely=0.5, anchor="w")
+        self._filter_ghost = tk.Label(
+            filter_row,
+            text=FILTER_PLACEHOLDER,
+            font=self._fonts["caption"],
+            fg=colors["ink_disabled"],
+            bg=colors["surface"],
+        )
+        self._filter_ghost.place(in_=self._filter_entry, x=ui_theme.SPACING["sm"], rely=0.5, anchor="w")
         self._filter_entry.bind("<FocusIn>", lambda event: self._set_filter_focus(True))
         self._filter_entry.bind("<FocusOut>", lambda event: self._set_filter_focus(False))
         self._filter_entry.bind("<Escape>", lambda event: self._filter_var.set(""))
         self._filter_var.trace_add("write", self._on_filter_change)
 
-        ttk.Label(content, text="一般不用改，改动会影响之后整理的文件。",
-                  style="PanelCaption.TLabel", wraplength=m["wrap_panel"]).pack(
-            anchor="w", pady=(4, 8))
+        ttk.Label(
+            content,
+            text="一般不用改，改动会影响之后整理的文件。",
+            style="PanelCaption.TLabel",
+            wraplength=m["wrap_panel"],
+        ).pack(anchor="w", pady=(4, 8))
 
         holder = ttk.Frame(content, style="Panel.TFrame")
         holder.pack(fill="both", expand=True)
-        self._panel_canvas = tk.Canvas(holder, bg=colors["bg"], highlightthickness=0,
-                                       width=m["panel_width"])
+        self._panel_canvas = tk.Canvas(holder, bg=colors["bg"], highlightthickness=0, width=m["panel_width"])
         scrollbar = ttk.Scrollbar(holder, orient="vertical", command=self._panel_canvas.yview)
         self._panel_canvas.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right", fill="y")
         self._panel_canvas.pack(side="left", fill="both", expand=True)
         inner = ttk.Frame(self._panel_canvas, style="Panel.TFrame")
         window = self._panel_canvas.create_window((0, 0), window=inner, anchor="nw")
-        inner.bind("<Configure>", lambda event: self._panel_canvas.configure(
-            scrollregion=self._panel_canvas.bbox("all")))
-        self._panel_canvas.bind("<Configure>", lambda event: self._panel_canvas.itemconfigure(
-            window, width=event.width))
+        inner.bind(
+            "<Configure>", lambda event: self._panel_canvas.configure(scrollregion=self._panel_canvas.bbox("all"))
+        )
+        self._panel_canvas.bind(
+            "<Configure>", lambda event: self._panel_canvas.itemconfigure(window, width=event.width)
+        )
 
         self._filter_empty = ttk.Label(inner, text=FILTER_EMPTY_TEXT, style="PanelCaption.TLabel")
         for group in SETTING_GROUPS:
@@ -707,16 +567,30 @@ class App:
         icon = self._make_icon_cell(header, group["icon"], m["icon_group"], fg=colors["ink"])
         if icon is not None:
             icon.canvas.place(x=ui_theme.SPACING["md"], rely=0.5, anchor="w")
-        title = tk.Label(header, text=group["title"], font=self._fonts["body_bold"],
-                         fg=colors["ink"], bg=colors["surface"], anchor="w")
+        title = tk.Label(
+            header,
+            text=group["title"],
+            font=self._fonts["body_bold"],
+            fg=colors["ink"],
+            bg=colors["surface"],
+            anchor="w",
+        )
         title.place(x=m["indent_group"], rely=0.5, anchor="w")
-        reset = ttk.Button(header, text=RESET_GROUP_TEXT, style="CardQuiet.TButton",
-                           command=lambda item=group: self._reset_group(item))
+        reset = ttk.Button(
+            header, text=RESET_GROUP_TEXT, style="CardQuiet.TButton", command=lambda item=group: self._reset_group(item)
+        )
         reset.pack(side="right", padx=(0, ui_theme.SPACING["md"]))
         if group.get("about"):
-            about = tk.Label(card, text=group["about"], font=self._fonts["caption"],
-                             fg=colors["ink_muted"], bg=colors["surface"], anchor="w",
-                             justify="left", wraplength=m["wrap_panel"])
+            about = tk.Label(
+                card,
+                text=group["about"],
+                font=self._fonts["caption"],
+                fg=colors["ink_muted"],
+                bg=colors["surface"],
+                anchor="w",
+                justify="left",
+                wraplength=m["wrap_panel"],
+            )
             about.pack(fill="x", padx=(m["indent_group"], ui_theme.SPACING["md"]))
         body = tk.Frame(card, bg=colors["surface"])
         body.pack(fill="x")
@@ -751,17 +625,15 @@ class App:
         if icon is not None:
             icon.canvas.place(x=ui_theme.SPACING["md"], rely=0.5, anchor="w")
             hover_targets.append(icon.canvas)
-        name = tk.Label(row, text=spec["name"], font=self._fonts["body"], fg=colors["ink"],
-                        bg=colors["surface"], anchor="w")
+        name = tk.Label(
+            row, text=spec["name"], font=self._fonts["body"], fg=colors["ink"], bg=colors["surface"], anchor="w"
+        )
         name.place(x=m["indent_step"], rely=0.5, anchor="w", width=m["name_column"])
         hover_targets.append(name)
-        tag = tk.Label(row, font=self._fonts["caption"], fg=colors["ink_muted"],
-                       bg=colors["surface"], anchor="w")
-        tag.place(x=m["indent_step"] + m["name_column"] + ui_theme.SPACING["sm"], rely=0.5,
-                  anchor="w")
+        tag = tk.Label(row, font=self._fonts["caption"], fg=colors["ink_muted"], bg=colors["surface"], anchor="w")
+        tag.place(x=m["indent_step"] + m["name_column"] + ui_theme.SPACING["sm"], rely=0.5, anchor="w")
         hover_targets.append(tag)
-        value = tk.Label(row, font=self._fonts["body"], fg=colors["ink_muted"],
-                         bg=colors["surface"], anchor="e")
+        value = tk.Label(row, font=self._fonts["body"], fg=colors["ink_muted"], bg=colors["surface"], anchor="e")
         hover_targets.append(value)
 
         control = None
@@ -771,8 +643,9 @@ class App:
             value.pack_forget()
             hover_targets.remove(value)
         elif spec["kind"] == "number":
-            control = ttk.Spinbox(row, from_=spec["lo"], to=spec["hi"],
-                                  increment=spec.get("step", 1), textvariable=var, width=8)
+            control = ttk.Spinbox(
+                row, from_=spec["lo"], to=spec["hi"], increment=spec.get("step", 1), textvariable=var, width=8
+            )
             control.pack(side="right", padx=(ui_theme.SPACING["sm"], ui_theme.SPACING["md"]))
             value.pack(side="right")
             validate = (row.register(self._number_ok), "%P")
@@ -781,9 +654,13 @@ class App:
         else:
             options_text = " ".join(spec.get("options", []))
             width = 16 if "New Roman" in options_text else 12
-            control = ttk.Combobox(row, textvariable=var,
-                                   values=ui_theme.option_values(spec.get("options", [])),
-                                   state="readonly", width=width)
+            control = ttk.Combobox(
+                row,
+                textvariable=var,
+                values=ui_theme.option_values(spec.get("options", [])),
+                state="readonly",
+                width=width,
+            )
             control.pack(side="right", padx=(ui_theme.SPACING["sm"], ui_theme.SPACING["md"]))
             value.pack(side="right")
             self._register_panel_control(control, "readonly")
@@ -795,8 +672,7 @@ class App:
             separator.pack(side="bottom", fill="x", padx=(m["separator_inset"], 0))
 
         self._bind_row_hover(hover_targets, row)
-        entry = {"spec": spec, "group": group, "var": var, "frame": row, "tag": tag,
-                 "value": value, "control": control}
+        entry = {"spec": spec, "group": group, "var": var, "frame": row, "tag": tag, "value": value, "control": control}
         var.trace_add("write", lambda *args, item=entry: self._refresh_row_state(item))
         self._rows.append(entry)
         self._refresh_row_state(entry)
@@ -876,11 +752,7 @@ class App:
         text = str(var.get())
         if spec["kind"] in ("enum", "size"):
             return ui_theme.LABEL_VALUES.get(text, text)
-        try:
-            number = float(text)
-            return int(number) if number == int(number) else number
-        except ValueError:
-            return text
+        return text_to_config_value(text)
 
     def _reset_group(self, group):
         for entry in self._rows:
@@ -910,8 +782,7 @@ class App:
         if text or self._filter_focused:
             self._filter_ghost.place_forget()
         else:
-            self._filter_ghost.place(in_=self._filter_entry, x=ui_theme.SPACING["sm"],
-                                     rely=0.5, anchor="w")
+            self._filter_ghost.place(in_=self._filter_entry, x=ui_theme.SPACING["sm"], rely=0.5, anchor="w")
 
     def _apply_filter(self):
         query = self._filter_var.get().strip().lower()
@@ -921,10 +792,13 @@ class App:
             group_visible = False
             for entry in group["entries"]:
                 spec = entry["spec"]
-                haystack = " ".join([
-                    group["spec"]["title"], spec["name"],
-                    humanize_value(spec, self._var_raw(spec, entry["var"])),
-                ]).lower()
+                haystack = " ".join(
+                    [
+                        group["spec"]["title"],
+                        spec["name"],
+                        humanize_value(spec, self._var_raw(spec, entry["var"])),
+                    ]
+                ).lower()
                 visible = not query or query in haystack
                 if visible:
                     self._pack_in_order(entry["frame"], group["frames"])
@@ -945,7 +819,7 @@ class App:
     def _pack_in_order(widget, order):
         """pack_forget 后按原始顺序回到原位（pack() 默认会排到队尾）。"""
         index = order.index(widget)
-        for later in order[index + 1:]:
+        for later in order[index + 1 :]:
             if later.winfo_manager() == "pack":
                 widget.pack(before=later, fill="x")
                 return
@@ -969,46 +843,46 @@ class App:
         height = int(canvas["height"])
         focus = self.root.focus_get() is canvas
         if drag:
-            bg, outline, line_width, icon_color = (
-                colors["accent_soft"], colors["accent"], 2, colors["accent"])
+            bg, outline, line_width, icon_color = (colors["accent_soft"], colors["accent"], 2, colors["accent"])
         elif hover:
-            bg, outline, line_width, icon_color = (
-                colors["surface_hover"], colors["border_strong"], 1, colors["ink"])
+            bg, outline, line_width, icon_color = (colors["surface_hover"], colors["border_strong"], 1, colors["ink"])
         elif focus:
-            bg, outline, line_width, icon_color = (
-                colors["surface"], colors["accent"], 2, colors["ink_muted"])
+            bg, outline, line_width, icon_color = (colors["surface"], colors["accent"], 2, colors["ink_muted"])
         else:
-            bg, outline, line_width, icon_color = (
-                colors["surface"], colors["border_strong"], 1, colors["ink_muted"])
+            bg, outline, line_width, icon_color = (colors["surface"], colors["border_strong"], 1, colors["ink_muted"])
         canvas.configure(bg=bg)
         canvas.create_rectangle(1, 1, width - 2, height - 2, outline=outline, width=line_width)
         path = self._input_path.get().strip()
-        title = self._shorten_path(os.path.basename(path)) if path else DROP_TITLE
+        title = self._ellipsize_name(os.path.basename(path)) if path else DROP_TITLE
         subtitle = DROP_SELECTED_SUBTITLE if path else DROP_SUBTITLE
         if self._icon_family:
-            pos = self._icons.text_pos(width / 2, height / 2 - 20, "document",
-                                       m["icon_hero"])
+            pos = self._icons.text_pos(width / 2, height / 2 - 20, "document", m["icon_hero"])
             if pos:
-                canvas.create_text(pos[0], pos[1], text=ui_icons.glyph("document"),
-                                   fill=icon_color,
-                                   font=(self._icon_family,
-                                         -self._icons.size_px(m["icon_hero"])),
-                                   anchor="nw")
-            canvas.create_text(width / 2, height / 2 + 12, text=title, fill=colors["ink"],
-                               font=self._fonts["body_bold"])
-            canvas.create_text(width / 2, height / 2 + 32, text=subtitle,
-                               fill=colors["ink_muted"], font=self._fonts["caption"])
+                canvas.create_text(
+                    pos[0],
+                    pos[1],
+                    text=ui_icons.glyph("document"),
+                    fill=icon_color,
+                    font=(self._icon_family, -self._icons.size_px(m["icon_hero"])),
+                    anchor="nw",
+                )
+            canvas.create_text(
+                width / 2, height / 2 + 12, text=title, fill=colors["ink"], font=self._fonts["body_bold"]
+            )
+            canvas.create_text(
+                width / 2, height / 2 + 32, text=subtitle, fill=colors["ink_muted"], font=self._fonts["caption"]
+            )
         else:
-            canvas.create_text(width / 2, height / 2 - 8, text=title, fill=colors["ink"],
-                               font=self._fonts["body_bold"])
-            canvas.create_text(width / 2, height / 2 + 12, text=subtitle,
-                               fill=colors["ink_muted"], font=self._fonts["caption"])
+            canvas.create_text(width / 2, height / 2 - 8, text=title, fill=colors["ink"], font=self._fonts["body_bold"])
+            canvas.create_text(
+                width / 2, height / 2 + 12, text=subtitle, fill=colors["ink_muted"], font=self._fonts["caption"]
+            )
 
     @staticmethod
-    def _shorten_path(text, limit=64):
+    def _ellipsize_name(text, limit=64):
         if len(text) <= limit:
             return text
-        return "…" + text[-(limit - 1):]
+        return "…" + text[-(limit - 1) :]
 
     def _on_drop(self, event):
         self._draw_drop()
@@ -1036,9 +910,11 @@ class App:
         self._draw_drop()
         self._clear_open_target()
         self._set_status("已选择：" + os.path.basename(path), "info")
-        self._run_worker(lambda: inspect_docx(path), self._show_inspection,
-                         lambda exc: self._set_status(
-                             "读取失败，请确认文件是 Word 文档（.docx）。", "error"))
+        self._run_worker(
+            lambda: inspect_docx(path),
+            self._show_inspection,
+            lambda exc: self._set_status("读取失败，请确认文件是 Word 文档（.docx）。", "error"),
+        )
 
     def _show_inspection(self, info):
         levels = "、".join(str(level) for level in info.heading_levels) + " 级" if info.heading_levels else "无标题"
@@ -1098,6 +974,18 @@ class App:
         threading.Thread(target=target, daemon=True).start()
         self.root.after(60, lambda: self._poll_worker(on_success, on_error))
 
+    def _run_action(self, busy_text, work, on_success, failure_title):
+        """主操作统一反馈：忙碌提示、失败提醒与错误弹窗。"""
+        self._set_status(busy_text, "info")
+
+        def failed(exc):
+            self._set_status(failure_title, "error")
+            self._add_result("提醒", f"{failure_title}：{exc}", "error")
+            self._select_segment("提醒")
+            self._show_error(failure_title, exc)
+
+        self._run_worker(work, on_success, failed)
+
     def _poll_worker(self, on_success, on_error):
         try:
             status, payload = self._worker_queue.get_nowait()
@@ -1129,12 +1017,15 @@ class App:
 
     def _set_status(self, text, tone):
         self._status.set(text)
-        style = {"info": "Muted.TLabel", "success": "Success.TLabel",
-                 "error": "Danger.TLabel"}.get(tone, "Muted.TLabel")
+        style = {"info": "Muted.TLabel", "success": "Success.TLabel", "error": "Danger.TLabel"}.get(
+            tone, "Muted.TLabel"
+        )
         self._status_label.configure(style=style)
 
     # ---- 主操作 ----
     def _on_normalize(self):
+        if self._busy:
+            return
         self._collect()
         self._save_config()
         input_path = self._input_path.get().strip()
@@ -1145,7 +1036,6 @@ class App:
         if not output_path:
             output_path = make_normalized_output_path(input_path)
             self._output_path.set(output_path)
-        self._set_status(STATUS_BUSY_NORMALIZE, "info")
 
         def work():
             normalize_docx(self.cfg, input_path, output_path, assets_dir=assets_dir())
@@ -1157,15 +1047,11 @@ class App:
             self._set_open_target(os.path.dirname(path), os.path.basename(path))
             self._render_results()
 
-        def failed(exc):
-            self._set_status("整理没有完成", "error")
-            self._add_result("提醒", "整理没有完成：" + str(exc), "error")
-            self._select_segment("提醒")
-            self._show_error("整理没有完成", exc)
-
-        self._run_worker(work, done, failed)
+        self._run_action(STATUS_BUSY_NORMALIZE, work, done, "整理没有完成")
 
     def _on_preview(self):
+        if self._busy:
+            return
         self._collect()
         self._save_config()
         input_path = self._input_path.get().strip()
@@ -1173,11 +1059,9 @@ class App:
             messagebox.showwarning("未选择文档", "请先把论文拖进窗口，或点击选择文件。")
             return
         output_guess = self._output_path.get().strip() or make_normalized_output_path(input_path)
-        self._set_status(STATUS_BUSY_PREVIEW, "info")
 
         def work():
-            return normalize_docx(self.cfg, input_path, output_guess,
-                                  dry_run=True, return_result=True)
+            return normalize_docx(self.cfg, input_path, output_guess, dry_run=True, return_result=True)
 
         def done(result):
             self._results["改动"] = [(item, "change") for item in result.changes]
@@ -1196,20 +1080,15 @@ class App:
                 self._select_segment("记录")
             self._render_results()
 
-        def failed(exc):
-            self._set_status("预览没有完成", "error")
-            self._add_result("提醒", "预览没有完成：" + str(exc), "error")
-            self._select_segment("提醒")
-            self._show_error("预览没有完成", exc)
-
-        self._run_worker(work, done, failed)
+        self._run_action(STATUS_BUSY_PREVIEW, work, done, "预览没有完成")
 
     def _on_generate(self):
+        if self._busy:
+            return
         self._collect()
         self._save_config()
         default_name = self._get(["output", "filename"], "示例论文.docx")
         out_path = os.path.join(app_dir(), default_name)
-        self._set_status(STATUS_BUSY_GENERATE, "info")
 
         def work():
             generate(self.cfg, out_path, assets_dir=assets_dir(), content_fn=build_sample_content)
@@ -1221,13 +1100,7 @@ class App:
             self._set_open_target(os.path.dirname(path), os.path.basename(path))
             self._render_results()
 
-        def failed(exc):
-            self._set_status("示例文档没有生成", "error")
-            self._add_result("提醒", "示例文档没有生成：" + str(exc), "error")
-            self._select_segment("提醒")
-            self._show_error("示例文档没有生成", exc)
-
-        self._run_worker(work, done, failed)
+        self._run_action(STATUS_BUSY_GENERATE, work, done, "示例文档没有生成")
 
     # ---- 模板与设置 ----
     def _on_preset_selected(self):
@@ -1240,26 +1113,38 @@ class App:
         preset = next((item for item in self._presets if item["name"] == name), None)
         if preset is None:
             return
-        self.cfg = preset["config"]
+        self.cfg = copy.deepcopy(preset["config"])
         self._preset_active = True
         self._baseline_cfg = copy.deepcopy(self.cfg)
         self._rebuild_ui()
         self._set_status("已套用「" + name + "」，点「开始整理」即可。", "info")
 
     def _on_save_cfg(self):
+        if self._busy:
+            return
         self._collect()
-        self._save_config()
+        if not self._save_config():
+            self._set_status("设置没有保存", "error")
+            self._select_segment("记录")
+            return
         self._set_status("设置已保存。", "info")
         self._add_result("记录", "已保存到：" + config_path(), "meta")
         self._render_results()
 
     def _on_reset(self):
+        if self._busy:
+            return
         path = default_config_path()
         if not os.path.exists(path):
             messagebox.showwarning("恢复默认设置", "找不到默认设置文件。重新安装本软件可以恢复。")
             return
-        self._load_config()
-        self.cfg = load_config_file(path)
+        try:
+            self.cfg = load_config_file(path)
+        except (OSError, ValueError) as exc:
+            messagebox.showerror("恢复默认设置", "默认设置文件无法读取：" + str(exc))
+            return
+        self._preset_active = False
+        self._baseline_cfg = copy.deepcopy(self.cfg)
         self._preset_var.set(CUSTOM_PRESET)
         self._rebuild_ui()
         self._set_status("已恢复默认设置。", "info")
@@ -1307,28 +1192,27 @@ class App:
 
     def _show_error(self, title, exc):
         if isinstance(exc, NormalizeError):
-            messagebox.showerror(
-                title, str(exc) + "\n\n可以换一份文档再试，或到「记录」里查看详细信息。")
+            self._add_result("记录", f"{title}：{exc}", "error")
+            messagebox.showerror(title, str(exc) + "\n\n可以换一份文档再试，或到「记录」里查看详细信息。")
             return
         detail = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
         self._add_result("记录", f"{title}：{exc}", "error")
         self._add_result("记录", detail, "error")
         self._select_segment("记录")
-        messagebox.showerror(
-            title, f"{exc}\n\n详细信息已放入「记录」，可以复制下来发给帮忙维护的人。")
+        messagebox.showerror(title, f"{exc}\n\n详细信息已放入「记录」，可以复制下来发给帮忙维护的人。")
 
     # ---- 打开输出位置 ----
     def _set_open_target(self, folder, select=None):
         self._open_target = (folder, select)
         self._open_button.pack(side="right")
         if self._open_icon is not None:
-            self._open_icon.pack(side="left", padx=(0, ui_theme.SPACING["xs"]))
+            self._open_icon.canvas.pack(side="left", padx=(0, ui_theme.SPACING["xs"]))
 
     def _clear_open_target(self):
         self._open_target = None
         self._open_button.pack_forget()
         if self._open_icon is not None:
-            self._open_icon.pack_forget()
+            self._open_icon.canvas.pack_forget()
 
     def _open_folder_clicked(self):
         if self._open_target:
@@ -1337,20 +1221,11 @@ class App:
     # ---- 配置收集 ----
     def _collect(self):
         for chain_str, var in self.vars.items():
-            chain = chain_str.split(".")
             if isinstance(var, tk.BooleanVar):
                 value = bool(var.get())
             else:
-                raw = var.get()
-                if raw in ui_theme.LABEL_VALUES:
-                    value = ui_theme.LABEL_VALUES[raw]
-                else:
-                    try:
-                        number = float(raw)
-                        value = int(number) if number == int(number) else number
-                    except (ValueError, TypeError):
-                        value = raw
-            self._set(chain, value)
+                value = text_to_config_value(var.get())
+            self._set(chain_str.split("."), value)
 
     def _set(self, chain, value):
         current = self.cfg
@@ -1361,15 +1236,8 @@ class App:
         current[chain[-1]] = value
 
     def _get(self, chain, default):
-        current = self.cfg
-        for key in chain:
-            if isinstance(current, dict):
-                current = current.get(key)
-            else:
-                return default
-            if current is None:
-                return default
-        return current if current is not None else default
+        value = cfg_get(self.cfg, chain, default)
+        return default if value is None else value
 
     # ---- 快捷键与重建 ----
     def _bind_keys(self):
@@ -1383,9 +1251,11 @@ class App:
         def wrapped(event):
             handler()
             return "break"
+
         return wrapped
 
     def _rebuild_ui(self):
+        self._clear_open_target()
         for child in self.root.winfo_children():
             if child is self._menubar:
                 continue
@@ -1400,7 +1270,6 @@ class App:
         self._advanced_visible = False
         self._worker_queue = queue.Queue()
         self._results = {"改动": [], "提醒": [], "记录": []}
-        self._clear_open_target()
         self._file_name.set("")
         self._file_meta.set("")
         self._build_ui()
@@ -1435,6 +1304,7 @@ def enable_dpi_awareness():
     if sys.platform != "win32":
         return
     import ctypes
+
     try:
         ctypes.windll.shcore.SetProcessDpiAwareness(1)
     except (AttributeError, OSError):

@@ -1,4 +1,5 @@
 """排版预设（config/templates）与新增配置项校验测试。"""
+
 import copy
 import json
 import tempfile
@@ -29,45 +30,49 @@ class PresetLoadingTests(unittest.TestCase):
         # 页面：A4、上下左右 2.54、页眉 1.5、页脚 1.75
         margins = cfg["page"]["margins"]
         self.assertEqual(cfg["page"]["size"], "A4")
-        self.assertEqual((margins["top"], margins["bottom"], margins["left"], margins["right"]),
-                         (2.54, 2.54, 2.54, 2.54))
+        self.assertEqual(
+            (margins["top"], margins["bottom"], margins["left"], margins["right"]), (2.54, 2.54, 2.54, 2.54)
+        )
         self.assertEqual((margins["header"], margins["footer"]), (1.5, 1.75))
 
         # 正文：宋体小四 1.5 倍行距 首行缩进 2 字符
-        self.assertEqual((cfg["body"]["font"], cfg["body"]["size"],
-                          cfg["body"]["lineSpacing"], cfg["body"]["firstLineIndentChars"]),
-                         ("宋体", "小四", 1.5, 2))
+        self.assertEqual(
+            (cfg["body"]["font"], cfg["body"]["size"], cfg["body"]["lineSpacing"], cfg["body"]["firstLineIndentChars"]),
+            ("宋体", "小四", 1.5, 2),
+        )
 
         # 页码小五居中；页眉宋体小五居中
         self.assertEqual(cfg["pageNumber"]["size"], "小五")
         self.assertEqual(cfg["pageNumber"]["align"], "center")
-        self.assertEqual((cfg["header"]["font"], cfg["header"]["size"], cfg["header"]["align"]),
-                         ("宋体", "小五", "center"))
+        self.assertEqual(
+            (cfg["header"]["font"], cfg["header"]["size"], cfg["header"]["align"]), ("宋体", "小五", "center")
+        )
 
         # 标题：章小二黑体居中段前 0.5 行；节小三；条小四，段前后 0.5 行
         h1, h2, h3 = cfg["headings"]["h1"], cfg["headings"]["h2"], cfg["headings"]["h3"]
-        self.assertEqual((h1["font"], h1["size"], h1["align"], h1["spaceBeforeLines"]),
-                         ("黑体", "小二", "center", 0.5))
+        self.assertEqual((h1["font"], h1["size"], h1["align"], h1["spaceBeforeLines"]), ("黑体", "小二", "center", 0.5))
         self.assertEqual((h2["font"], h2["size"]), ("黑体", "小三"))
-        self.assertEqual((h3["font"], h3["size"], h3["spaceBeforeLines"], h3["spaceAfterLines"]),
-                         ("黑体", "小四", 0.5, 0.5))
+        self.assertEqual(
+            (h3["font"], h3["size"], h3["spaceBeforeLines"], h3["spaceAfterLines"]), ("黑体", "小四", 0.5, 0.5)
+        )
 
         # 表：表题上方五号黑体；内容五号宋体；智能对齐
         table = cfg["table"]
-        self.assertEqual((table["captionPosition"], table["captionText"], table["captionSize"]),
-                         ("above", "黑体", "五号"))
+        self.assertEqual(
+            (table["captionPosition"], table["captionText"], table["captionSize"]), ("above", "黑体", "五号")
+        )
         self.assertEqual((table["cellFont"], table["cellSize"]), ("宋体", "五号"))
         self.assertEqual(table["cellAlign"], "smart")
         self.assertEqual(table["smartAlignThresholdChars"], 6)
 
         # 图：图题下方五号黑体
         figure = cfg["figure"]
-        self.assertEqual((figure["captionPosition"], figure["captionText"], figure["captionSize"]),
-                         ("below", "黑体", "五号"))
+        self.assertEqual(
+            (figure["captionPosition"], figure["captionText"], figure["captionSize"]), ("below", "黑体", "五号")
+        )
 
         # 参考文献：五号宋体 GB/T 7714 悬挂缩进
-        self.assertEqual((cfg["references"]["size"], cfg["references"]["font"]),
-                         ("五号", "宋体"))
+        self.assertEqual((cfg["references"]["size"], cfg["references"]["font"]), ("五号", "宋体"))
 
     def test_load_preset_unknown_name_raises(self):
         with self.assertRaises(ValueError):
@@ -81,6 +86,7 @@ class PresetLoadingTests(unittest.TestCase):
 
             def fake_dir():
                 return tmp
+
             config_model.templates_dir = fake_dir
             try:
                 self.assertEqual(list_presets(), [])

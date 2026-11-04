@@ -5,6 +5,7 @@
 2. 摆位公式：预测墨迹中心 = 格心（校准叠加后仍成立）、墨迹永不越格（无裁切风险）；
 3. 数据新鲜度：字体单位墨迹表与字体文件再读结果一致（字体缺失则跳过）。
 """
+
 import unittest
 from pathlib import Path
 
@@ -16,8 +17,7 @@ from tests._helpers import tk_root  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 
 # 与 design/icon-metrics/calibrate.py 同源：3 token × 3 设计缩放
-TOKEN_PPems = [(token, round(token * scale))
-               for token in (16, 20, 40) for scale in (1.0, 1.25, 1.5)]
+TOKEN_PPems = [(token, round(token * scale)) for token in (16, 20, 40) for scale in (1.0, 1.25, 1.5)]
 FONT_FILES = {
     "Segoe Fluent Icons": Path(r"C:\Windows\Fonts\SegoeIcons.ttf"),
     "Segoe MDL2 Assets": Path(r"C:\Windows\Fonts\segmdl2.ttf"),
@@ -29,12 +29,13 @@ class IconDataTests(unittest.TestCase):
         for family, data in icon_slot_data.INK.items():
             if data is None:
                 continue  # 字体缺失记 None（构建环境无该字体），运行时纯文字回退
-            self.assertEqual(set(data["glyphs"]), set(ui_icons.ICONS),
-                             f"{family} 墨迹表与码点表不一致")
+            self.assertEqual(set(data["glyphs"]), set(ui_icons.ICONS), f"{family} 墨迹表与码点表不一致")
             upm = data["upm"]
             for name, (x0, y0, x1, y1) in data["glyphs"].items():
-                self.assertTrue(0 <= x0 <= x1 <= upm and 0 <= y0 <= y1 <= upm,
-                                f"{family}/{name} 墨迹盒越出 em 盒：{x0},{y0},{x1},{y1}")
+                self.assertTrue(
+                    0 <= x0 <= x1 <= upm and 0 <= y0 <= y1 <= upm,
+                    f"{family}/{name} 墨迹盒越出 em 盒：{x0},{y0},{x1},{y1}",
+                )
 
     def test_corrections_are_deterministic_outliers_only(self):
         """校准只收 |分量|≥0.75px 的 grid-fit 离群（±0.5px 是量测粒度，修了会过校正）。"""
@@ -44,10 +45,10 @@ class IconDataTests(unittest.TestCase):
                 self.assertIn(name, ui_icons.ICONS)
                 for ppem, (dx, dy) in sizes.items():
                     self.assertTrue(int(ppem) > 0)
-                    self.assertTrue(max(abs(dx), abs(dy)) >= 0.75,
-                                    f"{family}/{name}@{ppem} 校准 {dx},{dy} 未达离群阈值")
-                    self.assertTrue(max(abs(dx), abs(dy)) <= 2.0,
-                                    f"{family}/{name}@{ppem} 校准 {dx},{dy} 异常大")
+                    self.assertTrue(
+                        max(abs(dx), abs(dy)) >= 0.75, f"{family}/{name}@{ppem} 校准 {dx},{dy} 未达离群阈值"
+                    )
+                    self.assertTrue(max(abs(dx), abs(dy)) <= 2.0, f"{family}/{name}@{ppem} 校准 {dx},{dy} 异常大")
 
     def test_correction_lookup(self):
         self.assertEqual(icon_slot_data.correction("不存在", "page", 16), (0.0, 0.0))
@@ -55,8 +56,7 @@ class IconDataTests(unittest.TestCase):
         if known:
             name, sizes = next(iter(icon_slot_data.CORRECTIONS[known].items()))
             ppem, value = next(iter(sizes.items()))
-            self.assertEqual(icon_slot_data.correction(known, name, int(ppem)),
-                             tuple(value))
+            self.assertEqual(icon_slot_data.correction(known, name, int(ppem)), tuple(value))
 
 
 class PlacementMathTests(unittest.TestCase):
@@ -104,9 +104,10 @@ class PlacementMathTests(unittest.TestCase):
                     right = px + x1 * s / upm + cdx
                     top = py + s - y1 * s / upm + cdy
                     bottom = py + s - y0 * s / upm + cdy
-                    self.assertTrue(-0.01 <= left and right <= s + 0.01
-                                    and -0.01 <= top and bottom <= s + 0.01,
-                                    f"{family}/{name}@{ppem}px 渲染墨迹越格")
+                    self.assertTrue(
+                        -0.01 <= left and right <= s + 0.01 and -0.01 <= top and bottom <= s + 0.01,
+                        f"{family}/{name}@{ppem}px 渲染墨迹越格",
+                    )
 
 
 class RendererTests(unittest.TestCase):
@@ -126,6 +127,7 @@ class RendererTests(unittest.TestCase):
     def test_no_family_yields_nothing(self):
         renderer = icon_slot.IconRenderer(self.root, None)
         import tkinter as tk
+
         frame = tk.Frame(self.root)
         self.assertIsNone(renderer.cell(frame, "page", 16, "#fff", "#000"))
         self.assertIsNone(renderer.text_placement("page", 16))
@@ -136,6 +138,7 @@ class RendererTests(unittest.TestCase):
         renderer = icon_slot.IconRenderer(self.root, family)
         self.assertIsNone(renderer.text_placement("不存在的图标", 16))
         import tkinter as tk
+
         frame = tk.Frame(self.root)
         self.assertIsNone(renderer.cell(frame, "不存在的图标", 16, "#fff", "#000"))
 
@@ -143,6 +146,7 @@ class RendererTests(unittest.TestCase):
         family = next(f for f, d in icon_slot_data.INK.items() if d is not None)
         renderer = icon_slot.IconRenderer(self.root, family)
         import tkinter as tk
+
         frame = tk.Frame(self.root)
         cell = renderer.cell(frame, "settings", 16, "#111111", "#eeeeee")
         self.assertIsNotNone(cell)
@@ -150,14 +154,11 @@ class RendererTests(unittest.TestCase):
         self.assertEqual(cell.canvas["width"], str(s))
         self.assertEqual(cell.canvas["height"], str(s))
         self.assertEqual(cell.canvas["bg"], "#111111")
-        self.assertEqual(cell.canvas.itemcget(min(cell.canvas.find_all()), "text"),
-                         ui_icons.glyph("settings"))
+        self.assertEqual(cell.canvas.itemcget(min(cell.canvas.find_all()), "text"), ui_icons.glyph("settings"))
         cell.set_icon("check")
-        self.assertEqual(cell.canvas.itemcget(min(cell.canvas.find_all()), "text"),
-                         ui_icons.glyph("check"))
+        self.assertEqual(cell.canvas.itemcget(min(cell.canvas.find_all()), "text"), ui_icons.glyph("check"))
         cell.set_color("#ffffff")
-        self.assertEqual(cell.canvas.itemcget(min(cell.canvas.find_all()), "fill"),
-                         "#ffffff")
+        self.assertEqual(cell.canvas.itemcget(min(cell.canvas.find_all()), "fill"), "#ffffff")
         cell.set_bg("#222222")
         self.assertEqual(cell.canvas["bg"], "#222222")
 
@@ -181,8 +182,9 @@ class DataFreshnessTests(unittest.TestCase):
             for name, ch in ui_icons.ICONS.items():
                 pen = BoundsPen(glyphset)
                 glyphset[cmap[ord(ch)]].draw(pen)
-                self.assertEqual(data["glyphs"][name], [int(v) for v in pen.bounds],
-                                 f"{family}/{name} 墨迹表与字体文件不符")
+                self.assertEqual(
+                    data["glyphs"][name], [int(v) for v in pen.bounds], f"{family}/{name} 墨迹表与字体文件不符"
+                )
 
 
 class PuaDisciplineTests(unittest.TestCase):
@@ -190,8 +192,7 @@ class PuaDisciplineTests(unittest.TestCase):
         """码点唯一来源是 ui_icons.ICONS；槽与数据模块不得出现私用区字面量。"""
         for name in ("icon_slot.py", "icon_slot_data.py"):
             text = (ROOT / name).read_text(encoding="utf-8")
-            hits = [hex(ord(c)) for c in text
-                    if ui_icons.PUA_RANGE[0] <= ord(c) <= ui_icons.PUA_RANGE[1]]
+            hits = [hex(ord(c)) for c in text if ui_icons.PUA_RANGE[0] <= ord(c) <= ui_icons.PUA_RANGE[1]]
             self.assertEqual(hits, [], f"{name} 出现私用区字面量")
 
 

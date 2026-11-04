@@ -1,4 +1,5 @@
 """normalizer 异常类、结果数据类、警告收集器。"""
+
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -61,6 +62,7 @@ class WarningCollector:
 @dataclass
 class NormalizeResult:
     """规范化结果。dry_run=True 时 output_path 为 None，backup_path 为 None。"""
+
     input_path: str
     output_path: "Optional[str]" = None
     backup_path: "Optional[str]" = None

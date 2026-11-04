@@ -2,17 +2,19 @@
 
 面板 IA 依据 design/ia-regroup.md（卡片分类），全部断言不依赖 Tk。
 """
+
 import re
 import unittest
 
 import ui_icons
-from app import (
+from settings_model import (
     SETTING_GROUPS,
     cfg_get,
     fmt_number,
     humanize_value,
     raw_equal,
     spec_default,
+    text_to_config_value,
 )
 
 BANNED_CHARS = "\u2014\u2013\u2192!\uff01"
@@ -29,11 +31,22 @@ def find_spec(key):
 class GroupStructureTests(unittest.TestCase):
     def test_eleven_groups_in_expected_order(self):
         titles = [group["title"] for group in SETTING_GROUPS]
-        self.assertEqual(titles, [
-            "页面", "页码", "正文",
-            "章标题（第1章）", "节标题（1.1）", "条标题（1.1.1）", "四级标题（1.1.1.1）",
-            "图片", "图题与说明", "表格", "参考文献",
-        ])
+        self.assertEqual(
+            titles,
+            [
+                "页面",
+                "页码",
+                "正文",
+                "章标题（第1章）",
+                "节标题（1.1）",
+                "条标题（1.1.1）",
+                "四级标题（1.1.1.1）",
+                "图片",
+                "图题与说明",
+                "表格",
+                "参考文献",
+            ],
+        )
 
     def test_total_rows_cover_all_settings(self):
         total = sum(len(group["rows"]) for group in SETTING_GROUPS)
@@ -44,33 +57,62 @@ class GroupStructureTests(unittest.TestCase):
     def test_old_panel_sections_are_regrouped_not_dropped(self):
         """旧面板全部字段仍可设置：边距、页码、正文、标题四级、图、表、参考文献。"""
         must_have = [
-            ("page", "margins", "top"), ("page", "margins", "bottom"),
-            ("page", "margins", "left"), ("page", "margins", "right"),
-            ("pageNumber", "enabled"), ("pageNumber", "onlyUpdateExisting"),
-            ("pageNumber", "align"), ("pageNumber", "size"),
-            ("pageNumber", "font"), ("pageNumber", "asciiFont"),
-            ("body", "font"), ("body", "asciiFont"), ("body", "size"),
-            ("body", "lineSpacing"), ("body", "firstLineIndentChars"),
-            ("body", "align"), ("body", "spaceAfterPt"),
-            ("figure", "sizeMode"), ("figure", "maxWidthCm"), ("figure", "maxHeightCm"),
-            ("figure", "fixedWidthCm"), ("figure", "fixedHeightCm"),
-            ("figure", "keepAspectRatio"), ("figure", "clampToTextWidth"),
-            ("figure", "skipInTables"), ("figure", "keepWithCaption"),
-            ("figure", "captionPosition"), ("figure", "captionSize"), ("figure", "captionBold"),
-            ("figure", "captionAlign"), ("figure", "captionLineSpacing"),
-            ("figure", "noteSize"), ("figure", "noteAlign"), ("figure", "prefix"),
-            ("table", "captionPosition"), ("table", "captionSize"), ("table", "captionBold"),
-            ("table", "captionAlign"), ("table", "captionLineSpacing"),
-            ("table", "noteSize"), ("table", "noteAlign"),
-            ("table", "cellSize"), ("table", "cellAlign"), ("table", "cellVAlign"),
-            ("table", "cellLineSpacing"), ("table", "headerBold"), ("table", "prefix"),
-            ("references", "font"), ("references", "asciiFont"), ("references", "size"),
-            ("references", "lineSpacing"), ("references", "align"),
+            ("page", "margins", "top"),
+            ("page", "margins", "bottom"),
+            ("page", "margins", "left"),
+            ("page", "margins", "right"),
+            ("pageNumber", "enabled"),
+            ("pageNumber", "onlyUpdateExisting"),
+            ("pageNumber", "align"),
+            ("pageNumber", "size"),
+            ("pageNumber", "font"),
+            ("pageNumber", "asciiFont"),
+            ("body", "font"),
+            ("body", "asciiFont"),
+            ("body", "size"),
+            ("body", "lineSpacing"),
+            ("body", "firstLineIndentChars"),
+            ("body", "align"),
+            ("body", "spaceAfterPt"),
+            ("figure", "sizeMode"),
+            ("figure", "maxWidthCm"),
+            ("figure", "maxHeightCm"),
+            ("figure", "fixedWidthCm"),
+            ("figure", "fixedHeightCm"),
+            ("figure", "keepAspectRatio"),
+            ("figure", "clampToTextWidth"),
+            ("figure", "skipInTables"),
+            ("figure", "keepWithCaption"),
+            ("figure", "captionPosition"),
+            ("figure", "captionSize"),
+            ("figure", "captionBold"),
+            ("figure", "captionAlign"),
+            ("figure", "captionLineSpacing"),
+            ("figure", "noteSize"),
+            ("figure", "noteAlign"),
+            ("figure", "prefix"),
+            ("table", "captionPosition"),
+            ("table", "captionSize"),
+            ("table", "captionBold"),
+            ("table", "captionAlign"),
+            ("table", "captionLineSpacing"),
+            ("table", "noteSize"),
+            ("table", "noteAlign"),
+            ("table", "cellSize"),
+            ("table", "cellAlign"),
+            ("table", "cellVAlign"),
+            ("table", "cellLineSpacing"),
+            ("table", "headerBold"),
+            ("table", "prefix"),
+            ("references", "font"),
+            ("references", "asciiFont"),
+            ("references", "size"),
+            ("references", "lineSpacing"),
+            ("references", "align"),
             ("references", "hangingIndentPt"),
         ]
         for level in range(1, 5):
-            for field in ("font", "asciiFont", "size", "lineSpacing", "bold",
-                          "spaceBeforePt", "spaceAfterPt", "align"):
+            for field in ("font", "asciiFont", "size", "lineSpacing", "bold", "spaceBeforePt", "spaceAfterPt", "align"):
                 must_have.append(("headings", "h" + str(level), field))
         for key in must_have:
             self.assertIsNotNone(find_spec(key), f"缺设置键: {'.'.join(key)}")
@@ -88,11 +130,9 @@ class GroupStructureTests(unittest.TestCase):
 class TerminologyTests(unittest.TestCase):
     def test_group_titles_and_row_names_have_no_latin_dev_terms(self):
         for group in SETTING_GROUPS:
-            self.assertIsNone(re.search(r"[A-Za-z]", group["title"]),
-                              f"组名混入英文: {group['title']}")
+            self.assertIsNone(re.search(r"[A-Za-z]", group["title"]), f"组名混入英文: {group['title']}")
             for spec in group["rows"]:
-                self.assertIsNone(re.search(r"[A-Za-z]", spec["name"]),
-                                  f"行名混入英文: {spec['name']}")
+                self.assertIsNone(re.search(r"[A-Za-z]", spec["name"]), f"行名混入英文: {spec['name']}")
 
     def test_no_banned_marks_in_names(self):
         for group in SETTING_GROUPS:
@@ -106,8 +146,9 @@ class TerminologyTests(unittest.TestCase):
         for group in SETTING_GROUPS:
             for spec in group["rows"]:
                 if spec["kind"] == "number":
-                    self.assertIn(spec["unit"], ("厘米", "磅", "倍", "字"),
-                                  f"{spec['name']} 单位不是人话: {spec['unit']}")
+                    self.assertIn(
+                        spec["unit"], ("厘米", "磅", "倍", "字"), f"{spec['name']} 单位不是人话: {spec['unit']}"
+                    )
 
 
 class HumanizeTests(unittest.TestCase):
@@ -156,6 +197,19 @@ class BaselineCompareTests(unittest.TestCase):
         self.assertEqual(cfg_get(cfg, ("page", "margins", "top")), 2.54)
         self.assertIsNone(cfg_get(cfg, ("page", "margins", "missing")))
         self.assertEqual(cfg_get(cfg, ("nope",), "x"), "x")
+
+
+class TextToConfigValueTests(unittest.TestCase):
+    def test_restores_display_label(self):
+        self.assertEqual(text_to_config_value("居中"), "center")
+        self.assertEqual(text_to_config_value("智能识别"), "smart")
+
+    def test_parses_number_without_losing_integers(self):
+        self.assertEqual(text_to_config_value("2.5"), 2.5)
+        self.assertIsInstance(text_to_config_value("3"), int)
+
+    def test_keeps_unknown_text(self):
+        self.assertEqual(text_to_config_value("小四"), "小四")
 
 
 if __name__ == "__main__":

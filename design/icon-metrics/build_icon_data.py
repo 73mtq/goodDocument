@@ -9,7 +9,9 @@ r"""生成 icon_slot_data.py：字体单位墨迹表（fontTools）+ grid-fit �
 含再生比对守卫。字体文件缺失（非 Windows/精简系统）时该字体记 None，
 运行时由 ui_icons.select_icon_family 的检测结果自然走纯文字回退。
 """
+
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -58,9 +60,22 @@ def load_corrections():
         for name, sizes in glyphs.items():
             for ppem, (dx, dy) in sizes.items():
                 if abs(dx) >= CORR_THRESHOLD or abs(dy) >= CORR_THRESHOLD:
-                    corrections.setdefault(family, {}).setdefault(name, {})[str(ppem)] = [
-                        round(dx, 2), round(dy, 2)]
+                    corrections.setdefault(family, {}).setdefault(name, {})[str(ppem)] = [round(dx, 2), round(dy, 2)]
     return corrections
+
+
+def format_generated_file(path):
+    """按项目 ruff 配置格式化生成物，保证重新生成后格式检查仍然通过。"""
+    result = subprocess.run(
+        [sys.executable, "-m", "ruff", "format", str(path)],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise SystemExit(
+            "icon_slot_data.py 已写入，但 ruff format 失败；"
+            "请安装 requirements-dev.txt 后重跑：\n" + result.stderr.strip()
+        )
 
 
 def main():
@@ -76,11 +91,11 @@ def main():
 
     lines = [
         '"""自动生成（design/icon-metrics/build_icon_data.py），勿手改。',
-        '',
-        'INK：两套图标字体逐字形 glyf 墨迹盒（字体单位）；某字体缺失记 None。',
-        'CORRECTIONS：GDI grid-fit 确定性离群校准（分量残差 ≥ '
-        f'{CORR_THRESHOLD}px，来源 calibration_report.json；当前 {n_corr} 条）。',
-        ' regeneration 见 design/icon-metrics/DECISION.md。',
+        "",
+        "INK：两套图标字体逐字形 glyf 墨迹盒（字体单位）；某字体缺失记 None。",
+        "CORRECTIONS：GDI grid-fit 确定性离群校准（分量残差 ≥ "
+        f"{CORR_THRESHOLD}px，来源 calibration_report.json；当前 {n_corr} 条）。",
+        " regeneration 见 design/icon-metrics/DECISION.md。",
         '"""',
         "",
         "INK = " + json.dumps(ink, ensure_ascii=False, indent=1).replace("null", "None"),
@@ -98,6 +113,7 @@ def main():
         "",
     ]
     OUT.write_text("\n".join(lines), encoding="utf-8")
+    format_generated_file(OUT)
     print(f"written: {OUT}（INK {len(ink)} 字体，CORRECTIONS {n_corr} 条）")
 
 

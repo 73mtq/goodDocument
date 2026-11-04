@@ -26,6 +26,7 @@ TODO(小数点对齐)：Word 支持按小数制表位对齐（w:tab w:val="decim
 "12.5 / 13.75 / 120" 的小数点严格对齐成竖线；本期不做，数字列统一右对齐，
 引入时在 _decide_cell 的数字列分支扩展。
 """
+
 from __future__ import annotations
 
 import re
@@ -60,10 +61,38 @@ _LABEL_WORDS = {"项目", "名称", "类别", "指标", "内容", "科目"}
 
 # 状态标签（居中展示）
 _STATUS_WORDS = {
-    "是", "否", "已完成", "未完成", "进行中", "已开始", "未开始", "已结束",
-    "已通过", "未通过", "已批准", "待审批", "已审批", "合格", "不合格",
-    "正常", "异常", "通过", "不通过", "成功", "失败", "已发布", "待发布",
-    "已提交", "待提交", "已归档", "待定", "优秀", "良好", "中等", "及格", "不及格",
+    "是",
+    "否",
+    "已完成",
+    "未完成",
+    "进行中",
+    "已开始",
+    "未开始",
+    "已结束",
+    "已通过",
+    "未通过",
+    "已批准",
+    "待审批",
+    "已审批",
+    "合格",
+    "不合格",
+    "正常",
+    "异常",
+    "通过",
+    "不通过",
+    "成功",
+    "失败",
+    "已发布",
+    "待发布",
+    "已提交",
+    "待提交",
+    "已归档",
+    "待定",
+    "优秀",
+    "良好",
+    "中等",
+    "及格",
+    "不及格",
 }
 
 
@@ -101,12 +130,13 @@ def is_label_word(text):
 
 # ----- 表格网格（直接读 XML，正确处理合并单元格） -----
 
+
 @dataclass
 class CellInfo:
-    tc: object          # lxml 元素 w:tc
-    row: int            # 行号（0 起）
-    col: int            # 网格列号（0 起，跨列时为起始列）
-    span: int           # 横向跨列数
+    tc: object  # lxml 元素 w:tc
+    row: int  # 行号（0 起）
+    col: int  # 网格列号（0 起，跨列时为起始列）
+    span: int  # 横向跨列数
     vmerge: str | None  # None=普通 / "restart"=纵向合并锚 / "continue"=延续格
     text: str
 
@@ -145,8 +175,7 @@ def table_grid(tbl):
         row_cells, col = [], 0
         for tc in tr.findall(qn("w:tc")):
             span = _grid_span(tc)
-            row_cells.append(CellInfo(tc=tc, row=r, col=col, span=span,
-                                      vmerge=_vmerge_state(tc), text=cell_text(tc)))
+            row_cells.append(CellInfo(tc=tc, row=r, col=col, span=span, vmerge=_vmerge_state(tc), text=cell_text(tc)))
             col += span
         grid.append(row_cells)
     return grid
@@ -172,6 +201,7 @@ def tc_has_shading(tc):
 
 
 # ----- 分析与决策 -----
+
 
 @dataclass
 class TableAlignmentPlan:
@@ -242,12 +272,19 @@ def _detect_col_header(grid, header_rows, numeric_cols, n_cols, threshold):
     if top_left.text == "" or is_label_word(top_left.text):
         return True
     # ② 首列（表头行除外）全为非数字短文本，且其余列至少一列多数为数字
-    first_col = [c for row in grid if row and row[0].row not in header_rows
-                 for c in (row[0],) if c.span == 1 and c.vmerge != "continue" and c.text]
+    first_col = [
+        c
+        for row in grid
+        if row and row[0].row not in header_rows
+        for c in (row[0],)
+        if c.span == 1 and c.vmerge != "continue" and c.text
+    ]
     others_numeric = any(c in numeric_cols for c in range(1, n_cols))
-    if (first_col and others_numeric
-            and all(not is_numeric(c.text) and display_width(c.text) <= threshold * 2
-                    for c in first_col)):
+    if (
+        first_col
+        and others_numeric
+        and all(not is_numeric(c.text) and display_width(c.text) <= threshold * 2 for c in first_col)
+    ):
         return True
     # ③ 首列带加粗或底纹（须在清除底纹之前读取）；强调须区别于同行其他列，
     #    整表统一底纹/全部加粗不算首列标记
@@ -293,10 +330,17 @@ def analyze_table(tbl, threshold_chars=6):
         centers = lefts = 0
         for row in grid:
             for cell in row:
-                if (cell.col == c and cell.span == 1 and cell.vmerge != "continue"
-                        and cell.text and cell.row not in header_rows
-                        and not is_numeric(cell.text) and not is_date(cell.text)
-                        and not is_status(cell.text) and not is_placeholder(cell.text)):
+                if (
+                    cell.col == c
+                    and cell.span == 1
+                    and cell.vmerge != "continue"
+                    and cell.text
+                    and cell.row not in header_rows
+                    and not is_numeric(cell.text)
+                    and not is_date(cell.text)
+                    and not is_status(cell.text)
+                    and not is_placeholder(cell.text)
+                ):
                     if display_width(cell.text) <= threshold_chars:
                         centers += 1
                     else:
@@ -307,8 +351,9 @@ def analyze_table(tbl, threshold_chars=6):
     stats = {"date_status": 0, "by_width": 0}
     for row in grid:
         for cell in row:
-            align = _decide_cell(cell, header_rows, col_header, numeric_cols,
-                                 threshold_chars, col_prefers_center, stats)
+            align = _decide_cell(
+                cell, header_rows, col_header, numeric_cols, threshold_chars, col_prefers_center, stats
+            )
             decisions[(cell.row, cell.col)] = align
 
     display_numeric = numeric_cols - {0} if col_header else numeric_cols
@@ -323,9 +368,15 @@ def analyze_table(tbl, threshold_chars=6):
         parts.append("其余按文本长度")
     summary = shape if not parts else shape + "；" + "、".join(parts)
 
-    return TableAlignmentPlan(header_rows=header_rows, col_header=col_header,
-                              numeric_cols=numeric_cols, shape_label=shape,
-                              summary=summary, grid=grid, decisions=decisions)
+    return TableAlignmentPlan(
+        header_rows=header_rows,
+        col_header=col_header,
+        numeric_cols=numeric_cols,
+        shape_label=shape,
+        summary=summary,
+        grid=grid,
+        decisions=decisions,
+    )
 
 
 def _decide_cell(cell, header_rows, col_header, numeric_cols, threshold, col_prefers_center, stats):

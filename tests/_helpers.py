@@ -1,4 +1,5 @@
 """测试 fixture 辅助：构造特殊 docx 用于边界场景测试。"""
+
 import atexit
 import os
 import re
@@ -14,11 +15,12 @@ ROOT = Path(__file__).resolve().parents[1]
 FIGURE_PNG = ROOT / "assets" / "figure1.png"
 
 # wp:anchor 的开头部分：simplePos / positionH / positionV 必须排在 wp:extent 之前
-_ANCHOR_ATTRS = ('simplePos="0" relativeHeight="251658240" behindDoc="0" locked="0" '
-                 'layoutInCell="1" allowOverlap="1"')
-_ANCHOR_HEAD = ('<wp:simplePos x="0" y="0"/>'
-                '<wp:positionH relativeFrom="column"><wp:posOffset>0</wp:posOffset></wp:positionH>'
-                '<wp:positionV relativeFrom="paragraph"><wp:posOffset>0</wp:posOffset></wp:positionV>')
+_ANCHOR_ATTRS = 'simplePos="0" relativeHeight="251658240" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1"'
+_ANCHOR_HEAD = (
+    '<wp:simplePos x="0" y="0"/>'
+    '<wp:positionH relativeFrom="column"><wp:posOffset>0</wp:posOffset></wp:positionH>'
+    '<wp:positionV relativeFrom="paragraph"><wp:posOffset>0</wp:posOffset></wp:positionV>'
+)
 
 
 def _rewrite_zip_member(src, dst, member, transform):
@@ -80,8 +82,7 @@ def make_docx_with_images(path, specs, caption_position="below", table_image=Fal
             doc.add_paragraph(caption)
     if table_image:
         table = doc.add_table(rows=1, cols=1)
-        table.cell(0, 0).paragraphs[0].add_run().add_picture(
-            str(FIGURE_PNG), width=Cm(2), height=Cm(1.5))
+        table.cell(0, 0).paragraphs[0].add_run().add_picture(str(FIGURE_PNG), width=Cm(2), height=Cm(1.5))
     doc.save(str(path))
     return path
 
@@ -170,7 +171,6 @@ def tk_root():
     """
     global _TK_ROOT
     if _TK_ROOT is not None and bool(_TK_ROOT.winfo_exists()):
-        return _TK_ROOT
         return _TK_ROOT
     try:
         import tkinter as tk

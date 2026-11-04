@@ -1,4 +1,5 @@
 """normalizer 路径校验与备份。"""
+
 from __future__ import annotations
 
 import os
@@ -14,10 +15,7 @@ from .errors import (
 
 def _same_path(a, b) -> bool:
     try:
-        return (
-            os.path.abspath(os.fspath(a)).lower()
-            == os.path.abspath(os.fspath(b)).lower()
-        )
+        return os.path.abspath(os.fspath(a)).lower() == os.path.abspath(os.fspath(b)).lower()
     except TypeError:
         return False
 

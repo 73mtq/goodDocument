@@ -8,6 +8,7 @@
 - WarningCollector
 - HEADING_PATTERNS
 """
+
 from .core import normalize_docx
 from .errors import (
     CorruptDocxError,

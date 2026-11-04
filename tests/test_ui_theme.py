@@ -6,10 +6,25 @@ import ui_theme
 class ThemeTokenTests(unittest.TestCase):
     def test_required_color_tokens_exist(self):
         required = {
-            "bg", "surface", "surface_alt", "surface_hover", "surface_pressed",
-            "border", "border_strong", "ink", "ink_muted", "ink_disabled",
-            "accent", "accent_hover", "accent_pressed", "accent_soft",
-            "accent_disabled_bg", "accent_disabled_fg", "success", "warning", "danger",
+            "bg",
+            "surface",
+            "surface_alt",
+            "surface_hover",
+            "surface_pressed",
+            "border",
+            "border_strong",
+            "ink",
+            "ink_muted",
+            "ink_disabled",
+            "accent",
+            "accent_hover",
+            "accent_pressed",
+            "accent_soft",
+            "accent_disabled_bg",
+            "accent_disabled_fg",
+            "success",
+            "warning",
+            "danger",
         }
         self.assertTrue(required.issubset(ui_theme.COLORS))
 
@@ -40,8 +55,7 @@ class ThemeTokenTests(unittest.TestCase):
         ]
         for foreground, background in pairs:
             ratio = ui_theme.contrast_ratio(ui_theme.COLORS[foreground], ui_theme.COLORS[background])
-            self.assertGreaterEqual(round(ratio, 2), 4.5,
-                                    f"{foreground}/{background} = {ratio:.2f}")
+            self.assertGreaterEqual(round(ratio, 2), 4.5, f"{foreground}/{background} = {ratio:.2f}")
 
 
 class ValueMappingTests(unittest.TestCase):

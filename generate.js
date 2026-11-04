@@ -19,10 +19,8 @@ const path = require("path");
 const { Packer, Document, Footer, Paragraph, TextRun, PageNumber, AlignmentType } = require("docx");
 const {
   createFormatter, SIZE_NAME_TO_PT, resolveSize, makeFont,
-  lineSpacingConfig, pageSizeDxa,
+  lineSpacingConfig, pageSizeDxa, CM_TO_DXA,
 } = require("./formatter");
-
-const CM_TO_DXA = 566.929;
 
 /* ------------------------------------------------------------------
  * CLI 参数解析

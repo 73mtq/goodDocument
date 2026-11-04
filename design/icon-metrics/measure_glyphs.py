@@ -9,6 +9,7 @@
 只读字体文件与 ui_icons.ICONS，不改任何运行时代码。字体缺失（非 Windows / 精简系统）
 时对该字体记 missing，其余照常。
 """
+
 import json
 import sys
 from pathlib import Path
@@ -62,8 +63,10 @@ def font_tables(path):
         "units_per_em": upm,
         "hhea": {"ascent": hhea.ascent, "descent": hhea.descent, "lineGap": hhea.lineGap},
         "os2": {
-            "usWinAscent": os2.usWinAscent, "usWinDescent": os2.usWinDescent,
-            "sTypoAscender": os2.sTypoAscender, "sTypoDescender": os2.sTypoDescender,
+            "usWinAscent": os2.usWinAscent,
+            "usWinDescent": os2.usWinDescent,
+            "sTypoAscender": os2.sTypoAscender,
+            "sTypoDescender": os2.sTypoDescender,
             "sTypoLineGap": os2.sTypoLineGap,
             "fsSelection_USE_TYPO_METRICS": bool(os2.fsSelection & 1 << 7),
         },
@@ -111,8 +114,7 @@ def main():
                 # 现行做法对照：token 被当作 tk points，Windows 上 scaling=dpi/72，
                 # 设计基准应为 dpi/96，故恒放大 4/3。
                 per_font["current_points_px"] = round(logical * scale * 4 / 3, 1)
-    (OUT / "glyph_metrics.json").write_text(
-        json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+    (OUT / "glyph_metrics.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # ---- 人读摘要 ----
     lines = ["# 图标字体原料测量报告", ""]
@@ -123,7 +125,8 @@ def main():
         upm = data["units_per_em"]
         hhea = data["hhea"]
         lines += [
-            f"## {family}（{data['font_file']}）", "",
+            f"## {family}（{data['font_file']}）",
+            "",
             f"- unitsPerEm={upm}，hhea ascent={hhea['ascent']} descent={hhea['descent']} "
             f"lineGap={hhea['lineGap']} → 行盒 {hhea['ascent'] - hhea['descent']} units "
             f"= {(hhea['ascent'] - hhea['descent']) / upm:.2f} em",
@@ -139,10 +142,12 @@ def main():
             x0, y0, x1, y1 = g["ink_units"]
             lines.append(
                 f"| {name} | {g['cp']} | {g['advance_units']} "
-                f"| [{x0},{y0},{x1},{y1}] | {(x1 - x0) / upm:.3f} | {(y1 - y0) / upm:.3f} |")
+                f"| [{x0},{y0},{x1},{y1}] | {(x1 - x0) / upm:.3f} | {(y1 - y0) / upm:.3f} |"
+            )
         lines.append("")
     lines += [
-        "## 现行「token 当 points」的尺寸对照", "",
+        "## 现行「token 当 points」的尺寸对照",
+        "",
         "| 场景 | 设计像素 | 现行实际渲染（px） | 误差 |",
         "|---|---|---|---|",
     ]
@@ -151,7 +156,8 @@ def main():
             if isinstance(d, dict) and "current_points_px" in d:
                 lines.append(
                     f"| {key}（{family.split()[-1]}） | {d['design_px']}→{d['render_px']} "
-                    f"| {d['current_points_px']} | +33% |")
+                    f"| {d['current_points_px']} | +33% |"
+                )
     (OUT / "metrics_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"written: {OUT / 'glyph_metrics.json'}")
     print(f"written: {OUT / 'metrics_report.md'}")

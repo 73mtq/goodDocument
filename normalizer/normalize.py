@@ -1,4 +1,5 @@
 """normalizer 核心规范化：样式应用、段落/表格/图片处理、TOC、检测。"""
+
 from __future__ import annotations
 
 import re
@@ -7,7 +8,7 @@ from dataclasses import dataclass
 
 import lxml.etree
 from docx import Document
-from docx.enum.text import WD_LINE_SPACING
+from docx.opc.exceptions import PackageNotFoundError
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
@@ -15,7 +16,6 @@ from docx.text.paragraph import Paragraph
 
 from formatter import (
     add_page_number_field,
-    clear_style_indent_chars,
     resolve_align,
     resolve_page_size,
     resolve_size,
@@ -23,7 +23,6 @@ from formatter import (
     set_indent_values,
     set_para_spacing,
     set_run_font,
-    set_run_font_element,
     set_zero_indent,
 )
 
@@ -48,8 +47,10 @@ _DOTTED_GUARD = r"(?![.\d])(?!\s*(?:是|不是|为|等于|约|超过|接近|倍)
 
 HEADING_PATTERNS = {
     1: re.compile(r"^[一二三四五六七八九十百]+、|^第[" + _CN_NUM + r"\d]+章(?=\s|$)"),
-    2: re.compile(r"^（[一二三四五六七八九十百]+）|^\([一二三四五六七八九十百]+\)"
-                  r"|^\d+\.\d+" + _DOTTED_GUARD),
+    2: re.compile(
+        r"^（[一二三四五六七八九十百]+）|^\([一二三四五六七八九十百]+\)"
+        r"|^\d+\.\d+" + _DOTTED_GUARD
+    ),
     3: re.compile(r"^\d+[.、](?!\d)|^\d+\.\d+\.\d+" + _DOTTED_GUARD),
     4: re.compile(r"^（\d+）|^\(\d+\)|^\d+\.\d+\.\d+\.\d+(?![.\d])"),
 }
@@ -151,10 +152,7 @@ def _find_toc_title_index(doc):
 # ----- Section 辅助 -----
 def _section_has_page_number(section) -> bool:
     """检测 section 的页脚（含继承的页脚定义）中是否已存在 PAGE 域。"""
-    for instr in section.footer._element.iter(qn("w:instrText")):
-        if instr.text and "PAGE" in instr.text:
-            return True
-    return False
+    return any(instr.text and "PAGE" in instr.text for instr in section.footer._element.iter(qn("w:instrText")))
 
 
 def _find_page_number_paragraph(section):
@@ -255,9 +253,15 @@ def _apply_page_settings(doc, cfg):
         p.alignment = resolve_align(pn.get("align", "center"))
         set_para_spacing(p, line_spacing_mult=1.0, before_pt=0, after_pt=0)
         set_zero_indent(p)
-        add_page_number_field(p, lambda r: set_run_font(
-            r, pn.get("font", "宋体"), pn.get("asciiFont", "Times New Roman"),
-            size_pt=resolve_size(pn.get("size", "小五"))))
+        add_page_number_field(
+            p,
+            lambda r: set_run_font(
+                r,
+                pn.get("font", "宋体"),
+                pn.get("asciiFont", "Times New Roman"),
+                size_pt=resolve_size(pn.get("size", "小五")),
+            ),
+        )
 
 
 def _format_headers(doc, cfg, cover_sections):
@@ -283,43 +287,7 @@ def _format_headers(doc, cfg, cover_sections):
             para.alignment = resolve_align(h.get("align", "center"))
             set_para_spacing(para, line_spacing_mult=1.0, before_pt=0, after_pt=0)
             set_zero_indent(para)
-            _apply_run_defaults(para, h.get("font", "宋体"),
-                                h.get("asciiFont", "Times New Roman"), size_pt)
-
-
-def _apply_document_styles(doc, cfg):
-    normal = doc.styles["Normal"]
-    body = cfg.get("body", {})
-    set_run_font_element(normal.element, body.get("font", "宋体"), body.get("asciiFont", "Times New Roman"),
-                         resolve_size(body.get("size", "小四")), body.get("color", "000000"))
-    normal.font.size = Pt(resolve_size(body.get("size", "小四")))
-    npf = normal.paragraph_format
-    npf.line_spacing = 1.0
-    npf.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
-    npf.first_line_indent = Pt(0)
-    npf.space_before = Pt(0)
-    npf.space_after = Pt(0)
-    # 关键：清掉 Normal 样式 <w:ind> 里的字符单位属性（firstLineChars 等），
-    # 否则单元格段落继承后会按字符数渲染首行缩进。
-    clear_style_indent_chars(normal)
-
-    for lv in range(1, 5):
-        hc = cfg.get("headings", {}).get("h" + str(lv))
-        if not hc:
-            continue
-        try:
-            style = doc.styles["Heading " + str(lv)]
-        except KeyError:
-            continue
-        set_run_font_element(style.element, hc.get("font", "黑体"), hc.get("asciiFont", "Times New Roman"),
-                             resolve_size(hc.get("size", "小四")), hc.get("color", "000000"))
-        style.font.size = Pt(resolve_size(hc.get("size", "小四")))
-        style.font.bold = hc.get("bold", True)
-        pf = style.paragraph_format
-        pf.line_spacing = hc.get("lineSpacing", 1.5)
-        pf.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
-        pf.space_before = Pt(hc.get("spaceBeforePt", 0))
-        pf.space_after = Pt(hc.get("spaceAfterPt", 0))
+            _apply_run_defaults(para, h.get("font", "宋体"), h.get("asciiFont", "Times New Roman"), size_pt)
 
 
 def _apply_heading_format(para, cfg, level):
@@ -329,9 +297,14 @@ def _apply_heading_format(para, cfg, level):
     except (KeyError, ValueError, AttributeError):
         pass
     para.alignment = resolve_align(hc.get("align", "left"))
-    set_para_spacing(para, line_spacing_mult=hc.get("lineSpacing", 1.5),
-                     before_pt=hc.get("spaceBeforePt", 0), after_pt=hc.get("spaceAfterPt", 0),
-                     before_lines=hc.get("spaceBeforeLines"), after_lines=hc.get("spaceAfterLines"))
+    set_para_spacing(
+        para,
+        line_spacing_mult=hc.get("lineSpacing", 1.5),
+        before_pt=hc.get("spaceBeforePt", 0),
+        after_pt=hc.get("spaceAfterPt", 0),
+        before_lines=hc.get("spaceBeforeLines"),
+        after_lines=hc.get("spaceAfterLines"),
+    )
     set_zero_indent(para)
     _apply_run_defaults(
         para,
@@ -346,8 +319,9 @@ def _apply_heading_format(para, cfg, level):
 def _apply_body_format(para, cfg):
     body = cfg["body"]
     para.alignment = resolve_align(body.get("align", "justify"))
-    set_para_spacing(para, line_spacing_mult=body.get("lineSpacing", 1.5),
-                     before_pt=0, after_pt=body.get("spaceAfterPt", 0))
+    set_para_spacing(
+        para, line_spacing_mult=body.get("lineSpacing", 1.5), before_pt=0, after_pt=body.get("spaceAfterPt", 0)
+    )
     indent_chars = body.get("firstLineIndentChars", 0)
     first_line_pt = resolve_size(body.get("size", "小四")) * indent_chars if indent_chars > 0 else 0
     set_indent_values(para, first_line_pt=first_line_pt, left_pt=0, right_pt=0)
@@ -440,8 +414,7 @@ def _normalize_paragraphs(doc, cfg, para_to_section, cover_sections, on_warning=
             continue
 
         if _paragraph_has_drawing(para):
-            processed += _handle_drawing_paragraph(
-                para, cfg, fig_keep, fig_caption_below)
+            processed += _handle_drawing_paragraph(para, cfg, fig_keep, fig_caption_below)
             continue
 
         text = _paragraph_text(para)
@@ -547,8 +520,9 @@ def _clear_table_style_indents(doc, tbl):
                 break
 
 
-_BORDER_SIDE_TAGS = tuple(qn("w:" + side) for side in (
-    "top", "left", "bottom", "right", "insideH", "insideV", "start", "end"))
+_BORDER_SIDE_TAGS = tuple(
+    qn("w:" + side) for side in ("top", "left", "bottom", "right", "insideH", "insideV", "start", "end")
+)
 
 
 def _strip_element_colors(el, border_color):
@@ -650,11 +624,17 @@ def _normalize_tables(doc, cfg, table_to_section, cover_sections, on_warning=Non
         grid_rows = plan.grid if plan is not None else table_grid(tbl)
         for row in grid_rows:
             for info in row:
-                align = (resolve_align(plan.align_for(info.row, info.col))
-                         if plan is not None else cell_align)
-                _format_table_cell(info.tc, align, valign, cell_font, cell_en,
-                                   cell_size, line_spacing,
-                                   bold=header_bold and info.row in bold_rows)
+                align = resolve_align(plan.align_for(info.row, info.col)) if plan is not None else cell_align
+                _format_table_cell(
+                    info.tc,
+                    align,
+                    valign,
+                    cell_font,
+                    cell_en,
+                    cell_size,
+                    line_spacing,
+                    bold=header_bold and info.row in bold_rows,
+                )
 
         if on_change and _fingerprint(tbl._tbl, style_el) != before:
             if plan is not None:
@@ -823,7 +803,8 @@ def _normalize_inline_images(doc, cfg, on_warning=None, on_change=None):
             if on_warning:
                 on_warning(
                     "目标宽度 {0:.2f} cm 超过正文可用宽度 {1:.2f} cm，已按可用宽度收窄".format(
-                        fixed_w / EMU_PER_CM, limit / EMU_PER_CM),
+                        fixed_w / EMU_PER_CM, limit / EMU_PER_CM
+                    ),
                     location="图片",
                 )
             fixed_w = limit
@@ -864,9 +845,12 @@ def _normalize_inline_images(doc, cfg, on_warning=None, on_change=None):
         if on_change:
             on_change(
                 "图 {0}{1}：{2:.2f}×{3:.2f} cm → {4:.2f}×{5:.2f} cm".format(
-                    idx, "（浮动）" if kind == "anchor" else "",
-                    cx / EMU_PER_CM, cy / EMU_PER_CM,
-                    new_w / EMU_PER_CM, new_h / EMU_PER_CM,
+                    idx,
+                    "（浮动）" if kind == "anchor" else "",
+                    cx / EMU_PER_CM,
+                    cy / EMU_PER_CM,
+                    new_w / EMU_PER_CM,
+                    new_h / EMU_PER_CM,
                 )
             )
     return adjusted
@@ -941,24 +925,18 @@ def _open_document(input_path):
     """打开 docx；损坏时抛 CorruptDocxError。"""
     try:
         return Document(input_path)
-    except (zipfile.BadZipFile, lxml.etree.XMLSyntaxError) as e:
+    except (zipfile.BadZipFile, lxml.etree.XMLSyntaxError, PackageNotFoundError) as e:
         raise CorruptDocxError(
             f"docx 文件已损坏: {input_path}",
-            cause=e, hint="用 Word 打开重新保存一次",
+            cause=e,
+            hint="用 Word 打开重新保存一次",
         ) from e
     except KeyError as e:
         raise CorruptDocxError(
             f"docx 关键样式缺失: {input_path}",
-            cause=e, hint="用 Word 打开重新保存一次",
+            cause=e,
+            hint="用 Word 打开重新保存一次",
         ) from e
-    except Exception as e:  # noqa: BLE001
-        from docx.opc.exceptions import PackageNotFoundError
-        if isinstance(e, PackageNotFoundError):
-            raise CorruptDocxError(
-                f"docx 文件已损坏: {input_path}",
-                cause=e, hint="用 Word 打开重新保存一次",
-            ) from e
-        raise
 
 
 def inspect_docx(input_path):

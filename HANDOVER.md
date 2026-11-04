@@ -199,8 +199,10 @@
 ```
 goodDocument/
 ├── app.py                       # tkinter GUI 入口（拖拽、后台执行、快捷键）
+├── settings_model.py            # 高级设置分组/行定义与配置值转换（纯数据层）
 ├── ui_theme.py                  # ⭐ 界面主题（令牌 + ttk 样式 + 取值映射）
 ├── formatter.py                 # 核心排版引擎（生成文档）
+├── font_sizes.py                # 中文字号名与磅值映射（GUI / 配置校验 / 排版共用）
 ├── normalizer/                  # ⭐ 子项目 C 拆分后的包
 │   ├── __init__.py              # 公共 API（仅公开入口）
 │   ├── errors.py                # NormalizeError + 5 子类 + NormalizeResult + WarningCollector
@@ -270,8 +272,9 @@ goodDocument/
 | 改错误信息 | `normalizer/errors.py` 各子类 + `normalizer/normalize.py` 的 `_open_document` |
 | 改备份策略 | `normalizer/paths.py` 的 `_backup_source` |
 | 改 GUI | `app.py` |
+| 改高级设置项/分组 | `settings_model.py` 的 `SETTING_GROUPS` |
 | 改 CLI | `generate.js` 的 `main()` |
-| 改字号/字体工具 | `formatter.py` 顶部常量 + `set_run_font` / `set_zero_indent` |
+| 改字号/字体工具 | `font_sizes.py` 的字号表 + `formatter.py` 的 `set_run_font` / `set_zero_indent` |
 
 ### 4.2 必须知道的"魔法函数"
 
@@ -283,6 +286,7 @@ set_run_font(run, zh, en, ...) # 设置 run 中英文字体（关键：写 w:rFo
 set_para_spacing(...)          # 段落行距/段前段后
 set_zero_indent(para)          # 显式清零所有缩进（含字符单位 firstLineChars）
 clear_style_indent_chars(s)    # 清样式 <w:ind> 里的字符单位属性（Normal 样式必调）
+apply_document_styles(doc, cfg)  # Normal / Heading 基础样式（生成与规范化共用）
 add_page_number_field(para, fn)  # 插 PAGE 域（页码）
 
 # normalizer 包中的关键函数
@@ -393,9 +397,9 @@ git push origin main v0.X.0
 
 **症状**：传入非 zip 的垃圾文件时，python-docx 抛 `docx.opc.exceptions.PackageNotFoundError`，不是 `BadZipFile`。
 
-**修复**（`normalizer/core.py`）：catch `Exception` 兜底，按类名（`Package` / `Zip` / `Found`）判断是否归为 `CorruptDocxError`。
+**现状**（`normalizer/normalize.py`）：显式捕获 `zipfile.BadZipFile`、`lxml.etree.XMLSyntaxError` 与 `docx.opc.exceptions.PackageNotFoundError`，统一转为 `CorruptDocxError`；其他异常继续上抛。
 
-**教训**：python-docx 抛的异常类型**不只一种**包损坏情况，写 try/except 要宽。
+**教训**：python-docx 对损坏包抛出的异常类型不只一种，逐一列出并在测试中覆盖。
 
 ### 坑 3：GitHub OAuth 缺 `workflow` scope
 

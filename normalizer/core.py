@@ -1,9 +1,12 @@
 """normalizer 主入口。"""
+
 from __future__ import annotations
 
 import os
 import time
 from typing import Optional
+
+from formatter import apply_document_styles
 
 from .errors import (
     NormalizeResult,
@@ -11,7 +14,6 @@ from .errors import (
     WarningCollector,
 )
 from .normalize import (
-    _apply_document_styles,
     _apply_page_settings,
     _build_body_section_maps,
     _collect_cover_section_indices,
@@ -25,8 +27,17 @@ from .normalize import (
 from .paths import _backup_source, _validate_paths
 
 
-def normalize_docx(config, input_path, output_path, assets_dir=None, *,
-                   backup=False, dry_run=False, return_result=False, on_warning=None):
+def normalize_docx(
+    config,
+    input_path,
+    output_path,
+    assets_dir=None,
+    *,
+    backup=False,
+    dry_run=False,
+    return_result=False,
+    on_warning=None,
+):
     """规范化 docx。薄包装层。
 
     旧签名（不传新参数）行为完全兼容：返回 str(output_path)。
@@ -46,6 +57,7 @@ def normalize_docx(config, input_path, output_path, assets_dir=None, *,
     _validate_paths(input_path, output_path)
 
     with WarningCollector() as wc:
+
         def emit_warning(msg, *, location=None):
             wc.warn(msg, location=location)
             if on_warning:
@@ -66,21 +78,21 @@ def normalize_docx(config, input_path, output_path, assets_dir=None, *,
             cover_sections = _collect_cover_section_indices(doc)
 
             _apply_page_settings(doc, config)
-            _apply_document_styles(doc, config)
+            apply_document_styles(doc, config)
             _format_headers(doc, config, cover_sections)
             paragraphs_processed = _normalize_paragraphs(
-                doc, config, para_to_section, cover_sections,
-                on_warning=emit_warning, on_change=changes.append)
+                doc, config, para_to_section, cover_sections, on_warning=emit_warning, on_change=changes.append
+            )
             tables_processed = _normalize_tables(
-                doc, config, table_to_section, cover_sections,
-                on_warning=emit_warning, on_change=changes.append)
-            images_processed = _normalize_inline_images(
-                doc, config, on_warning=emit_warning, on_change=changes.append)
+                doc, config, table_to_section, cover_sections, on_warning=emit_warning, on_change=changes.append
+            )
+            images_processed = _normalize_inline_images(doc, config, on_warning=emit_warning, on_change=changes.append)
             _mark_toc_fields_dirty(doc)
         except PermissionError as e:
             raise OutputNotWritableError(
                 f"无法访问文件: {output_path}",
-                cause=e, hint="检查目录权限和磁盘空间",
+                cause=e,
+                hint="检查目录权限和磁盘空间",
             ) from e
 
         # 4. 写文件（dry_run 时跳过）
@@ -93,12 +105,14 @@ def normalize_docx(config, input_path, output_path, assets_dir=None, *,
             except PermissionError as e:
                 raise OutputNotWritableError(
                     f"无法写入输出: {output_path}",
-                    cause=e, hint="检查目录权限和磁盘空间",
+                    cause=e,
+                    hint="检查目录权限和磁盘空间",
                 ) from e
             except OSError as e:
                 raise OutputNotWritableError(
                     f"无法写入输出: {output_path}",
-                    cause=e, hint="检查目录权限和磁盘空间",
+                    cause=e,
+                    hint="检查目录权限和磁盘空间",
                 ) from e
 
     duration_ms = int((time.time() - start) * 1000)

@@ -352,9 +352,11 @@ npm ci
 ```
 goodDocument/
 ├── app.py               # tkinter GUI 入口（拖拽、设置面板、后台执行、快捷键）
+├── settings_model.py    # 高级设置目录（分组/行定义）与配置值转换
 ├── ui_theme.py          # 界面主题（颜色/字体/结构令牌、ttk 样式、取值映射）
 ├── ui_icons.py          # Segoe 图标字体系统（码点表、运行时检测、纯文字回退）
 ├── formatter.py         # 核心排版引擎（生成文档）
+├── font_sizes.py        # 中文字号名与磅值映射（GUI / 配置校验 / 排版共用）
 ├── normalizer/          # 已有文档规范化（core / normalize / errors / paths）
 ├── config_model.py      # 配置加载/保存/校验
 ├── paths.py             # 路径工具（支持 PyInstaller 打包模式）

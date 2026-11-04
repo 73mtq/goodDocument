@@ -1,4 +1,5 @@
 """图标系统测试：码点合法性、字体检测顺序、纯文字回退。"""
+
 import unittest
 
 import ui_icons
@@ -8,8 +9,9 @@ class IconGlyphTests(unittest.TestCase):
     def test_all_glyphs_in_private_use_area(self):
         for name, char in ui_icons.ICONS.items():
             code = ord(char)
-            self.assertTrue(ui_icons.PUA_RANGE[0] <= code <= ui_icons.PUA_RANGE[1],
-                            f"{name} 的码点 {hex(code)} 不在私用区")
+            self.assertTrue(
+                ui_icons.PUA_RANGE[0] <= code <= ui_icons.PUA_RANGE[1], f"{name} 的码点 {hex(code)} 不在私用区"
+            )
 
     def test_glyph_codes_unique(self):
         values = list(ui_icons.ICONS.values())
@@ -20,9 +22,28 @@ class IconGlyphTests(unittest.TestCase):
 
     def test_required_ui_icons_exist(self):
         required = {
-            "page", "dialpad", "font", "bold", "photo", "caption", "table", "library",
-            "document", "save", "search", "settings", "undo", "play", "view", "edit",
-            "warning", "list", "folder", "check", "chevron_right", "clear",
+            "page",
+            "dialpad",
+            "font",
+            "bold",
+            "photo",
+            "caption",
+            "table",
+            "library",
+            "document",
+            "save",
+            "search",
+            "settings",
+            "undo",
+            "play",
+            "view",
+            "edit",
+            "warning",
+            "list",
+            "folder",
+            "check",
+            "chevron_right",
+            "clear",
         }
         self.assertTrue(required.issubset(ui_icons.ICONS))
 

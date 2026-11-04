@@ -24,6 +24,8 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
+from font_sizes import SIZE_NAME_TO_PT
+
 # ------------------------------------------------------------------
 # 常量与解析
 # ------------------------------------------------------------------
@@ -31,17 +33,6 @@ from docx.shared import Cm, Pt, RGBColor
 PAGE_SIZE_CM = {
     "a4": (21.0, 29.7),
     "letter": (21.59, 27.94),
-}
-
-SIZE_NAME_TO_PT = {
-    "初号": 42, "小初": 36,
-    "一号": 26, "小一": 24,
-    "二号": 22, "小二": 18,
-    "三号": 16, "小三": 15,
-    "四号": 14, "小四": 12,
-    "五号": 10.5, "小五": 9,
-    "六号": 7.5, "小六": 6.5,
-    "七号": 5.5, "八号": 5,
 }
 
 ALIGN_MAP = {
@@ -114,8 +105,7 @@ def set_run_font(run, zh_font, en_font, size_pt=None, bold=None, color=None):
         run.font.color.rgb = RGBColor.from_string(color)
 
 
-def set_para_spacing(para, line_spacing_mult=None, before_pt=None, after_pt=None,
-                     before_lines=None, after_lines=None):
+def set_para_spacing(para, line_spacing_mult=None, before_pt=None, after_pt=None, before_lines=None, after_lines=None):
     """设置段落行距与段前段后。line_spacing_mult 为倍数（1.0/1.5）。
 
     before_lines/after_lines 为「行」单位的段前/段后（0.5 → 半行）。Word 优先
@@ -218,15 +208,63 @@ def get_image_size(path):
 def _get_image_size_cached(path_str):
     try:
         from docx.image.image import Image
+
         img = Image.from_file(path_str)
         return img.px_width, img.px_height
     except (FileNotFoundError, OSError, ValueError):
         return None, None
 
 
+def apply_document_styles(doc, config):
+    """写入 Normal 与 Heading 1-4 的基础样式。
+
+    生成新文档和规范化已有文档共用这一份逻辑，避免两端的正文字号、
+    行距、标题字体等默认值各自演化。正文段落自己的缩进/行距仍由
+    调用方按正文配置显式设置。
+    """
+    body = config.get("body", {})
+    normal = doc.styles["Normal"]
+    set_run_font_element(
+        normal.element, body.get("font", "宋体"), body.get("asciiFont", "Times New Roman"), body.get("color", "000000")
+    )
+    normal.font.size = Pt(resolve_size(body.get("size", "小四")))
+    normal_format = normal.paragraph_format
+    normal_format.line_spacing = 1.0  # Normal 用单倍，避免表格/页码继承 1.5 倍
+    normal_format.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
+    normal_format.first_line_indent = Pt(0)
+    normal_format.space_before = Pt(0)
+    normal_format.space_after = Pt(0)
+    # 清掉 Normal 样式 <w:ind> 里的字符单位属性（firstLineChars 等），
+    # 否则表格单元格段落继承后会按字符数渲染首行缩进。
+    clear_style_indent_chars(normal)
+
+    headings = config.get("headings", {})
+    for level in range(1, 5):
+        heading_cfg = headings.get("h" + str(level))
+        if not heading_cfg:
+            continue
+        try:
+            style = doc.styles["Heading " + str(level)]
+        except KeyError:
+            continue
+        color = heading_cfg.get("color", "000000")
+        set_run_font_element(
+            style.element, heading_cfg.get("font", "黑体"), heading_cfg.get("asciiFont", "Times New Roman"), color
+        )
+        style.font.size = Pt(resolve_size(heading_cfg.get("size", "小四")))
+        style.font.bold = heading_cfg.get("bold", True)
+        style.font.color.rgb = RGBColor.from_string(color)
+        heading_format = style.paragraph_format
+        heading_format.line_spacing = heading_cfg.get("lineSpacing", 1.5)
+        heading_format.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
+        heading_format.space_before = Pt(heading_cfg.get("spaceBeforePt", 0))
+        heading_format.space_after = Pt(heading_cfg.get("spaceAfterPt", 0))
+
+
 # ------------------------------------------------------------------
 # Formatter —— 核心类
 # ------------------------------------------------------------------
+
 
 class Formatter:
     def __init__(self, config):
@@ -260,48 +298,19 @@ class Formatter:
             p.alignment = resolve_align(pn.get("align", "center"))
             set_para_spacing(p, line_spacing_mult=1.0, before_pt=0, after_pt=0)
             set_zero_indent(p)
-            add_page_number_field(p, lambda r: set_run_font(
-                r, pn.get("font", "宋体"), pn.get("asciiFont", "Times New Roman"),
-                size_pt=resolve_size(pn.get("size", "小五"))))
+            add_page_number_field(
+                p,
+                lambda r: set_run_font(
+                    r,
+                    pn.get("font", "宋体"),
+                    pn.get("asciiFont", "Times New Roman"),
+                    size_pt=resolve_size(pn.get("size", "小五")),
+                ),
+            )
 
     def _setup_styles(self):
-        """Normal 样式：单倍行距、无首行缩进（正文属性只在正文段落显式设置）。"""
-        cfg = self.cfg
-        normal = self.doc.styles["Normal"]
-        body = cfg["body"]
-        set_run_font_element(normal.element, body["font"], body["asciiFont"],
-                             resolve_size(body["size"]), body.get("color", "000000"))
-        normal.font.size = Pt(resolve_size(body["size"]))
-        npf = normal.paragraph_format
-        npf.line_spacing = 1.0  # Normal 用单倍，避免表格/页码继承 1.5 倍
-        npf.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
-        npf.first_line_indent = Pt(0)
-        npf.space_before = Pt(0)
-        npf.space_after = Pt(0)
-        # 关键：清掉 Normal 样式 <w:ind> 里的字符单位属性（firstLineChars 等），
-        # 否则表格单元格段落继承后会按字符数渲染首行缩进。
-        clear_style_indent_chars(normal)
-
-        # 标题样式覆盖（黑体/宋体 + 黑色 + 对应字号，覆盖内置蓝色默认）
-        for lv in range(1, 5):
-            key = "h" + str(lv)
-            hc = cfg["headings"].get(key)
-            if not hc:
-                continue
-            try:
-                hs = self.doc.styles["Heading " + str(lv)]
-            except KeyError:
-                continue
-            set_run_font_element(hs.element, hc["font"], hc["asciiFont"],
-                                 resolve_size(hc["size"]), hc.get("color", "000000"))
-            hs.font.size = Pt(resolve_size(hc["size"]))
-            hs.font.bold = hc.get("bold", True)
-            hs.font.color.rgb = RGBColor.from_string(hc.get("color", "000000"))
-            hpf = hs.paragraph_format
-            hpf.line_spacing = hc.get("lineSpacing", 1.5)
-            hpf.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
-            hpf.space_before = Pt(hc.get("spaceBeforePt", 0))
-            hpf.space_after = Pt(hc.get("spaceAfterPt", 0))
+        """Normal 单倍行距、无缩进；标题样式与规范化端共用。"""
+        apply_document_styles(self.doc, self.cfg)
 
     # ---- 正文 ----
     def body_para(self, text):
@@ -309,14 +318,16 @@ class Formatter:
         p = self.doc.add_paragraph()
         p.alignment = resolve_align(cfg.get("align", "justify"))
         # 正文：显式 1.5 倍行距 + 首行缩进（不靠 Normal 继承）
-        set_para_spacing(p, line_spacing_mult=cfg.get("lineSpacing", 1.5),
-                         before_pt=0, after_pt=cfg.get("spaceAfterPt", 0))
+        set_para_spacing(
+            p, line_spacing_mult=cfg.get("lineSpacing", 1.5), before_pt=0, after_pt=cfg.get("spaceAfterPt", 0)
+        )
         indent_chars = cfg.get("firstLineIndentChars", 0)
         if indent_chars > 0:
             p.paragraph_format.first_line_indent = Pt(resolve_size(cfg["size"]) * indent_chars)
         run = p.add_run(text)
-        set_run_font(run, cfg["font"], cfg["asciiFont"],
-                     size_pt=resolve_size(cfg["size"]), color=cfg.get("color", "000000"))
+        set_run_font(
+            run, cfg["font"], cfg["asciiFont"], size_pt=resolve_size(cfg["size"]), color=cfg.get("color", "000000")
+        )
         return p
 
     # ---- 标题 ----
@@ -324,19 +335,35 @@ class Formatter:
         hc = self.cfg["headings"]["h" + str(level)]
         p = self.doc.add_paragraph(style="Heading " + str(level))
         p.alignment = resolve_align(hc.get("align", "left"))
-        set_para_spacing(p, line_spacing_mult=hc.get("lineSpacing", 1.5),
-                         before_pt=hc.get("spaceBeforePt", 0), after_pt=hc.get("spaceAfterPt", 0))
+        set_para_spacing(
+            p,
+            line_spacing_mult=hc.get("lineSpacing", 1.5),
+            before_pt=hc.get("spaceBeforePt", 0),
+            after_pt=hc.get("spaceAfterPt", 0),
+        )
         set_zero_indent(p)
         run = p.add_run(text)
-        set_run_font(run, hc["font"], hc["asciiFont"],
-                     size_pt=resolve_size(hc["size"]),
-                     bold=hc.get("bold", True), color=hc.get("color", "000000"))
+        set_run_font(
+            run,
+            hc["font"],
+            hc["asciiFont"],
+            size_pt=resolve_size(hc["size"]),
+            bold=hc.get("bold", True),
+            color=hc.get("color", "000000"),
+        )
         return p
 
-    def h1(self, t): return self.heading(1, t)
-    def h2(self, t): return self.heading(2, t)
-    def h3(self, t): return self.heading(3, t)
-    def h4(self, t): return self.heading(4, t)
+    def h1(self, t):
+        return self.heading(1, t)
+
+    def h2(self, t):
+        return self.heading(2, t)
+
+    def h3(self, t):
+        return self.heading(3, t)
+
+    def h4(self, t):
+        return self.heading(4, t)
 
     # ---- 图 ----
     def _figure_size(self, image_path):
@@ -411,20 +438,23 @@ class Formatter:
             p = self.doc.add_paragraph()
             p.alignment = resolve_align(f.get("captionAlign", "center"))
             # 图题单倍行距 + 零缩进（修复行距导致居中漂移）
-            set_para_spacing(p, line_spacing_mult=f.get("captionLineSpacing", 1.0),
-                             before_pt=0, after_pt=2)
+            set_para_spacing(p, line_spacing_mult=f.get("captionLineSpacing", 1.0), before_pt=0, after_pt=2)
             set_zero_indent(p)
             run = p.add_run("%s%d  %s" % (f.get("prefix", "图"), no, title))
-            set_run_font(run, cap_font, cap_en, size_pt=resolve_size(f.get("captionSize", "五号")),
-                         bold=f.get("captionBold", True))
+            set_run_font(
+                run,
+                cap_font,
+                cap_en,
+                size_pt=resolve_size(f.get("captionSize", "五号")),
+                bold=f.get("captionBold", True),
+            )
             return p
 
         # 来源/注释段
         def note_para(src):
             p = self.doc.add_paragraph()
             p.alignment = resolve_align(f.get("noteAlign", "left"))
-            set_para_spacing(p, line_spacing_mult=f.get("noteLineSpacing", 1.0),
-                             before_pt=0, after_pt=9)
+            set_para_spacing(p, line_spacing_mult=f.get("noteLineSpacing", 1.0), before_pt=0, after_pt=9)
             set_zero_indent(p)
             run = p.add_run(src)
             set_run_font(run, cap_font, cap_en, size_pt=resolve_size(f.get("noteSize", "小五")))
@@ -470,20 +500,23 @@ class Formatter:
         def make_caption():
             p = self.doc.add_paragraph()
             p.alignment = resolve_align(t.get("captionAlign", "center"))
-            set_para_spacing(p, line_spacing_mult=t.get("captionLineSpacing", 1.0),
-                             before_pt=9, after_pt=4)
+            set_para_spacing(p, line_spacing_mult=t.get("captionLineSpacing", 1.0), before_pt=9, after_pt=4)
             set_zero_indent(p)
             run = p.add_run("%s%d  %s" % (t.get("prefix", "表"), no, title))
-            set_run_font(run, cap_font, cap_en, size_pt=resolve_size(t.get("captionSize", "五号")),
-                         bold=t.get("captionBold", True))
+            set_run_font(
+                run,
+                cap_font,
+                cap_en,
+                size_pt=resolve_size(t.get("captionSize", "五号")),
+                bold=t.get("captionBold", True),
+            )
             return p
 
         # 注释/来源段（小五左对齐）
         def make_note():
             p = self.doc.add_paragraph()
             p.alignment = resolve_align(t.get("noteAlign", "left"))
-            set_para_spacing(p, line_spacing_mult=t.get("noteLineSpacing", 1.0),
-                             before_pt=3, after_pt=9)
+            set_para_spacing(p, line_spacing_mult=t.get("noteLineSpacing", 1.0), before_pt=3, after_pt=9)
             set_zero_indent(p)
             run = p.add_run(note)
             set_run_font(run, cap_font, cap_en, size_pt=resolve_size(t.get("noteSize", "小五")))
@@ -522,8 +555,7 @@ class Formatter:
             p.clear()
             p.alignment = cell_align
             # 【关键修复】单元格段落完全独立：单倍行距 + 零缩进 + 零段距
-            set_para_spacing(p, line_spacing_mult=t.get("cellLineSpacing", 1.0),
-                             before_pt=0, after_pt=0)
+            set_para_spacing(p, line_spacing_mult=t.get("cellLineSpacing", 1.0), before_pt=0, after_pt=0)
             set_zero_indent(p)
             run = p.add_run(str(text))
             set_run_font(run, cell_font, cell_en, size_pt=cell_size, bold=bold)
@@ -559,9 +591,7 @@ class Formatter:
             pf.left_indent = Pt(hang_pt)
             pf.first_line_indent = Pt(-hang_pt)
             run = p.add_run(s)
-            set_run_font(run, r.get("font", "宋体"), r.get("asciiFont", "Times New Roman"),
-                         size_pt=size_pt)
-        return
+            set_run_font(run, r.get("font", "宋体"), r.get("asciiFont", "Times New Roman"), size_pt=size_pt)
 
     def save(self, path):
         self.doc.save(path)
@@ -588,8 +618,8 @@ def format_reference_entry(item, number):
     return text
 
 
-def set_run_font_element(style_element, zh_font, en_font, size_pt, color):
-    """在样式元素上设置 rFonts（含 eastAsia）、字号、颜色。"""
+def set_run_font_element(style_element, zh_font, en_font, color):
+    """在样式元素上设置 rFonts（含 eastAsia）和颜色；字号由调用方设置。"""
     rpr = style_element.find(qn("w:rPr"))
     if rpr is None:
         rpr = OxmlElement("w:rPr")
@@ -614,6 +644,7 @@ def set_run_font_element(style_element, zh_font, en_font, size_pt, color):
 # 示例内容 + 生成入口
 # ------------------------------------------------------------------
 
+
 def build_sample_content(F, assets_dir):
     F.h1("一、研究背景与意义")
     F.body_para(
@@ -631,20 +662,23 @@ def build_sample_content(F, assets_dir):
         "图片统一宽度等于正文宽度，高度按原始宽高比等比缩放，超高时以高度上限反向缩放；图片水平居中、不加边框，"
         "图题置于图下方，五号加粗居中，来源或注释以小五号左对齐排列。"
     )
-    F.figure(os.path.join(assets_dir, "figure1.png"), "各季度销售额对比",
-             source="数据来源：示例数据，仅用于排版演示。")
+    F.figure(os.path.join(assets_dir, "figure1.png"), "各季度销售额对比", source="数据来源：示例数据，仅用于排版演示。")
 
     F.h2("（二）表的排版规范")
     F.body_para(
         "表题置于表上方，五号加粗居中；表格整体居中并占满正文宽度，单元格内容垂直且水平居中；注释或来源置于表下方，"
         "小五号左对齐。表格文字使用独立格式，不继承正文的首行缩进与 1.5 倍行距。"
     )
-    F.table("主要指标年度对比",
-            ["指标", "2023 年", "2024 年", "同比增长"],
-            [["营业收入（万元）", "1,200", "1,500", "25.0%"],
-             ["净利润（万元）", "180", "225", "25.0%"],
-             ["研发投入（万元）", "96", "135", "40.6%"]],
-            note="注：以上数据为示例，不构成任何投资建议。")
+    F.table(
+        "主要指标年度对比",
+        ["指标", "2023 年", "2024 年", "同比增长"],
+        [
+            ["营业收入（万元）", "1,200", "1,500", "25.0%"],
+            ["净利润（万元）", "180", "225", "25.0%"],
+            ["研发投入（万元）", "96", "135", "40.6%"],
+        ],
+        note="注：以上数据为示例，不构成任何投资建议。",
+    )
 
     F.h2("（三）三级标题演示")
     F.h3("1. 三级标题示例")
@@ -655,25 +689,63 @@ def build_sample_content(F, assets_dir):
         "参考文献遵循 GB/T 7714 顺序编码制：正文引用以 [n] 编号，逾 3 位作者用“等”或“et al”；强制标注文献类型标识，"
         "电子文献使用复合标识（如 [J/OL]），网络资源须含引用日期。"
     )
-    F.references([
-        {"authors": "王建国, 李明, 张华, 等", "title": "现代排版工程", "type": "M",
-         "place": "北京", "publisher": "科学出版社", "year": "2022"},
-        {"authors": "LIU Y, CHEN X, ZHAO M, et al", "title": "A study on document formatting consistency",
-         "type": "J", "source": "Journal of Publishing Science", "year": "2023",
-         "volume": "15", "issue": "3", "pages": "45-52"},
-        {"authors": "陈晓", "title": "学术写作中的图表规范研究", "type": "D",
-         "place": "上海", "publisher": "复旦大学", "year": "2021"},
-        {"authors": "全国信息与文献标准化技术委员会",
-         "title": "信息与文献 参考文献著录规则: GB/T 7714—2015", "type": "S",
-         "place": "北京", "publisher": "中国标准出版社", "year": "2015"},
-        {"authors": "张伟, 刘洋", "title": "电子文献引用规范的新进展", "type": "J/OL",
-         "source": "中国科技期刊研究", "year": "2024", "volume": "35", "issue": "2",
-         "pages": "88-95", "url": "https://doi.org/10.1234/example.2024.02.012",
-         "accessDate": "2026-06-28"},
-        {"authors": "中华人民共和国国家统计局",
-         "title": "2024 年国民经济和社会发展统计公报", "type": "EB/OL",
-         "url": "https://www.stats.gov.cn/example.htm", "accessDate": "2026-06-28"},
-    ])
+    F.references(
+        [
+            {
+                "authors": "王建国, 李明, 张华, 等",
+                "title": "现代排版工程",
+                "type": "M",
+                "place": "北京",
+                "publisher": "科学出版社",
+                "year": "2022",
+            },
+            {
+                "authors": "LIU Y, CHEN X, ZHAO M, et al",
+                "title": "A study on document formatting consistency",
+                "type": "J",
+                "source": "Journal of Publishing Science",
+                "year": "2023",
+                "volume": "15",
+                "issue": "3",
+                "pages": "45-52",
+            },
+            {
+                "authors": "陈晓",
+                "title": "学术写作中的图表规范研究",
+                "type": "D",
+                "place": "上海",
+                "publisher": "复旦大学",
+                "year": "2021",
+            },
+            {
+                "authors": "全国信息与文献标准化技术委员会",
+                "title": "信息与文献 参考文献著录规则: GB/T 7714—2015",
+                "type": "S",
+                "place": "北京",
+                "publisher": "中国标准出版社",
+                "year": "2015",
+            },
+            {
+                "authors": "张伟, 刘洋",
+                "title": "电子文献引用规范的新进展",
+                "type": "J/OL",
+                "source": "中国科技期刊研究",
+                "year": "2024",
+                "volume": "35",
+                "issue": "2",
+                "pages": "88-95",
+                "url": "https://doi.org/10.1234/example.2024.02.012",
+                "accessDate": "2026-06-28",
+            },
+            {
+                "authors": "中华人民共和国国家统计局",
+                "title": "2024 年国民经济和社会发展统计公报",
+                "type": "EB/OL",
+                "url": "https://www.stats.gov.cn/example.htm",
+                "accessDate": "2026-06-28",
+            },
+        ]
+    )
 
 
 def generate(config, output_path, assets_dir=None, content_fn=build_sample_content):
@@ -688,6 +760,7 @@ def generate(config, output_path, assets_dir=None, content_fn=build_sample_conte
 
 if __name__ == "__main__":
     import json
+
     cfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
     with open(cfg_path, "r", encoding="utf-8") as f:
         config = json.load(f)

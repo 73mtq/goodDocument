@@ -12,6 +12,7 @@ Route A 预测式（Segoe 图标字体三套度量一致：行盒=1em、基线�
 
 只读不写运行时代码；退出码 0 = 全部样本在公差内。
 """
+
 import ctypes
 import json
 import sys
@@ -39,8 +40,8 @@ SAMPLES = ("check", "view", "table", "font", "settings", "chevron_right", "warni
 SIZES = (16, 24, 30, 60)  # 设计 16/20/40 @100% 与 @150%
 TOL = {16: 0.5, 24: 0.75, 30: 0.75, 60: 1.0}  # 设计公差：0.5px@100%、1px@150%（中间线性）
 
-GAP = 24   # 格距，保证矩形框与墨迹、邻格互不粘连
-M = 20     # 画布边距
+GAP = 24  # 格距，保证矩形框与墨迹、邻格互不粘连
+M = 20  # 画布边距
 FG = (255, 255, 255)
 
 
@@ -69,8 +70,7 @@ def components(mask):
             xs.append(cx)
             for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 ny, nx = cy + dy, cx + dx
-                if (0 <= ny < mask.shape[0] and 0 <= nx < mask.shape[1]
-                        and mask[ny, nx] and not visited[ny, nx]):
+                if 0 <= ny < mask.shape[0] and 0 <= nx < mask.shape[1] and mask[ny, nx] and not visited[ny, nx]:
                     visited[ny, nx] = True
                     stack.append((ny, nx))
         out.append((np.array(ys), np.array(xs)))
@@ -85,7 +85,7 @@ def main():
 
     # ---- 布局声明：一行一个 (family, size)；框=格+8（四周 4px 缓冲防墨迹粘框）----
     cursor_y = M
-    row_h = max(SIZES) + 8          # 框尺寸
+    row_h = max(SIZES) + 8  # 框尺寸
     cells_per_row = len(SAMPLES)
     cell_w = row_h + GAP
     W = M * 2 + cells_per_row * cell_w
@@ -99,17 +99,21 @@ def main():
             for name in SAMPLES:
                 ch = ui_icons.glyph(name)
                 (x0, y0, x1, y1), upm = ink_units(font_path, ch)
-                cx = (x0 + x1) / 2 * size / upm        # 墨迹中心（相对行盒左上）
+                cx = (x0 + x1) / 2 * size / upm  # 墨迹中心（相对行盒左上）
                 cy = size - (y0 + y1) / 2 * size / upm  # 纵向：基线在行盒底
                 # 内格（size×size）居中于框；文本摆到「预测墨迹中心=内格中心」
                 ix0 = cursor_x + 4
                 iy0 = cursor_y + 4
-                declared.append({
-                    "family": family, "name": name, "size": size,
-                    "rect": [cursor_x, cursor_y, cursor_x + size + 7, cursor_y + size + 7],
-                    "text_at": [ix0 + size / 2 - cx, iy0 + size / 2 - cy],
-                    "glyph": ch,
-                })
+                declared.append(
+                    {
+                        "family": family,
+                        "name": name,
+                        "size": size,
+                        "rect": [cursor_x, cursor_y, cursor_x + size + 7, cursor_y + size + 7],
+                        "text_at": [ix0 + size / 2 - cx, iy0 + size / 2 - cy],
+                        "glyph": ch,
+                    }
+                )
                 cursor_x += cell_w
             cursor_y += row_h + GAP
 
@@ -121,8 +125,14 @@ def main():
     for d in declared:
         rx0, ry0, rx1, ry1 = d["rect"]
         canvas.create_rectangle(rx0, ry0, rx1, ry1, outline="#ffffff", width=1)
-        canvas.create_text(d["text_at"][0], d["text_at"][1], text=d["glyph"],
-                           fill="#ffffff", font=(d["family"], -d["size"]), anchor="nw")
+        canvas.create_text(
+            d["text_at"][0],
+            d["text_at"][1],
+            text=d["glyph"],
+            fill="#ffffff",
+            font=(d["family"], -d["size"]),
+            anchor="nw",
+        )
     root.update_idletasks()
     root.update()
     time.sleep(0.4)
@@ -136,7 +146,7 @@ def main():
     shot.save(shot_path)
 
     # ---- 检测：白色连通域；闭合矩形框（尺寸≈声明）为基准框，框内其余白域为墨迹 ----
-    white = (np.abs(arr - np.array(FG)).sum(axis=2) < 260)
+    white = np.abs(arr - np.array(FG)).sum(axis=2) < 260
     comps = [(cys, cxs) for cys, cxs in components(white) if len(cys) >= 8]
     frames = []
     valid_sizes = {(s + 8, s + 8) for s in SIZES}
@@ -157,26 +167,31 @@ def main():
     for d, (fx0, fy0, fx1, fy1) in zip(declared, frames, strict=True):
         fw, fh = fx1 - fx0 + 1, fy1 - fy0 + 1
         # 框内墨迹：内缩 3px（排除框线 1px + AA 1px；内格边缘在 4px 处，墨迹不丢）
-        sub = white[fy0 + 3:fy1 - 2, fx0 + 3:fx1 - 2]
+        sub = white[fy0 + 3 : fy1 - 2, fx0 + 3 : fx1 - 2]
         iy, ix = np.nonzero(sub)
         if len(iy) == 0:
-            out.append({"family": d["family"], "name": d["name"], "size": d["size"],
-                        "error": "no ink inside frame"})
+            out.append({"family": d["family"], "name": d["name"], "size": d["size"], "error": "no ink inside frame"})
             continue
         err_x = (ix.min() + ix.max()) / 2 + 3 - (fw - 1) / 2  # +3：子区映射回框坐标
         err_y = (iy.min() + iy.max()) / 2 + 3 - (fh - 1) / 2
-        err = (err_x ** 2 + err_y ** 2) ** 0.5
+        err = (err_x**2 + err_y**2) ** 0.5
         tol = TOL[d["size"]]
-        out.append({
-            "family": d["family"], "name": d["name"], "size": d["size"],
-            "frame_px": [int(fw), int(fh)], "declared_px": [d["size"] + 8, d["size"] + 8],
-            "ink_bbox": [int(ix.min()) + 3, int(iy.min()) + 3,
-                         int(ix.max()) + 3, int(iy.max()) + 3],
-            "err_x": round(err_x, 2), "err_y": round(err_y, 2),
-            "err": round(err, 2), "tol": tol,
-            "size_ok": bool(fw == d["size"] + 8 and fh == d["size"] + 8),
-            "pass": bool(err <= tol + 0.05),
-        })
+        out.append(
+            {
+                "family": d["family"],
+                "name": d["name"],
+                "size": d["size"],
+                "frame_px": [int(fw), int(fh)],
+                "declared_px": [d["size"] + 8, d["size"] + 8],
+                "ink_bbox": [int(ix.min()) + 3, int(iy.min()) + 3, int(ix.max()) + 3, int(iy.max()) + 3],
+                "err_x": round(err_x, 2),
+                "err_y": round(err_y, 2),
+                "err": round(err, 2),
+                "tol": tol,
+                "size_ok": bool(fw == d["size"] + 8 and fh == d["size"] + 8),
+                "pass": bool(err <= tol + 0.05),
+            }
+        )
 
     out_path = Path(__file__).resolve().parent / "probe_results.json"
     out_path.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -189,12 +204,16 @@ def main():
         print(f"警告：{len(bad_size)} 格实测框尺寸 ≠ 声明（DPI 虚拟化？结果不可信）")
     for r in measured:
         flag = "PASS" if r["pass"] else "FAIL"
-        print(f"{flag} {r['family'][:24]:24} {r['name']:14} {r['size']:3}px "
-              f"err=({r['err_x']:+.2f},{r['err_y']:+.2f}) |{r['err']:.2f}| tol={r['tol']}")
+        print(
+            f"{flag} {r['family'][:24]:24} {r['name']:14} {r['size']:3}px "
+            f"err=({r['err_x']:+.2f},{r['err_y']:+.2f}) |{r['err']:.2f}| tol={r['tol']}"
+        )
     worst = max(measured, key=lambda r: r["err"])
     n_pass = sum(1 for r in measured if r["pass"])
-    print(f"worst: {worst['family'][:12]}/{worst['name']}@{worst['size']} "
-          f"err={worst['err']:.2f}px tol={worst['tol']}  ->  {n_pass}/{len(measured)} pass")
+    print(
+        f"worst: {worst['family'][:12]}/{worst['name']}@{worst['size']} "
+        f"err={worst['err']:.2f}px tol={worst['tol']}  ->  {n_pass}/{len(measured)} pass"
+    )
     ok = not failed_probes and not bad_size and all(r["pass"] for r in measured)
     return 0 if ok else 1
 
